@@ -556,23 +556,17 @@ module PIXI =
 
   and [<AllowNullLiteral>] [<Import("DisplayObject","PIXI")>] DisplayObject() =
       inherit utils.EventEmitter()
-      (*
-      interface InteractiveTarget with
-          member __.interactive with get(): bool = jsNative and set(v: bool): unit = jsNative
-          member __.interactiveChildren with get(): bool = jsNative and set(v: bool): unit = jsNative
-          member __.hitArea with get(): obj = jsNative and set(v: obj): unit = jsNative
-          member __.buttonMode with get(): bool = jsNative and set(v: bool): unit = jsNative
-          member __.cursor with get(): string = jsNative and set(v: string): unit = jsNative
-          member __.defaultCursor with get(): string = jsNative and set(v: string): unit = jsNative
-          member __.trackedPointers(): obj = jsNative
-      interface AccessibleTarget with
-          member __.accessible with get(): bool = jsNative and set(v: bool): unit = jsNative
-          member __.accessibleTitle with get(): U2<string, obj> = jsNative and set(v: U2<string, obj>): unit = jsNative
-          member __.``null`` with get(): obj = jsNative and set(v: obj): unit = jsNative
-          member __.accessibleHint with get(): U2<string, obj> = jsNative and set(v: U2<string, obj>): unit = jsNative
-          member __.``null`` with get(): obj = jsNative and set(v: obj): unit = jsNative
-          member __.tabIndex with get(): float = jsNative and set(v: float): unit = jsNative
-      *)
+      member __.interactive with get(): bool = jsNative and set(v: bool): unit = jsNative
+      member __.interactiveChildren with get(): bool = jsNative and set(v: bool): unit = jsNative
+      member __.hitArea with get(): obj = jsNative and set(v: obj): unit = jsNative
+      member __.buttonMode with get(): bool = jsNative and set(v: bool): unit = jsNative
+      member __.cursor with get(): string = jsNative and set(v: string): unit = jsNative
+      member __.defaultCursor with get(): string = jsNative and set(v: string): unit = jsNative
+      member __.trackedPointers(): obj = jsNative
+      member __.accessible with get(): bool = jsNative and set(v: bool): unit = jsNative
+      member __.accessibleTitle with get(): U2<string, obj> = jsNative and set(v: U2<string, obj>): unit = jsNative
+      member __.accessibleHint with get(): U2<string, obj> = jsNative and set(v: U2<string, obj>): unit = jsNative
+      member __.tabIndex with get(): float = jsNative and set(v: float): unit = jsNative
       member __._cacheAsBitmap with get(): bool = jsNative and set(v: bool): unit = jsNative
       member __._cacheData with get(): bool = jsNative and set(v: bool): unit = jsNative
       member __.cacheAsBitmap with get(): bool = jsNative and set(v: bool): unit = jsNative
@@ -1474,64 +1468,58 @@ module PIXI =
       member __.detach(node: MiniSignalBinding): MiniSignal = jsNative
       member __.detachAll(): MiniSignal = jsNative
 
-  module PIXI =
-      type [<Import("*","PIXI")>] Globals =
-          static member VERSION with get(): obj = jsNative and set(v: obj): unit = jsNative
-          static member PI_2 with get(): obj = jsNative and set(v: obj): unit = jsNative
-          static member RAD_TO_DEG with get(): obj = jsNative and set(v: obj): unit = jsNative
-          static member DEG_TO_RAD with get(): obj = jsNative and set(v: obj): unit = jsNative
-          static member RENDERER_TYPE with get(): obj = jsNative and set(v: obj): unit = jsNative
-          static member BLEND_MODES with get(): obj = jsNative and set(v: obj): unit = jsNative
-          static member DRAW_MODES with get(): obj = jsNative and set(v: obj): unit = jsNative
-          static member SCALE_MODES with get(): obj = jsNative and set(v: obj): unit = jsNative
-          static member WRAP_MODES with get(): obj = jsNative and set(v: obj): unit = jsNative
-          static member TRANSFORM_MODE_O with get(): obj = jsNative and set(v: obj): unit = jsNative
-          static member PRECISION_O with get(): obj = jsNative and set(v: obj): unit = jsNative
-          static member GC_MODES with get(): obj = jsNative and set(v: obj): unit = jsNative
-          static member SHAPES with get(): obj = jsNative and set(v: obj): unit = jsNative
-          static member TEXT_GRADIENT with get(): obj = jsNative and set(v: obj): unit = jsNative
-          static member UPDATE_PRIORITY with get(): obj = jsNative and set(v: obj): unit = jsNative
-  //          static member loader with get(): undefined.Loader = jsNative and set(v: undefined.Loader): unit = jsNative
-          static member TRANSFORM_MODE with get(): float = jsNative and set(v: float): unit = jsNative
-          static member GC_MODE with get(): float = jsNative and set(v: float): unit = jsNative
-          static member GC_MAX_IDLE with get(): float = jsNative and set(v: float): unit = jsNative
-          static member GC_MAX_CHECK_COUNT with get(): float = jsNative and set(v: float): unit = jsNative
-          static member WRAP_MODE with get(): float = jsNative and set(v: float): unit = jsNative
-          static member SCALE_MODE with get(): float = jsNative and set(v: float): unit = jsNative
-          static member PRECISION_VERTEX with get(): string = jsNative and set(v: string): unit = jsNative
-          static member PRECISION_FRAGMENT with get(): string = jsNative and set(v: string): unit = jsNative
-          static member PRECISION_S with get(): string = jsNative and set(v: string): unit = jsNative
-          static member UPLOADS_PER_FRAME with get(): float = jsNative and set(v: float): unit = jsNative
-          static member CAN_UPLOAD_SAME_BUFFER with get(): bool = jsNative and set(v: bool): unit = jsNative
-          static member autoDetectRenderer(width: float, height: float, ?options: RendererOptions, ?forceCanvas: bool): U2<WebGLRenderer, CanvasRenderer> = jsNative
-          static member autoDetectRenderer(?options: RendererOptions): U2<WebGLRenderer, CanvasRenderer> = jsNative
+  and [<Import("*","PIXI")>] Globals =
+      static member VERSION with get(): obj = jsNative and set(v: obj): unit = jsNative
+      static member PI_2 with get(): obj = jsNative and set(v: obj): unit = jsNative
+      static member RAD_TO_DEG with get(): obj = jsNative and set(v: obj): unit = jsNative
+      static member DEG_TO_RAD with get(): obj = jsNative and set(v: obj): unit = jsNative
+      static member RENDERER_TYPE with get(): obj = jsNative and set(v: obj): unit = jsNative
+      static member BLEND_MODES with get(): obj = jsNative and set(v: obj): unit = jsNative
+      static member DRAW_MODES with get(): obj = jsNative and set(v: obj): unit = jsNative
+      static member SCALE_MODES with get(): float = jsNative and set(v: float): unit = jsNative
+      static member WRAP_MODES with get(): obj = jsNative and set(v: obj): unit = jsNative
+      static member TRANSFORM_MODE_O with get(): obj = jsNative and set(v: obj): unit = jsNative
+      static member PRECISION_O with get(): obj = jsNative and set(v: obj): unit = jsNative
+      static member GC_MODES with get(): obj = jsNative and set(v: obj): unit = jsNative
+      static member SHAPES with get(): obj = jsNative and set(v: obj): unit = jsNative
+      static member TEXT_GRADIENT with get(): obj = jsNative and set(v: obj): unit = jsNative
+      static member UPDATE_PRIORITY with get(): obj = jsNative and set(v: obj): unit = jsNative
+//          static member loader with get(): undefined.Loader = jsNative and set(v: undefined.Loader): unit = jsNative
+      static member TRANSFORM_MODE with get(): float = jsNative and set(v: float): unit = jsNative
+      static member GC_MODE with get(): float = jsNative and set(v: float): unit = jsNative
+      static member GC_MAX_IDLE with get(): float = jsNative and set(v: float): unit = jsNative
+      static member GC_MAX_CHECK_COUNT with get(): float = jsNative and set(v: float): unit = jsNative
+      static member WRAP_MODE with get(): float = jsNative and set(v: float): unit = jsNative
+      static member PRECISION_VERTEX with get(): string = jsNative and set(v: string): unit = jsNative
+      static member PRECISION_FRAGMENT with get(): string = jsNative and set(v: string): unit = jsNative
+      static member PRECISION_S with get(): string = jsNative and set(v: string): unit = jsNative
+      static member UPLOADS_PER_FRAME with get(): float = jsNative and set(v: float): unit = jsNative
+      static member CAN_UPLOAD_SAME_BUFFER with get(): bool = jsNative and set(v: bool): unit = jsNative
+      static member autoDetectRenderer(width: float, height: float, ?options: RendererOptions, ?forceCanvas: bool): U2<WebGLRenderer, CanvasRenderer> = jsNative
+      static member autoDetectRenderer(?options: RendererOptions): U2<WebGLRenderer, CanvasRenderer> = jsNative
 
-      module settings =
-          type [<AllowNullLiteral>] RENDER_OPTIONSType =
-              abstract view: U2<HTMLCanvasElement, obj> with get, set
+  module settings =
+    type [<AllowNullLiteral>] RENDER_OPTIONSType =
+        abstract view: U2<HTMLCanvasElement, obj> with get, set
 
-          type [<Import("settings","PIXI")>] Globals =
-              static member TARGET_FPMS with get(): float = jsNative and set(v: float): unit = jsNative
-              static member MIPMAP_TEXTURES with get(): bool = jsNative and set(v: bool): unit = jsNative
-              static member RESOLUTION with get(): float = jsNative and set(v: float): unit = jsNative
-              static member FILTER_RESOLUTION with get(): float = jsNative and set(v: float): unit = jsNative
-              static member SPRITE_MAX_TEXTURES with get(): float = jsNative and set(v: float): unit = jsNative
-              static member SPRITE_BATCH_SIZE with get(): float = jsNative and set(v: float): unit = jsNative
-              static member RETINA_PREFIX with get(): Regex = jsNative and set(v: Regex): unit = jsNative
-              static member RENDER_OPTIONS with get(): RENDER_OPTIONSType = jsNative and set(v: RENDER_OPTIONSType): unit = jsNative
-              static member antialias with get(): bool = jsNative and set(v: bool): unit = jsNative
-              static member forceFXAA with get(): bool = jsNative and set(v: bool): unit = jsNative
-              static member autoResize with get(): bool = jsNative and set(v: bool): unit = jsNative
-              static member transparent with get(): bool = jsNative and set(v: bool): unit = jsNative
-              static member backgroundColor with get(): float = jsNative and set(v: float): unit = jsNative
-              static member clearBeforeRender with get(): bool = jsNative and set(v: bool): unit = jsNative
-              static member preserveDrawingBuffer with get(): bool = jsNative and set(v: bool): unit = jsNative
-              static member roundPixels with get(): bool = jsNative and set(v: bool): unit = jsNative
-
-
-
-
-
+    type [<Import("*","PIXI.settings")>] Globals =
+        static member SCALE_MODE with get(): float = jsNative and set(v: float): unit = jsNative
+        static member TARGET_FPMS with get(): float = jsNative and set(v: float): unit = jsNative
+        static member MIPMAP_TEXTURES with get(): bool = jsNative and set(v: bool): unit = jsNative
+        static member RESOLUTION with get(): float = jsNative and set(v: float): unit = jsNative
+        static member FILTER_RESOLUTION with get(): float = jsNative and set(v: float): unit = jsNative
+        static member SPRITE_MAX_TEXTURES with get(): float = jsNative and set(v: float): unit = jsNative
+        static member SPRITE_BATCH_SIZE with get(): float = jsNative and set(v: float): unit = jsNative
+        static member RETINA_PREFIX with get(): Regex = jsNative and set(v: Regex): unit = jsNative
+        static member RENDER_OPTIONS with get(): RENDER_OPTIONSType = jsNative and set(v: RENDER_OPTIONSType): unit = jsNative
+        static member antialias with get(): bool = jsNative and set(v: bool): unit = jsNative
+        static member forceFXAA with get(): bool = jsNative and set(v: bool): unit = jsNative
+        static member autoResize with get(): bool = jsNative and set(v: bool): unit = jsNative
+        static member transparent with get(): bool = jsNative and set(v: bool): unit = jsNative
+        static member backgroundColor with get(): float = jsNative and set(v: float): unit = jsNative
+        static member clearBeforeRender with get(): bool = jsNative and set(v: bool): unit = jsNative
+        static member preserveDrawingBuffer with get(): bool = jsNative and set(v: bool): unit = jsNative
+        static member roundPixels with get(): bool = jsNative and set(v: bool): unit = jsNative
 
   module CONST =
       type [<AllowNullLiteral>] RENDERER_TYPEType =
@@ -1906,7 +1894,7 @@ module PIXI =
           abstract metaData: obj option with get, set
 
       and [<AllowNullLiteral>] ResourceDictionary =
-          [<Emit("$0[$1]{{=$2}}")>] abstract Item: index: string -> obj with get, set
+          [<Emit("$0[$1]{{=$2}}")>] abstract Item: index: string -> Resource with get, set
   //          [<Emit("$0[$1]{{=$2}}")>] abstract Item: index: string -> extras.Resource with get, set
 
       and [<AllowNullLiteral>] [<Import("Loader","PIXI.loaders")>] Loader(?baseUrl: string, ?concurrency: float) =
@@ -1936,7 +1924,7 @@ module PIXI =
           member __.pre(fn: Function): obj = jsNative
           member __.``use``(fn: Function): obj = jsNative
           member __.reset(): obj = jsNative
-          member __.load(?cb: Function): obj = jsNative
+          member __.load(?cb: unit->unit): obj = jsNative
           member __._prepareUrl(url: string): string = jsNative
           member __._loadResource(resource: Resource, dequeue: Function): unit = jsNative
           member __._onComplete(): unit = jsNative
@@ -2414,10 +2402,11 @@ module PIXI =
       and PRECISION =
           string
 
+(*
   module settings =
       type PRECISION =
           float
-
+*)          
   module pixi =
       type [<Import("*","PIXI")>] Globals =
           static member gl with get(): obj = jsNative and set(v: obj): unit = jsNative

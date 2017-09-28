@@ -46,6 +46,9 @@ module.exports = {
   },
   externals: {
     "PIXI": "PIXI",
+    "PIXI.extras": "PIXI.extras",
+    "PIXI.loaders": "PIXI.loaders",
+    "PIXI.settings": "PIXI.settings"
   },
   devServer: {
     contentBase: resolve('public'),
