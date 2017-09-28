@@ -9,6 +9,8 @@ Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "PixiBasic", "src\basic\Pixi
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "PixiContainer", "src\container\PixiContainer.fsproj", "{1ED0FED8-1AFD-4AA7-94BC-83E4D22EDDD2}"
 EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "PixiContainerPivot", "src\containerPivot\PixiContainerPivot.fsproj", "{01B26EF4-B857-480A-8A7C-03C942A26EAE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -310,9 +312,22 @@ Global
 		{1ED0FED8-1AFD-4AA7-94BC-83E4D22EDDD2}.Release|x64.Build.0 = Release|x64
 		{1ED0FED8-1AFD-4AA7-94BC-83E4D22EDDD2}.Release|x86.ActiveCfg = Release|x86
 		{1ED0FED8-1AFD-4AA7-94BC-83E4D22EDDD2}.Release|x86.Build.0 = Release|x86
+		{01B26EF4-B857-480A-8A7C-03C942A26EAE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{01B26EF4-B857-480A-8A7C-03C942A26EAE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{01B26EF4-B857-480A-8A7C-03C942A26EAE}.Debug|x64.ActiveCfg = Debug|x64
+		{01B26EF4-B857-480A-8A7C-03C942A26EAE}.Debug|x64.Build.0 = Debug|x64
+		{01B26EF4-B857-480A-8A7C-03C942A26EAE}.Debug|x86.ActiveCfg = Debug|x86
+		{01B26EF4-B857-480A-8A7C-03C942A26EAE}.Debug|x86.Build.0 = Debug|x86
+		{01B26EF4-B857-480A-8A7C-03C942A26EAE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{01B26EF4-B857-480A-8A7C-03C942A26EAE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{01B26EF4-B857-480A-8A7C-03C942A26EAE}.Release|x64.ActiveCfg = Release|x64
+		{01B26EF4-B857-480A-8A7C-03C942A26EAE}.Release|x64.Build.0 = Release|x64
+		{01B26EF4-B857-480A-8A7C-03C942A26EAE}.Release|x86.ActiveCfg = Release|x86
+		{01B26EF4-B857-480A-8A7C-03C942A26EAE}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{5605FDCE-E299-411A-9DFD-5F8E9074401A} = {4F77A5C5-F3AA-40A0-910F-785C520FEF8E}
 		{1ED0FED8-1AFD-4AA7-94BC-83E4D22EDDD2} = {4F77A5C5-F3AA-40A0-910F-785C520FEF8E}
+		{01B26EF4-B857-480A-8A7C-03C942A26EAE} = {4F77A5C5-F3AA-40A0-910F-785C520FEF8E}
 	EndGlobalSection
 EndGlobal
