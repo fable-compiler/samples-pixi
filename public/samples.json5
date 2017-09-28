@@ -1,0 +1,16 @@
+{
+  "pixi": {
+    "basic": {
+      "entry": "PixiBasic.fsproj",
+      "title": "Pixi sample",
+      "desc": "Simple renderization with [PixiJS](http://www.pixijs.com/), a fast and flexible library to render 2D WebGL content.",
+      "img": "pixi.jpeg"
+    },
+    "container": {
+      "entry": "PixiContainer.fsproj",
+      "title": "Pixi sample",
+      "desc": "Simple renderization with [PixiJS](http://www.pixijs.com/), a fast and flexible library to render 2D WebGL content.",
+      "img": "pixi.jpeg"
+    },
+  },
+}

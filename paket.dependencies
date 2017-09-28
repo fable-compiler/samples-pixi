@@ -1,0 +1,15 @@
+source https://nuget.org/api/v2
+storage:none
+
+clitool dotnet-fable
+nuget Fable.Core
+nuget Fable.PowerPack prerelease
+nuget Fable.React prerelease
+nuget Fable.Import.Browser
+nuget Fable.Import.Node
+
+github fable-compiler/fable-graphics bindings/fable-import-d3/Fable.Import.D3.fs
+
+group Build
+  source https://nuget.org/api/v2
+  nuget FAKE
