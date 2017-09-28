@@ -8,8 +8,6 @@ open Fable.Import.Pixi
 open Fable.Import.Browser
 open Fable.Import.JS
 
-// create a new Sprite from an image path
-//let options = PIXI.ApplicationOptions.BackgroundColor 0x1099bb 
 let options = createEmpty<PIXI.ApplicationOptions>
 options.backgroundColor <- Some 0xAAAACC
 
@@ -37,35 +35,3 @@ sprite.on("pointerdown", fun _ ->
   scale.x <- scale.x * 1.25 
   scale.y <- scale.y * 1.25 
 ) |> ignore
-
-(*
-  // Scale mode for all textures, will retain pixelation
-PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
-
-var sprite = PIXI.Sprite.fromImage('required/assets/basics/bunny.png');
-
-// Set the initial position
-sprite.anchor.set(0.5);
-sprite.x = app.renderer.width / 2;
-sprite.y = app.renderer.height / 2;
-
-// Opt-in to interactivity
-sprite.interactive = true;
-
-// Shows hand cursor
-sprite.buttonMode = true;
-
-// Pointers normalize touch and mouse
-sprite.on('pointerdown', onClick);
-
-// Alternatively, use the mouse & touch events:
-// sprite.on('click', onClick); // mouse-only
-// sprite.on('tap', onClick); // touch-only
-
-app.stage.addChild(sprite);
-
-function onClick () {
-    sprite.scale.x *= 1.25;
-    sprite.scale.y *= 1.25;
-}
-*)

@@ -18,17 +18,17 @@
       "desc": "Simple renderization with [PixiJS](http://www.pixijs.com/), a fast and flexible library to render 2D WebGL content.",
       "img": "pixi.jpeg"
     },  
-    "spriteSheetAnimation": {
-      "entry": "PixiSpriteSheetAnimation.fsproj",
-      "title": "Pixi sample",
-      "desc": "Simple renderization with [PixiJS](http://www.pixijs.com/), a fast and flexible library to render 2D WebGL content.",
-      "img": "pixi.jpeg"
-    },  
     "click": {
       "entry": "PixiClick.fsproj",
       "title": "Pixi sample",
       "desc": "Simple renderization with [PixiJS](http://www.pixijs.com/), a fast and flexible library to render 2D WebGL content.",
       "img": "pixi.jpeg"
-    },           
+    },  
+    "ssa": {
+      "entry": "PixiSSA.fsproj",
+      "title": "Pixi sample",
+      "desc": "Simple renderization with [PixiJS](http://www.pixijs.com/), a fast and flexible library to render 2D WebGL content.",
+      "img": "pixi.jpeg"
+    },              
   },
 }
