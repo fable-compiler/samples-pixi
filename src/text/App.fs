@@ -23,20 +23,20 @@ basicText.y <- 90.
 app.stage.addChild basicText |> ignore
 
 let style = jsOptions<PIXI.TextStyle>( fun o -> 
-    o._fontFamily<- !^"Arial"
-    o._fontSize<- !^36.
-    o._fontStyle<- "italic"
-    o._fontWeight<- "bold"
-    o._fill<- [|"#ffffff";"#00ff99"|] // gradient
-    o._stroke<- !^"#4a1850"
-    o._strokeThickness<- 5.
-    o._dropShadow<- true
-    o._dropShadowColor<- !^"#000000"
-    o._dropShadowBlur<- 4.
-    o._dropShadowAngle<- Math.PI / 6.
-    o._dropShadowDistance<- 6.
-    o._wordWrap<- true
-    o._wordWrapWidth<- 440.
+    o.fontFamily<- !^"Arial"
+    o.fontSize<- !^36.
+    o.fontStyle<- "italic"
+    o.fontWeight<- "bold"
+    o.fill<- [|"#ffffff";"#00ff99"|] // gradient
+    o.stroke<- !^"#4a1850"
+    o.strokeThickness<- 5.
+    o.dropShadow<- true
+    o.dropShadowColor<- !^"#000000"
+    o.dropShadowBlur<- 4.
+    o.dropShadowAngle<- Math.PI / 6.
+    o.dropShadowDistance<- 6.
+    o.wordWrap<- true
+    o.wordWrapWidth<- 440.
 )
 
 let richText = PIXI.Text("Rich text with a lot of options and across multiple lines",style)

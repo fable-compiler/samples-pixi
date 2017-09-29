@@ -1329,34 +1329,34 @@ module PIXI =
           member __.wordWrapWidth with get(): float option = jsNative and set(v: float option): unit = jsNative
           member __.leading with get(): float option = jsNative and set(v: float option): unit = jsNative
       member __.styleID with get(): float = jsNative and set(v: float): unit = jsNative
-      member __._align with get(): string = jsNative and set(v: string): unit = jsNative
-      member __._breakWords with get(): bool = jsNative and set(v: bool): unit = jsNative
-      member __._dropShadow with get(): bool = jsNative and set(v: bool): unit = jsNative
-      member __._dropShadowAlpha with get(): float = jsNative and set(v: float): unit = jsNative
-      member __._dropShadowAngle with get(): float = jsNative and set(v: float): unit = jsNative
-      member __._dropShadowBlur with get(): float = jsNative and set(v: float): unit = jsNative
-      member __._dropShadowColor with get(): U2<string, float> = jsNative and set(v: U2<string, float>): unit = jsNative
-      member __._dropShadowDistance with get(): float = jsNative and set(v: float): unit = jsNative
-      member __._fill with get(): obj = jsNative and set(v: obj): unit = jsNative
-      member __._fillGradientType with get(): float = jsNative and set(v: float): unit = jsNative
-      member __._fillGradientStops with get(): ResizeArray<float> = jsNative and set(v: ResizeArray<float>): unit = jsNative
-      member __._fontFamily with get(): U2<string, ResizeArray<string>> = jsNative and set(v: U2<string, ResizeArray<string>>): unit = jsNative
-      member __._fontSize with get(): U2<float, string> = jsNative and set(v: U2<float, string>): unit = jsNative
-      member __._fontStyle with get(): string = jsNative and set(v: string): unit = jsNative
-      member __._fontVariant with get(): string = jsNative and set(v: string): unit = jsNative
-      member __._fontWeight with get(): string = jsNative and set(v: string): unit = jsNative
-      member __._leading with get(): float = jsNative and set(v: float): unit = jsNative
-      member __._letterSpacing with get(): float = jsNative and set(v: float): unit = jsNative
-      member __._lineHeight with get(): float = jsNative and set(v: float): unit = jsNative
-      member __._lineJoin with get(): string = jsNative and set(v: string): unit = jsNative
-      member __._miterLimit with get(): float = jsNative and set(v: float): unit = jsNative
-      member __._padding with get(): float = jsNative and set(v: float): unit = jsNative
-      member __._stroke with get(): U2<string, float> = jsNative and set(v: U2<string, float>): unit = jsNative
-      member __._strokeThickness with get(): float = jsNative and set(v: float): unit = jsNative
-      member __._textBaseline with get(): string = jsNative and set(v: string): unit = jsNative
-      member __._trim with get(): bool = jsNative and set(v: bool): unit = jsNative
-      member __._wordWrap with get(): bool = jsNative and set(v: bool): unit = jsNative
-      member __._wordWrapWidth with get(): float = jsNative and set(v: float): unit = jsNative
+      member __.align with get(): string = jsNative and set(v: string): unit = jsNative
+      member __.breakWords with get(): bool = jsNative and set(v: bool): unit = jsNative
+      member __.dropShadow with get(): bool = jsNative and set(v: bool): unit = jsNative
+      member __.dropShadowAlpha with get(): float = jsNative and set(v: float): unit = jsNative
+      member __.dropShadowAngle with get(): float = jsNative and set(v: float): unit = jsNative
+      member __.dropShadowBlur with get(): float = jsNative and set(v: float): unit = jsNative
+      member __.dropShadowColor with get(): U2<string, float> = jsNative and set(v: U2<string, float>): unit = jsNative
+      member __.dropShadowDistance with get(): float = jsNative and set(v: float): unit = jsNative
+      member __.fill with get(): obj = jsNative and set(v: obj): unit = jsNative
+      member __.fillGradientType with get(): float = jsNative and set(v: float): unit = jsNative
+      member __.fillGradientStops with get(): ResizeArray<float> = jsNative and set(v: ResizeArray<float>): unit = jsNative
+      member __.fontFamily with get(): U2<string, ResizeArray<string>> = jsNative and set(v: U2<string, ResizeArray<string>>): unit = jsNative
+      member __.fontSize with get(): U2<float, string> = jsNative and set(v: U2<float, string>): unit = jsNative
+      member __.fontStyle with get(): string = jsNative and set(v: string): unit = jsNative
+      member __.fontVariant with get(): string = jsNative and set(v: string): unit = jsNative
+      member __.fontWeight with get(): string = jsNative and set(v: string): unit = jsNative
+      member __.leading with get(): float = jsNative and set(v: float): unit = jsNative
+      member __.letterSpacing with get(): float = jsNative and set(v: float): unit = jsNative
+      member __.lineHeight with get(): float = jsNative and set(v: float): unit = jsNative
+      member __.lineJoin with get(): string = jsNative and set(v: string): unit = jsNative
+      member __.miterLimit with get(): float = jsNative and set(v: float): unit = jsNative
+      member __.padding with get(): float = jsNative and set(v: float): unit = jsNative
+      member __.stroke with get(): U2<string, float> = jsNative and set(v: U2<string, float>): unit = jsNative
+      member __.strokeThickness with get(): float = jsNative and set(v: float): unit = jsNative
+      member __.textBaseline with get(): string = jsNative and set(v: string): unit = jsNative
+      member __.trim with get(): bool = jsNative and set(v: bool): unit = jsNative
+      member __.wordWrap with get(): bool = jsNative and set(v: bool): unit = jsNative
+      member __.wordWrapWidth with get(): float = jsNative and set(v: float): unit = jsNative
       member __.clone(): TextStyle = jsNative
       member __.reset(): unit = jsNative
       member __.toFontString(): string = jsNative
