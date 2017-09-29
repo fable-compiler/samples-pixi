@@ -1,5 +1,4 @@
 namespace rec Fable.Import.Pixi 
-//namespace Fable.Import.Pixi 
 
 open System
 open System.Text.RegularExpressions
