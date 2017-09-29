@@ -408,7 +408,7 @@ module PIXI =
       member __._backgroundColorString with get(): string = jsNative and set(v: string): unit = jsNative
       member __._tempDisplayObjectParent with get(): Container = jsNative and set(v: Container): unit = jsNative
       member __._lastObjectRendered with get(): DisplayObject = jsNative and set(v: DisplayObject): unit = jsNative
-      member __.backgroundColor with get(): float = jsNative and set(v: float): unit = jsNative
+      member __.backgroundColor with get(): int = jsNative and set(v: int): unit = jsNative
       member __.resize(screenWidth: float, screenHeight: float): unit = jsNative
       member __.generateTexture(displayObject: DisplayObject, ?scaleMode: float, ?resolution: float): RenderTexture = jsNative
       member __.render([<ParamArray>] args: obj[]): unit = jsNative
@@ -823,14 +823,14 @@ module PIXI =
       member __._fastRect with get(): bool = jsNative and set(v: bool): unit = jsNative
       member __._SPRITE_TEXTURE with get(): Texture = jsNative and set(v: Texture): unit = jsNative
       member __.clone(): Graphics = jsNative
-      member __.lineStyle(?lineWidth: float, ?color: float, ?alpha: float): Graphics = jsNative
+      member __.lineStyle(?lineWidth: float, ?color: int, ?alpha: float): Graphics = jsNative
       member __.moveTo(x: float, y: float): Graphics = jsNative
       member __.lineTo(x: float, y: float): Graphics = jsNative
       member __.quadraticCurveTo(cpX: float, cpY: float, toX: float, toY: float): Graphics = jsNative
       member __.bezierCurveTo(cpX: float, cpY: float, cpX2: float, cpY2: float, toX: float, toY: float): Graphics = jsNative
       member __.arcTo(x1: float, y1: float, x2: float, y2: float, radius: float): Graphics = jsNative
       member __.arc(cx: float, cy: float, radius: float, startAngle: float, endAngle: float, ?anticlockwise: bool): Graphics = jsNative
-      member __.beginFill(color: float, ?alpha: float): Graphics = jsNative
+      member __.beginFill(color: int, ?alpha: float): Graphics = jsNative
       member __.endFill(): Graphics = jsNative
       member __.drawRect(x: float, y: float, width: float, height: float): Graphics = jsNative
       member __.drawRoundedRect(x: float, y: float, width: float, height: float, radius: float): Graphics = jsNative
@@ -1516,7 +1516,7 @@ module PIXI =
         static member forceFXAA with get(): bool = jsNative and set(v: bool): unit = jsNative
         static member autoResize with get(): bool = jsNative and set(v: bool): unit = jsNative
         static member transparent with get(): bool = jsNative and set(v: bool): unit = jsNative
-        static member backgroundColor with get(): float = jsNative and set(v: float): unit = jsNative
+        static member backgroundColor with get(): int = jsNative and set(v: int): unit = jsNative
         static member clearBeforeRender with get(): bool = jsNative and set(v: bool): unit = jsNative
         static member preserveDrawingBuffer with get(): bool = jsNative and set(v: bool): unit = jsNative
         static member roundPixels with get(): bool = jsNative and set(v: bool): unit = jsNative
@@ -1654,11 +1654,11 @@ module PIXI =
           static member convertTintToImage with get(): bool = jsNative and set(v: bool): unit = jsNative
           static member canUseMultiply with get(): bool = jsNative and set(v: bool): unit = jsNative
           static member tintMethod with get(): float = jsNative and set(v: float): unit = jsNative
-          static member getTintedTexture(sprite: Sprite, color: float): HTMLCanvasElement = jsNative
-          static member tintWithMultiply(texture: Texture, color: float, canvas: HTMLCanvasElement): unit = jsNative
-          static member tintWithOverlay(texture: Texture, color: float, canvas: HTMLCanvasElement): unit = jsNative
-          static member tintWithPerPixel(texture: Texture, color: float, canvas: HTMLCanvasElement): unit = jsNative
-          static member roundColor(color: float): float = jsNative
+          static member getTintedTexture(sprite: Sprite, color: int): HTMLCanvasElement = jsNative
+          static member tintWithMultiply(texture: Texture, color: int, canvas: HTMLCanvasElement): unit = jsNative
+          static member tintWithOverlay(texture: Texture, color: int, canvas: HTMLCanvasElement): unit = jsNative
+          static member tintWithPerPixel(texture: Texture, color: int, canvas: HTMLCanvasElement): unit = jsNative
+          static member roundColor(color: int): float = jsNative
 
 
 
