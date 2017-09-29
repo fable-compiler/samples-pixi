@@ -20,3 +20,19 @@ run `dotnet fable yarn-build`.
 - Add one folder named after the id of the sample to `src` directory and another one to `public`. The first one will contain the F# (and maybe JS) source files, while the second contains the public assets for the sample (like index.html, images, etc).
 - Add the project to the `Fable.Samples.sln` solution: `dotnet sln add src/my-sample/My.Sample.fsproj`
 - Restore NuGet dependencies: `dotnet restore`
+
+# Webpack configuration
+
+Pixi requires to set additional externals to work with webpack. Like this:
+
+```json
+  externals: {
+    "PIXI": "PIXI",
+    "PIXI.extras": "PIXI.extras",
+    "PIXI.loaders": "PIXI.loaders",
+    "PIXI.settings": "PIXI.settings",
+    "PIXI.mesh": "PIXI.mesh"    
+  },
+```
+
+Would you stumble on errors like this: `Module not found: Error: Can't resolve 'PIXI.xxx' in ...`,  just add the module to the Webpack config.
