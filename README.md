@@ -5,6 +5,7 @@
 - Restore NPM dependencies: `yarn install`
 - Restore Nuget dependencies: `dotnet restore`
 - **Move to src folder**: `cd src`
+- Restore Nuget dependencies for main project: `dotnet restore`
 - Start Fable and Webpack dev server: `dotnet fable yarn-start`
 - In your browser, open `localhost:8080/[EXAMPLE]` (e.g. `http://localhost:8080/ozmo`)
 
@@ -18,3 +19,14 @@ run `dotnet fable yarn-build`.
 - Add the information about your sample to `public/samples.json5`: id, entry file (usually the .fsproj), title and description; in one of the three categories: "games", "visual" or "productivity".
 - Add one folder named after the id of the sample to `src` directory and another one to `public`. The first one will contain the F# (and maybe JS) source files, while the second contains the public assets for the sample (like index.html, images, etc).
 - Add the project to the `Fable.Samples.sln` solution: `dotnet sln add src/my-sample/My.Sample.fsproj`
+
+## Upgrading Fable
+Because sometimes you need that extra new feature from latest Fable release ;)
+- `.paket/paket update`
+
+or
+- `.paket/paket update --group Main`
+
+and so on...
+
+Please have a look to packages in `paket.dependencies` file

@@ -8,9 +8,9 @@ open Fable.Import.Pixi
 open Fable.Import.Browser
 open Fable.Import.JS
 
-// create a new Sprite from an image path
-let options = createEmpty<PIXI.ApplicationOptions>
-options.backgroundColor <- Some 0x000000
+let options = jsOptions<PIXI.ApplicationOptions> (fun o ->
+  o.backgroundColor <- Some 0x000000
+)
 
 let app = PIXI.Application(400., 400., options)
 

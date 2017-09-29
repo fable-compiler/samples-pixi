@@ -8,8 +8,11 @@ open Fable.Import.Pixi
 open Fable.Import.Browser
 open Fable.Import.JS
 
-let options = createEmpty<PIXI.ApplicationOptions>
-options.backgroundColor <- Some 0xAAAACC
+//PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
+
+let options = jsOptions<PIXI.ApplicationOptions> (fun o ->
+  o.backgroundColor <- Some 0x000000
+)
 
 let app = PIXI.Application(400., 400., options)
 Browser.document.body.appendChild(app.view) |> ignore
