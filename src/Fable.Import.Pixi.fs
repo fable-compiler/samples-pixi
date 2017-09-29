@@ -550,8 +550,8 @@ module PIXI =
       member __.destroy(?options: U2<DestroyOptions, bool>): unit = jsNative
       member __.once(``event``: (* TODO StringEnum added | removed *) string, fn: DisplayObject->unit, ?context: obj): obj = jsNative
       member __.once(``event``: string, fn: Function, ?context: obj): obj = jsNative
-      member __.on(``event``: (* TODO StringEnum added | removed *) string, fn: DisplayObject->unit, ?context: obj): obj = jsNative
-      member __.on(``event``: string, fn: Function, ?context: obj): obj = jsNative
+//      member __.on(``event``: (* TODO StringEnum added | removed *) string, fn: DisplayObject->unit, ?context: obj): obj = jsNative
+      member __.on(``event``: string, fn: unit -> unit, ?context: obj): obj = jsNative
       member __.off(``event``: (* TODO StringEnum added | removed |  *) string, ?fn: Function, ?context: obj): obj = jsNative
 
   and [<AllowNullLiteral>] [<Import("DisplayObject","PIXI")>] DisplayObject() =
