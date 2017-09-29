@@ -1925,6 +1925,7 @@ module PIXI =
           member __.``use``(fn: Function): obj = jsNative
           member __.reset(): obj = jsNative
           member __.load(?cb: unit->unit): obj = jsNative
+          member __.load(?cb: Loader->Resource->unit): obj = jsNative
           member __._prepareUrl(url: string): string = jsNative
           member __._loadResource(resource: Resource, dequeue: Function): unit = jsNative
           member __._onComplete(): unit = jsNative
