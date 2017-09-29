@@ -38,5 +38,3 @@ let tick delta =
 
 // Listen for animate update
 app.ticker.add(tick) |> ignore
-
-*)
