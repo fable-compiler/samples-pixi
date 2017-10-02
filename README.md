@@ -31,7 +31,8 @@ Pixi requires to set additional externals to work with webpack. Like this:
     "PIXI.extras": "PIXI.extras",
     "PIXI.loaders": "PIXI.loaders",
     "PIXI.settings": "PIXI.settings",
-    "PIXI.mesh": "PIXI.mesh"    
+    "PIXI.mesh": "PIXI.mesh",
+    "PIXI.particles":"PIXI.particles"        
   },
 ```
 
