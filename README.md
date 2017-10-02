@@ -21,7 +21,7 @@ run `dotnet fable yarn-build`.
 - Add the project to the `Fable.Samples.sln` solution: `dotnet sln add src/my-sample/My.Sample.fsproj`
 - Restore NuGet dependencies: `dotnet restore`
 
-# Webpack configuration
+## Webpack configuration
 
 Pixi requires to set additional externals to work with webpack. Like this:
 
@@ -37,3 +37,13 @@ Pixi requires to set additional externals to work with webpack. Like this:
 ```
 
 Would you stumble on errors like this: `Module not found: Error: Can't resolve 'PIXI.xxx' in ...`,  just add the module to the Webpack config.
+
+## Particles
+
+![Pixi-Particles](https://raw.githubusercontent.com/fable-compiler/samples-pixi/tree/master/public/img/pixi-particles.gif)
+
+We do support [Pixi-particles](https://github.com/pixijs/pixi-particles). 
+
+It's really easy to use and there's a great [online editor](https://github.com/pixijs/pixi-particles) to avoid any cumbersome configuration.
+
+Go to the `src/particles` folder to have a go. And make changes to the json located under `public/img/emitter.json` to see what you can do with particles.
