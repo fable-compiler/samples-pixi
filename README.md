@@ -40,7 +40,7 @@ Would you stumble on errors like this: `Module not found: Error: Can't resolve '
 
 ## Particles
 
-![Pixi-Particles](https://raw.githubusercontent.com/fable-compiler/samples-pixi/tree/master/public/img/pixi-particles.gif)
+![Pixi-Particles](public/img/pixi-particles.gif)
 
 We do support [Pixi-particles](https://github.com/pixijs/pixi-particles). 
 
