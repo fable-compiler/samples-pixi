@@ -1,6 +1,6 @@
-# Fable pixi
+![Samples-pixi](public/img/samples-pixi.png)
 
-Bindings for Pixi.js related libraries including:
+Bindings & samples for Pixi.js related libraries including:
 - Pixi.js
 - [Pixi-particles](https://github.com/pixijs/pixi-particles)
 - [Pixi-Sound](https://github.com/pixijs/pixi-sound)
