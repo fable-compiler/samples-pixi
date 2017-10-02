@@ -8,7 +8,7 @@ Bindings & samples for Pixi.js related libraries including:
 
 ### Pixi-particles
 
-![Pixi-Particles](public/img/pixi-particles.gif)
+![Pixi-Particles](public/img/dragon.gif)
 
 [Pixi-particles](https://github.com/pixijs/pixi-particles)'s really easy to use and there's a great [online editor](https://github.com/pixijs/pixi-particles) to configure your particle effects easily
 

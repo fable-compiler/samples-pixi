@@ -93,7 +93,7 @@ module anime =
         static member easings with get(): easingsType = jsNative and set(v: easingsType): unit = jsNative
         static member remove(targets: U2<AnimeTarget, ReadonlyArray<AnimeTarget>>): unit = jsNative
         static member getValue(targets: AnimeTarget, prop: string): U2<string, float> = jsNative
-        static member path(path: U4<string, HTMLElement, SVGElement, obj>, ?percent: float): Func<string, obj> = jsNative
+        static member path(path: U4<string, HTMLElement, SVGElement, obj>, ?percent: float): string -> obj = jsNative
         static member setDashoffset(el: U3<HTMLElement, SVGElement, obj>): float = jsNative
         static member bezier(x1: float, y1: float, x2: float, y2: float): Func<float, float> = jsNative
         static member timeline(?``params``: U2<AnimeInstanceParams, ReadonlyArray<AnimeInstance>>): AnimeTimelineInstance = jsNative
