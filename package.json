@@ -12,6 +12,7 @@
     "inferno": "^3.9.0",
     "inferno-component": "^3.9.0",
     "inferno-create-element": "^3.9.0",
+    "pixi-particles": "^2.1.6",
     "react": "^15.6.1",
     "react-dom": "^15.6.1",
     "vue": "^2.4.2"

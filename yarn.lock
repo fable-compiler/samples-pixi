@@ -2709,6 +2709,10 @@ pinkie@^2.0.0:
   version "2.0.4"
   resolved "https://registry.yarnpkg.com/pinkie/-/pinkie-2.0.4.tgz#72556b80cfa0d48a974e80e77248e80ed4f7f870"
 
+pixi-particles@^2.1.6:
+  version "2.1.6"
+  resolved "https://registry.yarnpkg.com/pixi-particles/-/pixi-particles-2.1.6.tgz#e3934d751349aa46a61d5c071b18dd5671dd3228"
+
 pkg-dir@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/pkg-dir/-/pkg-dir-2.0.0.tgz#f6d5d1109e19d63edf428e0bd57e12777615334b"
