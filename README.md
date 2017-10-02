@@ -47,3 +47,10 @@ We do support [Pixi-particles](https://github.com/pixijs/pixi-particles).
 It's really easy to use and there's a great [online editor](https://github.com/pixijs/pixi-particles) to avoid any cumbersome configuration.
 
 Go to the `src/particles` folder to have a go. And make changes to the json located under `public/img/emitter.json` to see what you can do with particles.
+
+## Tweening
+
+![Pixi-Particles](public/img/animejs.gif)
+
+We do support [Animejs](http://animejs.com/) tweening library.
+Go to the `src/animejs` folder to see a sample in action.

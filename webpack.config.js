@@ -50,7 +50,8 @@ module.exports = {
     "PIXI.loaders": "PIXI.loaders",
     "PIXI.settings": "PIXI.settings",
     "PIXI.mesh": "PIXI.mesh",
-    "PIXI.particles":"PIXI.particles"
+    "PIXI.particles":"PIXI.particles",
+    "anime":"anime"
   },
   devServer: {
     contentBase: resolve('public'),
