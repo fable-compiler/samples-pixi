@@ -49,7 +49,8 @@ module.exports = {
     "PIXI.extras": "PIXI.extras",
     "PIXI.loaders": "PIXI.loaders",
     "PIXI.settings": "PIXI.settings",
-    "PIXI.mesh": "PIXI.mesh"    
+    "PIXI.mesh": "PIXI.mesh",
+    "PIXI.particles":"PIXI.particles"
   },
   devServer: {
     contentBase: resolve('public'),

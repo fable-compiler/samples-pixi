@@ -20,7 +20,7 @@ PIXI.settings.Globals.SCALE_MODE <- modes.NEAREST
 
 let texture = PIXI.Texture.fromImage("../img/fable_logo_small.png")
 
-// since we d'ont have any {this} context, 
+// since we don't have any {this} context, 
 // we make a custom class to handle our events on bunnies
 // full typed by the way!
 type MyBunny(texture) =
