@@ -51,6 +51,7 @@ module.exports = {
     "PIXI.settings": "PIXI.settings",
     "PIXI.mesh": "PIXI.mesh",
     "PIXI.particles":"PIXI.particles",
+    "PIXI.sound":"PIXI.sound",
     "anime":"anime"
   },
   devServer: {

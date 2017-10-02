@@ -1,4 +1,35 @@
-# Fable samples
+# Fable pixi
+
+Bindings for Pixi.js related libraries including:
+- Pixi.js
+- [Pixi-particles](https://github.com/pixijs/pixi-particles)
+- [Pixi-Sound](https://github.com/pixijs/pixi-sound)
+- [Animejs tweening library](http://animejs.com/)
+
+### Pixi-particles
+
+![Pixi-Particles](public/img/pixi-particles.gif)
+
+[Pixi-particles](https://github.com/pixijs/pixi-particles)'s really easy to use and there's a great [online editor](https://github.com/pixijs/pixi-particles) to configure your particle effects easily
+
+>Go to the `src/particles` folder to have a go. And make changes to the json located under `public/img/emitter.json` to see what you can do with particles.
+
+### Pixi-Sound
+We also support [Pixi-Sound](https://github.com/pixijs/pixi-sound), the official pixi sound API.
+
+> Go to the `src/sound` folder to see a sample in action.
+
+
+### Animatejs Tweening
+
+![Animejs](public/img/animejs.gif)
+
+We support [Animejs](http://animejs.com/) for all your tweenings!
+
+> Go to the `src/animejs` folder to see a sample in action.
+
+
+# How to build and add your samples
 
 ## Building and running the samples
 
@@ -37,20 +68,3 @@ Pixi requires to set additional externals to work with webpack. Like this:
 ```
 
 Would you stumble on errors like this: `Module not found: Error: Can't resolve 'PIXI.xxx' in ...`,  just add the module to the Webpack config.
-
-## Particles
-
-![Pixi-Particles](public/img/pixi-particles.gif)
-
-We do support [Pixi-particles](https://github.com/pixijs/pixi-particles). 
-
-It's really easy to use and there's a great [online editor](https://github.com/pixijs/pixi-particles) to avoid any cumbersome configuration.
-
-Go to the `src/particles` folder to have a go. And make changes to the json located under `public/img/emitter.json` to see what you can do with particles.
-
-## Tweening
-
-![Pixi-Particles](public/img/animejs.gif)
-
-We do support [Animejs](http://animejs.com/) tweening library.
-Go to the `src/animejs` folder to see a sample in action.
