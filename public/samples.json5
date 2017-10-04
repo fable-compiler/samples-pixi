@@ -101,6 +101,18 @@
       "title": "Pixi sample",
       "desc": "Simple renderization with [PixiJS](http://www.pixijs.com/), a fast and flexible library to render 2D WebGL content.",
       "img": "pixi.jpeg"
-    },                                                   
+    },  
+    "textureSwap": {
+      "entry": "PixiTextureSwap.fsproj",
+      "title": "Pixi sample",
+      "desc": "Simple renderization with [PixiJS](http://www.pixijs.com/), a fast and flexible library to render 2D WebGL content.",
+      "img": "pixi.jpeg"
+    },        
+    "tinting": {
+      "entry": "PixiTinting.fsproj",
+      "title": "Pixi sample",
+      "desc": "Simple renderization with [PixiJS](http://www.pixijs.com/), a fast and flexible library to render 2D WebGL content.",
+      "img": "pixi.jpeg"
+    },                                                        
   },
 }
