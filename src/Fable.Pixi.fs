@@ -18,8 +18,9 @@ type EventHandler = PIXI.interaction.InteractionEvent->unit
 type PixiEvent =
   | Pointerdown
   | Pointerup  
-  | Pointerupoutside
+  | Pointeroutside
   | Pointermove  
+  | Pointertap
 
 let attachEvent (ev: PixiEvent) (handler: EventHandler) (sprite: PIXI.Sprite) =
   sprite.on(!!(string ev), handler) |> ignore
