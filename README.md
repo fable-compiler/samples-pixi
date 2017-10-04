@@ -36,7 +36,6 @@ We support [Animejs](http://animejs.com/) for all your tweenings!
 - Restore NPM dependencies: `yarn install`
 - Restore NuGet dependencies: `dotnet restore`
 - **Move to src folder**: `cd src`
-- Restore NuGet dependencies to get fable cli working: `dotnet restore`
 - Start Fable and Webpack dev server: `dotnet fable yarn-start`
 - In your browser, open `localhost:8080/[EXAMPLE]` (e.g. `http://localhost:8080/ozmo`)
 
@@ -63,7 +62,7 @@ Pixi requires to set additional externals to work with webpack. Like this:
     "PIXI.loaders": "PIXI.loaders",
     "PIXI.settings": "PIXI.settings",
     "PIXI.mesh": "PIXI.mesh",
-    "PIXI.particles":"PIXI.particles"        
+    "PIXI.particles":"PIXI.particles"
   },
 ```
 
