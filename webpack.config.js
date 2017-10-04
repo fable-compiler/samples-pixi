@@ -49,6 +49,7 @@ module.exports = {
     "PIXI.extras": "PIXI.extras",
     "PIXI.loaders": "PIXI.loaders",
     "PIXI.settings": "PIXI.settings",
+    "PIXI.interaction": "PIXI.interaction",
     "PIXI.mesh": "PIXI.mesh",
     "PIXI.particles":"PIXI.particles",
     "PIXI.sound":"PIXI.sound",
