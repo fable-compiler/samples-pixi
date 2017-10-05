@@ -1469,9 +1469,9 @@ module PIXI =
 
   and [<Import("*","PIXI")>] Globals =
       static member VERSION with get(): obj = jsNative and set(v: obj): unit = jsNative
-      static member PI_2 with get(): obj = jsNative and set(v: obj): unit = jsNative
-      static member RAD_TO_DEG with get(): obj = jsNative and set(v: obj): unit = jsNative
-      static member DEG_TO_RAD with get(): obj = jsNative and set(v: obj): unit = jsNative
+      static member PI_2 with get(): float = jsNative
+      static member RAD_TO_DEG with get(): float = jsNative 
+      static member DEG_TO_RAD with get(): float = jsNative
       static member RENDERER_TYPE with get(): obj = jsNative and set(v: obj): unit = jsNative
       static member BLEND_MODES with get(): obj = jsNative and set(v: obj): unit = jsNative
       static member DRAW_MODES with get(): obj = jsNative and set(v: obj): unit = jsNative
