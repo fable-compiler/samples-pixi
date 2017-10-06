@@ -24,6 +24,7 @@ type Msg =
 
 type State = 
   | Init
+  | PlaceHelp
   | PlaceCogs
   | PlaceDock
   | Play 
@@ -68,3 +69,15 @@ module Assets =
 
   let getObj name = 
      objFiles.TryFind name     
+
+[<RequireQualifiedAccess>]
+module Layers =      
+  let mutable layers = Map.empty<string,PIXI.Container> 
+
+  let add name (root:PIXI.Container) =
+    let c = PIXI.Container() 
+    layers <- layers.Add(name,c)
+    root.addChild c     
+
+  let get name = 
+     layers.TryFind name     

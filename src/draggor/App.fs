@@ -22,22 +22,6 @@ Browser.document.body.appendChild(app.view) |> ignore
 
 let renderer : PIXI.WebGLRenderer = !!app.renderer
 
-// our layers 
-// markers layer
-let targetsContainer = PIXI.Container()
-app.stage.addChild targetsContainer |> ignore
-
-// found cogs layer
-let cogsContainer = PIXI.Container()
-app.stage.addChild cogsContainer |> ignore
-  
-// dragging cogs layer
-let dockContainer = PIXI.Container()
-app.stage.addChild dockContainer |> ignore
-  
-let emitterContainer = PIXI.Container()
-app.stage.addChild(emitterContainer) |> ignore
-
 
 let turnCogs model =
   
@@ -57,13 +41,17 @@ let addEmitter x y config =
   if texture.IsSome then 
      
     // create our emitter 
-    let emitter = PIXI.particles.Emitter( emitterContainer, !![|texture.Value|], config )
-    emitter.updateOwnerPos(x,y)
+    let container = Layers.get "emitter"
+    if container.IsNone then
+      failwith "unknown layer emitter"
+    else 
+      let emitter = PIXI.particles.Emitter( container.Value, !![|texture.Value|], config )
+      emitter.updateOwnerPos(x,y)
 
-    // start emitting particles
-    emitter.emit <- true
+      // start emitting particles
+      emitter.emit <- true
 
-    Some emitter
+      Some emitter
   else 
     None
 
@@ -80,35 +68,75 @@ let tick delta =
 
         {model with 
           Goal=Cog.cogSizes.Length // the cogs to place correctly in order to win
-          State=PlaceCogs}
+          State=PlaceHelp}
+
+      | PlaceHelp -> 
+        
+        let container = Layers.get "ui"
+        match container with 
+          | Some c -> 
+            let help = Assets.getTexture "help1"
+            if help.IsSome then 
+              let sprite = 
+                PIXI.Sprite help.Value
+                |> c.addChild
+
+              sprite._anchor.set(0.5) 
+              let position : PIXI.Point = !!sprite.position
+              position.x <- renderer.width * 0.65
+              position.y <- renderer.height * 0.75
+
+            let help = Assets.getTexture "help2"
+            if help.IsSome then 
+              let sprite = 
+                PIXI.Sprite help.Value
+                |> c.addChild
+
+              sprite._anchor.set(0.5) 
+              let position : PIXI.Point = !!sprite.position
+              position.x <- renderer.width * 0.70
+              position.y <- renderer.height * 0.3
+
+          | None -> failwith "ui layer not found"
+
+        { model with State =PlaceCogs} 
 
       | PlaceCogs -> 
 
-        // create our cogs and center them!
-        let targets = 
-          
-          // create our cogs
-          // they have to fit in the given space
-          let maxWidth = renderer.width * 0.8
-          let targets,(totalWidth,totalHeight) 
-            = Cog.fitCogInSpace 0 (0.,0.) (0.,0.) None [] maxWidth Cog.cogSizes
-                    
-          // center our cogs
-          let xMargin = (renderer.width - totalWidth) * 0.5
-          let yMargin = totalHeight * 0.5
-          targets 
-            |> Seq.map ( 
-                (Cog.placeMarker xMargin yMargin (renderer.height*0.5)) 
-                  >> targetsContainer.addChild
-                )
-             |> Seq.toArray
-       
-        { model with Targets = targets; State=PlaceDock }
+        let container = Layers.get "cogs"
+        match container with 
+          | Some c -> 
+
+            // create our cogs and center them!
+            let targets = 
+              
+              // create our cogs
+              // they have to fit in the given space
+              let maxWidth = renderer.width * 0.8
+              let targets,(totalWidth,totalHeight) 
+                = Cog.fitCogInSpace 0 (0.,0.) (0.,0.) None [] maxWidth Cog.cogSizes
+                        
+              // center our cogs
+              let xMargin = (renderer.width - totalWidth) * 0.5
+              let yMargin = totalHeight * 0.5
+              targets 
+                |> Seq.map ( 
+                    (Cog.placeMarker xMargin yMargin (renderer.height*0.5)) 
+                      >> c.addChild
+                    )
+                 |> Seq.toArray
+           
+            { model with Targets = targets; State=PlaceDock }
+          | None -> failwith "unknown container cogs"
       
       | PlaceDock -> // prepare our 4 base cogs
 
-        let cogs = Dock.prepare dockContainer app.stage renderer 
-        { model with Cogs=cogs; State=Play}
+        let container = Layers.get "dock"
+        match container with 
+          | Some c -> 
+            let cogs = Dock.prepare c app.stage renderer 
+            { model with Cogs=cogs; State=Play}
+          | None -> failwith "unknown container dock"
 
       | Play -> 
 
@@ -215,8 +243,21 @@ let tick delta =
 // start our main loop
 let start() = 
 
-  // when all is loaded, start our render loop
-  let onLoaded (loader:PIXI.loaders.Loader) (res:PIXI.loaders.Resource) =
+  // We start by loading our assets 
+  let loader = PIXI.loaders.Loader()
+  let path = "../img/draggor"
+  [
+    ("rightConfig",sprintf "%s/right.json" path)
+    ("leftConfig",sprintf "%s/left.json" path)
+    ("help1",sprintf "%s/help1.png" path)
+    ("help2",sprintf "%s/help2.png" path)
+    ("particle",sprintf "%s/particle.png" path)
+    ("cog",sprintf "%s/cog.png" path)
+    ("target",sprintf "%s/target.png" path)
+  ] 
+  |> Seq.iter( fun (name,path) -> loader.add(name,path) |> ignore  )
+
+  loader.load( fun (loader:PIXI.loaders.Loader) (res:PIXI.loaders.Resource) ->
     
     // fill our Asset store 
     Assets.addTexture "help1" !!res?help1?texture 
@@ -229,21 +270,14 @@ let start() =
     Assets.addObj "rightConfig" !!res?rightConfig?data
     Assets.addObj "leftConfig" !!res?leftConfig?data
 
-    // start our loop
-    app.ticker.add tick |> ignore
+    // create our layers
+    Layers.add "ui" app.stage |> ignore
+    Layers.add "targets" app.stage |> ignore
+    Layers.add "cogs" app.stage |> ignore
+    Layers.add "dock" app.stage |> ignore
+    Layers.add "emitter" app.stage |> ignore      
 
-  // We start by loading the emitter json configuration File
-  // to get our particle animation parameters
-  // This json is built using pixi particles online editor 
-  // you can find the editor here: http://pixijs.github.io/pixi-particles-editor/
-  let loader = PIXI.loaders.Loader()
-  loader.add("rightConfig", "../img/draggor/right.json") |> ignore
-  loader.add("leftConfig", "../img/draggor/left.json") |> ignore
-  loader.add("help1", "../img/draggor/help1.png") |> ignore
-  loader.add("help2", "../img/draggor/help2.png") |> ignore
-  loader.add("particle", "../img/draggor/particle.png") |> ignore
-  loader.add("cog", "../img/draggor/cog.png") |> ignore
-  loader.add("target", "../img/draggor/target.png") |> ignore
-  loader.load(onLoaded) |> ignore
+    // start our loop
+    app.ticker.add tick |> ignore) |> ignore
 
 start() // it all begins there
