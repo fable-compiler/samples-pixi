@@ -7,6 +7,7 @@ open Fable.Import
 open Fable.Import.Pixi
 open Fable.Import.Browser
 open Fable.Import.Pixi.Particles
+open Fable.Import.Animejs
 open Fable.Pixi
 open Elmish
 open Hink
@@ -21,6 +22,49 @@ let app = PIXI.Application(800., 600., options)
 Browser.document.body.appendChild(app.view) |> ignore
 
 let renderer : PIXI.WebGLRenderer = !!app.renderer
+
+let greatAnim x y = 
+
+  let container = Layers.get "top"
+  match container with 
+    | Some c -> 
+      let help = Assets.getTexture "great"
+      if help.IsSome then 
+        let sprite = 
+          PIXI.Sprite help.Value
+          |> c.addChild
+        
+        sprite._anchor.set 0.5
+
+        let position : PIXI.Point = !!sprite.position
+        position.x <- x
+        position.x <- y
+
+        let scale : PIXI.Point = !!sprite.scale
+        scale.x <- 0.5
+        scale.y <- 0.5
+                
+        let prepareAnimation (prop:string) (value:'t) = 
+          jsOptions<anime.AnimeAnimParams> (fun o ->
+            o.elasticity <- !!100.
+            o.duration <- !!500.
+            o.targets <- !!sprite.scale
+            o.Item(prop) <- value
+            o.complete <- Some (fun _ -> printfn "done")
+          )
+        
+        // create our tweening timeline
+        let timeline = anime.Globals.timeline()
+        
+        // prepare our animations
+        [
+          // move right
+          prepareAnimation "x" 1.0
+          // move down
+          prepareAnimation "y" 1.0
+        ] |> Seq.iter( fun options -> timeline.add options |> ignore ) 
+      
+    | None -> failwith "no layer top"
 
 
 let turnCogs model =
@@ -209,6 +253,8 @@ let tick delta =
                               let newEmitter = (addEmitter x y config)
                               if newEmitter.IsSome then 
                                 emitters <- Array.append emitters [|newEmitter.Value|]
+
+                              greatAnim x y                                
                         //target
                       target
                     )
@@ -253,6 +299,7 @@ let start() =
     ("help2",sprintf "%s/help2.png" path)
     ("particle",sprintf "%s/particle.png" path)
     ("cog",sprintf "%s/cog.png" path)
+    ("great",sprintf "%s/great.png" path)
     ("target",sprintf "%s/target.png" path)
   ] 
   |> Seq.iter( fun (name,path) -> loader.add(name,path) |> ignore  )
@@ -265,6 +312,7 @@ let start() =
     Assets.addTexture "cog" !!res?cog?texture 
     Assets.addTexture "target" !!res?target?texture 
     Assets.addTexture "particle" !!res?particle?texture 
+    Assets.addTexture "great" !!res?great?texture 
 
     // our particle configuration file 
     Assets.addObj "rightConfig" !!res?rightConfig?data
@@ -276,6 +324,7 @@ let start() =
     Layers.add "cogs" app.stage |> ignore
     Layers.add "dock" app.stage |> ignore
     Layers.add "emitter" app.stage |> ignore      
+    Layers.add "top" app.stage |> ignore
 
     // start our loop
     app.ticker.add tick |> ignore) |> ignore
