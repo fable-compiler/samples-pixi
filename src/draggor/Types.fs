@@ -1,6 +1,7 @@
 module Types 
 
 open Fable.Import.Pixi
+open Fable.Import.Pixi.Particles
 open Fable.Pixi
 
 type Size = 
@@ -33,10 +34,11 @@ type Model = {
   Cogs : ExtendedSprite<CogData> []
   Targets : ExtendedSprite<CogData> []
   mutable Message : Msg option
-  mutable Score : int
+  Score : int
   Goal : int
   State : State
-  mutable Found: int []
+  Found: int []
+  Emitters : PIXI.particles.Emitter []
 }
 
 let mutable model = { 
@@ -47,4 +49,22 @@ let mutable model = {
     Goal=0
     State=Init
     Found=[||]
+    Emitters=[||]
   }
+
+[<RequireQualifiedAccess>]
+module Assets = 
+  let mutable textures = Map.empty<string,PIXI.Texture> 
+  let mutable objFiles = Map.empty<string,obj> 
+
+  let addTexture name texture = 
+    textures <- textures.Add(name,texture) 
+
+  let addObj name text = 
+    objFiles <- objFiles.Add(name,text)     
+
+  let getTexture name = 
+     textures.TryFind name
+
+  let getObj name = 
+     objFiles.TryFind name     

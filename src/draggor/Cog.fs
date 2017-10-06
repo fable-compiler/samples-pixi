@@ -16,7 +16,7 @@ let rotation = 0.1
 [<Literal>]
 let cogsCount = 20
 
-let texture = PIXI.Texture.fromImage("../img/cog.png")
+//let texture = PIXI.Texture.fromImage("../img/draggor/cog.png")
 
 // create a balanced list of cogs sizes
 let cogSizes = 
@@ -59,12 +59,16 @@ let scaleFactor size =
 
 let make kind =
 
-  // Extended Sprite from Fable.Pixi allows to add custom data inside our Sprite
-  let cog = ExtendedSprite(texture, { IsFound = false; StartPosition=(0.,0.); Target=(0.,0.); Size= kind; IsDragging = false; Interaction = None })
-
-  // center the cog's anchor point
-  cog.anchor.set(0.5)  
-  cog
+  let texture = Assets.getTexture "cog"
+  if texture.IsSome then 
+    // Extended Sprite from Fable.Pixi allows to add custom data inside our Sprite
+    let cog = 
+      ExtendedSprite(texture.Value, { IsFound = false; StartPosition=(0.,0.); Target=(0.,0.); Size= kind; IsDragging = false; Interaction = None })
+    // center the cog's anchor point
+    cog.anchor.set(0.5)  
+    cog
+  else 
+    failwith ("target is not a value")
 
 let moveTo x y (cog:ExtendedSprite<CogData>) = 
   // place our cog on screen
@@ -118,18 +122,67 @@ let onDragMove stage (cog: ExtendedSprite<CogData>) _ =
 
 // when cog is found change texture and toggle flag
 let show (cog: ExtendedSprite<CogData>) =
-  cog.texture <- texture 
-  cog.Data.IsFound <- true
-  scaleTo cog
+  let texture = Assets.getTexture "cog"
+  if texture.IsSome then 
+    cog.texture <- texture.Value 
+    cog.Data.IsFound <- true
+    scaleTo cog
+  else 
+    cog
 
 // place our markers 
 let placeMarker xMargin yMargin startY (cog:ExtendedSprite<CogData>) = 
   let (x,y) = cog.Data.Target
-  cog.texture <-  PIXI.Texture.fromImage("../img/target.png")
-  // center the cog"s anchor point
-  cog.anchor.set(0.5)  
-  let position : PIXI.Point = !!cog.position
-  position.x <- x + xMargin // center our cogs on x axis
-  position.y <- startY + y - yMargin // center our cogs on y axis
+  let texture = Assets.getTexture "target"
+  if texture.IsSome then 
+    cog.texture <- texture.Value
+    // center the cog"s anchor point
+    cog.anchor.set(0.5)  
+    let position : PIXI.Point = !!cog.position
+    position.x <- x + xMargin // center our cogs on x axis
+    position.y <- startY + y - yMargin // center our cogs on y axis
   cog
 
+
+// simply add our cogs
+// There's really nothing complicated here
+// Each cog is placed according to the previous one
+// hence the recursion 
+let rec fitCogInSpace index (totalWidth,totalHeight) first previous cogs maxWidth (sizes:Size [])= 
+  
+  match index with
+  | idx when idx < model.Goal -> // check whether we can add one more cogs
+    if totalWidth < maxWidth then // check wether we have enough space laeft
+      let kind = sizes.[index]
+      let currentCog = make kind
+      match previous with 
+      | Some (previousCog:ExtendedSprite<CogData>) ->
+        
+        // we want to move our new cog just next to the previous
+        let (firstX,firstY) = first
+        let (prevX,prevY) = previousCog.Data.Target
+        let prevRadius = cogWidth * (scaleFactor previousCog.Data.Size) * 0.5
+        let currentRadius = cogWidth * (scaleFactor currentCog.Data.Size) * 0.5 * 1.1
+        let distance = (prevRadius + currentRadius) |> JS.Math.floor
+        let angle = 340. * PIXI.Globals.DEG_TO_RAD
+        let newX = prevX + JS.Math.cos(angle) * distance
+        let newY = firstY + JS.Math.sin(angle) * distance
+        let current = currentCog |> addTarget newX newY     
+        
+        let totalWidth = newX + currentRadius
+        let totalHeight = newY + currentRadius
+        fitCogInSpace (idx+1) (totalWidth,totalHeight) first (Some current) (cogs @ [current]) maxWidth sizes    
+
+      | None -> // very first cog
+        let (x,y) = first
+        let current = currentCog |> addTarget x 0.             
+        let currentRadius = cogWidth * (scaleFactor currentCog.Data.Size) * 0.5
+        let totalWidth = x + currentRadius
+        let totalHeight = y + currentRadius
+        fitCogInSpace (idx+1) (totalWidth,totalHeight) first (Some current) (cogs @ [current]) maxWidth sizes
+      
+      else // we don't have enough space to fill all our cogs
+        cogs, (totalWidth,totalHeight)
+
+  | _ -> // we have enough cogs   
+    cogs, (totalWidth,totalHeight)

@@ -6,7 +6,7 @@ open Fable.Core.JsInterop
 open Fable.Import
 open Fable.Import.Pixi
 open Fable.Import.Browser
-//open Fable.Import.JS
+open Fable.Import.Pixi.Particles
 open Fable.Pixi
 open Elmish
 open Hink
@@ -35,6 +35,10 @@ app.stage.addChild cogsContainer |> ignore
 let dockContainer = PIXI.Container()
 app.stage.addChild dockContainer |> ignore
   
+let emitterContainer = PIXI.Container()
+app.stage.addChild(emitterContainer) |> ignore
+
+
 let turnCogs model =
   
   model.Found
@@ -48,8 +52,27 @@ let turnCogs model =
       target.rotation <- target.rotation + way * speed
     )
   
+let addEmitter x y config = 
+  let texture = Assets.getTexture "particle"
+  if texture.IsSome then 
+     
+    // create our emitter 
+    let emitter = PIXI.particles.Emitter( emitterContainer, !![|texture.Value|], config )
+    emitter.updateOwnerPos(x,y)
+
+    // start emitting particles
+    emitter.emit <- true
+
+    Some emitter
+  else 
+    None
+
 // our render loop
 let tick delta =
+
+  // update our particle systems
+  model.Emitters
+    |> Seq.iter( fun emitter -> emitter.update (delta * 0.01) )
 
   model <- 
     match model.State with 
@@ -60,56 +83,17 @@ let tick delta =
           State=PlaceCogs}
 
       | PlaceCogs -> 
+
         // create our cogs and center them!
         let targets = 
-
-          // simply add our cogs
-          // There's really nothing complicate here
-          // Each cog is placed according to the previous one
-          // hence the recursion 
-          let rec addCog index (totalWidth,totalHeight) first previous cogs maxWidth= 
-            
-            match index with
-            | idx when idx < model.Goal -> // check whether we can add one more cogs
-              if totalWidth < maxWidth then // check wether we have enough space laeft
-                let kind = Cog.cogSizes.[index]
-                let currentCog = Cog.make kind
-                match previous with 
-                | Some (previousCog:ExtendedSprite<CogData>) ->
-                  
-                  // we want to move our new cog just next to the previous
-                  let (firstX,firstY) = first
-                  let (prevX,prevY) = previousCog.Data.Target
-                  let prevRadius = Cog.cogWidth * (Cog.scaleFactor previousCog.Data.Size) * 0.5
-                  let currentRadius = Cog.cogWidth * (Cog.scaleFactor currentCog.Data.Size) * 0.5 * 1.1
-                  let distance = (prevRadius + currentRadius) |> JS.Math.floor
-                  let angle = 340. * PIXI.Globals.DEG_TO_RAD
-                  let newX = prevX + JS.Math.cos(angle) * distance
-                  let newY = firstY + JS.Math.sin(angle) * distance
-                  let current = currentCog |> Cog.addTarget newX newY     
-                  
-                  let totalWidth = newX + currentRadius
-                  let totalHeight = newY + currentRadius
-                  addCog (idx+1) (totalWidth,totalHeight) first (Some current) (cogs @ [current]) maxWidth    
-
-                | None -> // very first cog
-                  let (x,y) = first
-                  let current = currentCog |> Cog.addTarget x 0.             
-                  let currentRadius = Cog.cogWidth * (Cog.scaleFactor currentCog.Data.Size) * 0.5
-                  let totalWidth = x + currentRadius
-                  let totalHeight = y + currentRadius
-                  addCog (idx+1) (totalWidth,totalHeight) first (Some current) (cogs @ [current]) maxWidth
-                
-                else // we don't have enough space to fill all our cogs
-                  cogs, (totalWidth,totalHeight)
-
-            | _ -> // we have enough cogs   
-              cogs, (totalWidth,totalHeight)
           
-
-          // center our cogs
+          // create our cogs
+          // they have to fit in the given space
           let maxWidth = renderer.width * 0.8
-          let targets,(totalWidth,totalHeight) = addCog 0 (0.,0.) (0.,0.) None [] maxWidth
+          let targets,(totalWidth,totalHeight) 
+            = Cog.fitCogInSpace 0 (0.,0.) (0.,0.) None [] maxWidth Cog.cogSizes
+                    
+          // center our cogs
           let xMargin = (renderer.width - totalWidth) * 0.5
           let yMargin = totalHeight * 0.5
           targets 
@@ -133,56 +117,133 @@ let tick delta =
           turnCogs model
         
         // Events
-        let updatedTargets = 
+        let (updatedTargets,score,foundCogs,emitters) =
+
           if model.Message.IsSome then 
             let msg = model.Message.Value
             match msg  with 
               | OnMove cog -> // we want to know if we've dragged one of our cog on a target
+                
+                
                 let pos : PIXI.Point = !!cog.position
-                model.Targets
-                  |> Seq.mapi( fun i target -> 
-                    if not target.Data.IsFound then 
-                      let position : PIXI.Point = !!target.position
-                      
-                      // very simple distance text
-                      let a = position.x - pos.x
-                      let b = position.y - pos.y
-                      let distance = JS.Math.sqrt( a*a + b*b)
+                let mutable score = model.Score
+                let mutable found = model.Found
+                let mutable emitters = model.Emitters
+                let updatedTargets = 
+                  model.Targets
+                    |> Seq.mapi( fun i target -> 
+                      if not target.Data.IsFound then 
+                        let position : PIXI.Point = !!target.position
+                        
+                        // very simple distance text
+                        let a = position.x - pos.x
+                        let b = position.y - pos.y
+                        let distance = JS.Math.sqrt( a*a + b*b)
 
-                      // look if we are in close vicinity of a potential target
-                      let checkRadius = Cog.cogWidth * (Cog.scaleFactor cog.Data.Size) * 0.2
-                      if distance < checkRadius then
-                        if cog.Data.Size = target.Data.Size then 
+                        // look if we are in close vicinity of a potential target
+                        let checkRadius = Cog.cogWidth * (Cog.scaleFactor cog.Data.Size) * 0.2
+                        if distance < checkRadius then
+                          if cog.Data.Size = target.Data.Size then 
 
-                          // ok our cog has been placed at the right place
-                          // store index for faster animation renders              
-                          model.Found <- Array.append model.Found [|i|]
-                          
-                          // restore cog to initial position
-                          Cog.onDragEnd cog ()
-                          
-                          // display the target cog
-                          Cog.show target |> ignore                      
-                          
-                          // update score
-                          model.Score <- model.Score + 1
-                      //target
-                    target
-                  )
-                  |> Seq.toArray
-             else model.Targets
+                            // ok our cog has been placed at the right place
+                            // store index for faster animation renders              
+                            found <- Array.append found [|i|]
+                            
+                            // restore cog to initial position
+                            Cog.onDragEnd cog ()
+                            
+                            // display the target cog
+                            Cog.show target |> ignore                      
+                            
+                            // update score
+                            score <- score + 1
+
+                            // add new particle system at the right place
+                            // given the way our cog is turning
+                            let isLeft = (i % 2 = 0)
+                            let config = 
+                              if isLeft then 
+                                Assets.getObj "leftConfig" 
+                              else 
+                                Assets.getObj "rightConfig"
+
+                            if config.IsSome then 
+                              let config = config.Value
+                              let x = 
+                                if isLeft then 
+                                  position.x - target.width * 0.4
+                                else
+                                  position.x + target.width * 0.4
+
+                              let y = 
+                                  position.y - target.height * 0.3
+                                
+                              let newEmitter = (addEmitter x y config)
+                              if newEmitter.IsSome then 
+                                emitters <- Array.append emitters [|newEmitter.Value|]
+                        //target
+                      target
+                    )
+                    |> Seq.toArray
+                  
+                  // return our values
+                updatedTargets,score,found, emitters
+
+             else 
+              model.Targets, model.Score, model.Found, model.Emitters
 
         // check if the game's finished
         if model.Score >=  model.Goal then 
-          { model with State = GameOver;Targets = updatedTargets }
+          { model with 
+              State = GameOver;
+              Targets = updatedTargets 
+              Found = foundCogs
+              Score= score
+              Emitters = emitters              
+          }
         else 
-          { model with Targets = updatedTargets}
+          { model with 
+              Targets = updatedTargets 
+              Found = foundCogs
+              Score= score              
+              Emitters = emitters              
+          }
 
       | DoNothing -> model
       | GameOver -> model
 
 // start our main loop
 let start() = 
-  app.ticker.add(tick) |> ignore
+
+  // when all is loaded, start our render loop
+  let onLoaded (loader:PIXI.loaders.Loader) (res:PIXI.loaders.Resource) =
+    
+    // fill our Asset store 
+    Assets.addTexture "help1" !!res?help1?texture 
+    Assets.addTexture "help2" !!res?help2?texture 
+    Assets.addTexture "cog" !!res?cog?texture 
+    Assets.addTexture "target" !!res?target?texture 
+    Assets.addTexture "particle" !!res?particle?texture 
+
+    // our particle configuration file 
+    Assets.addObj "rightConfig" !!res?rightConfig?data
+    Assets.addObj "leftConfig" !!res?leftConfig?data
+
+    // start our loop
+    app.ticker.add tick |> ignore
+
+  // We start by loading the emitter json configuration File
+  // to get our particle animation parameters
+  // This json is built using pixi particles online editor 
+  // you can find the editor here: http://pixijs.github.io/pixi-particles-editor/
+  let loader = PIXI.loaders.Loader()
+  loader.add("rightConfig", "../img/draggor/right.json") |> ignore
+  loader.add("leftConfig", "../img/draggor/left.json") |> ignore
+  loader.add("help1", "../img/draggor/help1.png") |> ignore
+  loader.add("help2", "../img/draggor/help2.png") |> ignore
+  loader.add("particle", "../img/draggor/particle.png") |> ignore
+  loader.add("cog", "../img/draggor/cog.png") |> ignore
+  loader.add("target", "../img/draggor/target.png") |> ignore
+  loader.load(onLoaded) |> ignore
 
 start() // it all begins there
