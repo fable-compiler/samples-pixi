@@ -36,32 +36,37 @@ let greatAnim x y =
         
         sprite._anchor.set 0.5
 
+        let scale : PIXI.Point = !!sprite.scale
+        scale.x <- 0.0
+        scale.y <- 0.0
+
         let position : PIXI.Point = !!sprite.position
         position.x <- x
-        position.x <- y
+        position.y <- y
 
-        let scale : PIXI.Point = !!sprite.scale
-        scale.x <- 0.5
-        scale.y <- 0.5
                 
-        let prepareAnimation (prop:string) (value:'t) = 
+        let timelineOptions = 
+          jsOptions<anime.AnimeTimelineInstance>( fun o -> 
+            o.complete <- fun _ -> sprite.parent.removeChild(sprite) |> ignore
+          )
+
+        let prepareAnimation scale= 
           jsOptions<anime.AnimeAnimParams> (fun o ->
             o.elasticity <- !!100.
             o.duration <- !!500.
             o.targets <- !!sprite.scale
-            o.Item(prop) <- value
+            o.Item("x") <- scale
+            o.Item("y") <- scale
             o.complete <- Some (fun _ -> printfn "done")
           )
         
         // create our tweening timeline
-        let timeline = anime.Globals.timeline()
+        let timeline = anime.Globals.timeline(!!timelineOptions)
         
         // prepare our animations
         [
-          // move right
-          prepareAnimation "x" 1.0
-          // move down
-          prepareAnimation "y" 1.0
+          prepareAnimation 1.0 // scale in 
+          prepareAnimation 0.0 // scale out
         ] |> Seq.iter( fun options -> timeline.add options |> ignore ) 
       
     | None -> failwith "no layer top"
@@ -254,7 +259,8 @@ let tick delta =
                               if newEmitter.IsSome then 
                                 emitters <- Array.append emitters [|newEmitter.Value|]
 
-                              greatAnim x y                                
+                              // Great feedback anim
+                              greatAnim position.x (position.y - 50.)                                
                         //target
                       target
                     )
