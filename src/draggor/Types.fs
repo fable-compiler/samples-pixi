@@ -19,39 +19,39 @@ type CogData = {
   mutable IsFound: bool
 }
 
+type PointerId = int
 type Msg =
-  | OnMove of ExtendedSprite<CogData>
+  | OnMove of ExtendedSprite<CogData> * PointerId
 
-type State = 
+type Layer = PIXI.Container
+
+type CogState = 
   | Init
   | PlaceHelp
   | PlaceCogs
   | PlaceDock
   | Play 
-  | GameOver 
   | DoNothing
 
-type Model = {
-  Cogs : ExtendedSprite<CogData> []
-  Targets : ExtendedSprite<CogData> []
-  mutable Message : Msg option
-  Score : int
-  Goal : int
-  State : State
-  Found: int []
-  Emitters : PIXI.particles.Emitter []
+type CogModel = {
+  mutable Cogs : ExtendedSprite<CogData> []
+  mutable Targets : ExtendedSprite<CogData> []
+  mutable Score : int
+  mutable Goal : int
+  mutable Found: int []
+  mutable State: CogState
+  mutable Emitters : PIXI.particles.Emitter []
 }
 
-let mutable model = { 
-    Cogs = [||] 
-    Targets = [||]
-    Message = None
-    Score= 0
-    Goal=0
-    State=Init
-    Found=[||]
-    Emitters=[||]
-  }
+[<RequireQualifiedAccess>]
+type ScreenKind = 
+  | GameOfCogs
+  | GameOver
+  | Introduction
+
+type Model = {
+  Screen : ScreenKind
+}
 
 [<RequireQualifiedAccess>]
 module Assets = 

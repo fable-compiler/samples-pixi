@@ -3,13 +3,14 @@
     <TargetFramework>netstandard1.6</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="..\Fable.Import.Pixi.fs" />
-    <Compile Include="..\Fable.Import.Pixi.Particles.fs" />
-    <Compile Include="..\Fable.Import.Animejs.fs" />
-    <Compile Include="..\Fable.Pixi.fs" />
+    <Compile Include="../Fable.Import.Pixi.fs" />
+    <Compile Include="../Fable.Import.Pixi.Particles.fs" />
+    <Compile Include="../Fable.Import.Animejs.fs" />
+    <Compile Include="../Fable.Pixi.fs" />
     <Compile Include="Types.fs" />
     <Compile Include="Cog.fs" />
     <Compile Include="Dock.fs" />
+    <Compile Include="GameOfCogs.fs" />
     <Compile Include="App.fs" />
   </ItemGroup>
   <Import Project="..\..\.paket\Paket.Restore.targets" />

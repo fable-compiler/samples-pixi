@@ -65,7 +65,7 @@ module PIXI =
           member __.listeners(``event``: U2<string, Symbol>): ResizeArray<Function> = jsNative
           member __.listeners(``event``: U2<string, Symbol>, exists: bool): bool = jsNative
           member __.emit(``event``: U2<string, Symbol>, [<ParamArray>] args: obj[]): bool = jsNative
-          member __.on(``event``: U2<string, Symbol>, fn: Function, ?context: obj): obj = jsNative
+          member __.on(``event``: U2<string, Symbol>, fn: interaction.InteractionEvent->unit, ?context: obj): obj = jsNative
           member __.once(``event``: U2<string, Symbol>, fn: Function, ?context: obj): obj = jsNative
           member __.removeListener(``event``: U2<string, Symbol>, ?fn: Function, ?context: obj, ?once: bool): obj = jsNative
           member __.removeAllListeners(?``event``: U2<string, Symbol>): obj = jsNative
@@ -621,7 +621,7 @@ module PIXI =
       member __.setParent(container: Container): Container = jsNative
       member __.setTransform(?x: float, ?y: float, ?scaleX: float, ?scaleY: float, ?rotation: float, ?skewX: float, ?skewY: float, ?pivotX: float, ?pivotY: float): DisplayObject = jsNative
       member __.destroy(): unit = jsNative
-      member __.on(``event``: interaction.InteractionEventTypes, fn: interaction.InteractionEvent->unit, ?context: obj): obj = jsNative
+//      member __.on(``event``: interaction.InteractionEventTypes, fn: interaction.InteractionEvent->unit, ?context: obj): obj = jsNative
       member __.once(``event``: interaction.InteractionEventTypes, fn: interaction.InteractionEvent->unit, ?context: obj): obj = jsNative
       member __.removeListener(``event``: interaction.InteractionEventTypes, ?fn: interaction.InteractionEvent->unit, ?context: obj): obj = jsNative
       member __.removeAllListeners(``event``: interaction.InteractionEventTypes): obj = jsNative
@@ -640,7 +640,7 @@ module PIXI =
           abstract trackedPointers: unit -> obj
 
       and [<AllowNullLiteral>] InteractionTrackingData =
-          abstract pointerId: float with get, set
+          abstract pointerId: int with get, set
           abstract flags: float with get, set
           abstract none: float with get, set
           abstract over: bool with get, set
@@ -672,7 +672,7 @@ module PIXI =
           member __.rotationAngle with get(): float = jsNative and set(v: float): unit = jsNative
           member __.twist with get(): float = jsNative and set(v: float): unit = jsNative
           member __.tangentialPressure with get(): float = jsNative and set(v: float): unit = jsNative
-          member __.pointerID with get(): float = jsNative and set(v: float): unit = jsNative
+          member __.pointerID with get(): int = jsNative 
           member __._copyEvent(``event``: U3<Touch, MouseEvent, PointerEvent>): unit = jsNative
           member __._reset(): unit = jsNative
           member __.getLocalPosition(displayObject: DisplayObject, ?point: Point, ?globalPos: Point): Point = jsNative
@@ -739,7 +739,7 @@ module PIXI =
           member __.mapPositionToPoint(point: Point, x: float, y: float): unit = jsNative
   //          member __.processInteractive(interactionEvent: InteractionEvent, displayObject: U3<Container, Sprite, undefined.TilingSprite>, ?func: Function, ?hitTest: bool, ?interactive: bool): bool = jsNative
           member __.onPointerComplete(originalEvent: PointerEvent, cancelled: bool, func: Function): unit = jsNative
-          member __.getInteractionDataForPointerId(pointerId: float): InteractionData = jsNative
+          member __.getInteractionDataForPointerId(pointerId: int): InteractionData = jsNative
           member __.releaseInteractionDataForPointerId(``event``: PointerEvent): unit = jsNative
           member __.configureInteractionEventForDOMEvent(interactionEvent: InteractionEvent, pointerEvent: PointerEvent, interactionData: InteractionData): InteractionEvent = jsNative
           member __.normalizeToPointerData(``event``: U3<TouchEvent, MouseEvent, PointerEvent>): ResizeArray<PointerEvent> = jsNative

@@ -32,19 +32,5 @@ let prepare container stage renderer=
             
       makeCogs remains (totalWidth+width) (list @ [cog]) container renderer    
   
-  let cogs = 
-    makeCogs 
-      [Tiny;Small;Medium;Large] 0. [] container renderer
-
-  cogs 
-    |> Seq.map( fun cog -> 
-        cog.interactive <- true
-        cog.buttonMode <- true        
-        cog
-          |> attachEvent Pointerdown (Cog.onDragStart cog)
-          |> attachEvent Pointerup (Cog.onDragEnd cog)
-          |> attachEvent Pointermove (Cog.onDragMove stage cog)
-          |> container.addChild
-          |> Cog.backTo
-    )
-    |> Seq.toArray
+  makeCogs 
+    [Tiny;Small;Medium;Large] 0. [] container renderer

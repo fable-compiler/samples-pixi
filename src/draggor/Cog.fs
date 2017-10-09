@@ -102,14 +102,14 @@ let onDragEnd (cog:ExtendedSprite<CogData>) _=
   let startX, startY = cog.Data.StartPosition
   position.x <- startX
   position.y <- startY
-  model.Message <- None   
 
-let onDragStart  (cog: ExtendedSprite<CogData>) (ev:PIXI.interaction.InteractionEvent) = 
+let onDragStart (cog: ExtendedSprite<CogData>) (ev:PIXI.interaction.InteractionEvent) = 
   cog.alpha <- 0.5
   cog.Data.Interaction <- Some ev.data
   cog.Data.IsDragging <- true
+  
     
-let onDragMove stage (cog: ExtendedSprite<CogData>) _ =
+let onDragMove (cbk:Msg option->unit) stage (cog: ExtendedSprite<CogData>) (ev:PIXI.interaction.InteractionEvent) =
   if cog.Data.IsDragging then 
     if cog.Data.Interaction.IsSome then 
       let interaction = cog.Data.Interaction.Value
@@ -117,7 +117,7 @@ let onDragMove stage (cog: ExtendedSprite<CogData>) _ =
       let position : PIXI.Point = !!cog.position      
       position.x <- localPosition.x
       position.y <- localPosition.y
-      model.Message <- Some (OnMove cog)
+      cbk( Some(OnMove(cog,ev.data.pointerID) ))
            
 
 // when cog is found change texture and toggle flag
@@ -148,7 +148,7 @@ let placeMarker xMargin yMargin startY (cog:ExtendedSprite<CogData>) =
 // There's really nothing complicated here
 // Each cog is placed according to the previous one
 // hence the recursion 
-let rec fitCogInSpace index (totalWidth,totalHeight) first previous cogs maxWidth (sizes:Size [])= 
+let rec fitCogInSpace model index (totalWidth,totalHeight) first previous cogs maxWidth (sizes:Size [])= 
   
   match index with
   | idx when idx < model.Goal -> // check whether we can add one more cogs
@@ -171,7 +171,7 @@ let rec fitCogInSpace index (totalWidth,totalHeight) first previous cogs maxWidt
         
         let totalWidth = newX + currentRadius
         let totalHeight = newY + currentRadius
-        fitCogInSpace (idx+1) (totalWidth,totalHeight) first (Some current) (cogs @ [current]) maxWidth sizes    
+        fitCogInSpace model (idx+1) (totalWidth,totalHeight) first (Some current) (cogs @ [current]) maxWidth sizes    
 
       | None -> // very first cog
         let (x,y) = first
@@ -179,7 +179,7 @@ let rec fitCogInSpace index (totalWidth,totalHeight) first previous cogs maxWidt
         let currentRadius = cogWidth * (scaleFactor currentCog.Data.Size) * 0.5
         let totalWidth = x + currentRadius
         let totalHeight = y + currentRadius
-        fitCogInSpace (idx+1) (totalWidth,totalHeight) first (Some current) (cogs @ [current]) maxWidth sizes
+        fitCogInSpace model (idx+1) (totalWidth,totalHeight) first (Some current) (cogs @ [current]) maxWidth sizes
       
       else // we don't have enough space to fill all our cogs
         cogs, (totalWidth,totalHeight)
