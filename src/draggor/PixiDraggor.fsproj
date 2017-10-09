@@ -8,6 +8,7 @@
     <Compile Include="../Fable.Import.Animejs.fs" />
     <Compile Include="../Fable.Pixi.fs" />
     <Compile Include="Types.fs" />
+    <Compile Include="ScreenIntroduction.fs" />
     <Compile Include="Cog.fs" />
     <Compile Include="Dock.fs" />
     <Compile Include="GameOfCogs.fs" />

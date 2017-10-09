@@ -14,16 +14,14 @@ let cogWidth = 100.
 let rotation = 0.1
 
 [<Literal>]
-let cogsCount = 20
-
-//let texture = PIXI.Texture.fromImage("../img/draggor/cog.png")
+let cogsCount = 5
 
 // create a balanced list of cogs sizes
-let cogSizes = 
+let cogSizes() = 
 
   // Create a table of cog size using some probabilities    
   let distribution = [|
-    for i in 0..cogsCount do 
+    for i in 0..(cogsCount-1) do 
       let rand = Math.random()
       yield
         match rand with 
@@ -91,7 +89,7 @@ let scaleTo (cog:ExtendedSprite<CogData>) =
   cog  
 
 // cast back to ExtendedSprite since attachEvent returns a Sprite
-let backTo (sprite: PIXI.Sprite) = 
+let castTo (sprite: PIXI.Sprite) = 
   sprite :?> ExtendedSprite<CogData>
   
 let onDragEnd (cog:ExtendedSprite<CogData>) _= 

@@ -11,7 +11,6 @@ open Fable.Pixi
 open Elmish
 open Hink
 open Types
-open Cog
 
 // our view
 let options = jsOptions<PIXI.ApplicationOptions> (fun o ->
@@ -24,37 +23,55 @@ Browser.document.body.appendChild(app.view) |> ignore
 let renderer : PIXI.WebGLRenderer = !!app.renderer
 
 
-let startLoop() = 
+let startGame() = 
 
-  let mutable model = {
-    Screen=ScreenKind.GameOfCogs
-  }
+  // our model is just a tuple composed of a screen and a layer
+  (*
+  let mutable model =     
+    ScreenKind.GameOfCogs (GameOfCogs.getEmptyModel())
+    ,Layers.add "gameStage" app.stage
 
-  let mutable cogsModel =
-    {
-      Cogs = [||] 
-      Targets = [||]
-      Score= 0
-      Goal=0
-      State=Init
-      Found=[||]
-      Emitters=[||]
-    }
+  *)
 
+  let mutable model =    
+    let nextScreen = 
+      ScreenKind.NextScreen (ScreenKind.GameOfCogs (GameOfCogs.getEmptyModel())) 
+
+    ScreenKind.Introduction (ScreenIntroduction.getEmptyModel(),nextScreen)
+    ,Layers.add "gameStage" app.stage
+
+  // our render loop  
   app.ticker.add (fun delta -> 
 
     model <- 
-      match model.Screen with 
-      | ScreenKind.GameOver -> model
-      | ScreenKind.Introduction -> model
-      | ScreenKind.GameOfCogs ->  
-        let nextScreen = GameOfCogs.Update cogsModel app.stage renderer delta
-        { model with Screen = nextScreen } 
+      match model with 
+      | ScreenKind.NextScreen nextScreen, layer -> 
+
+        // do some cleanup before starting the next screen
+        layer.children
+          |> Seq.iteri( fun i child -> 
+            layer.removeChild( layer.children.[i] ) |> ignore
+          )        
+        layer.parent.removeChild layer |> ignore
+
+        // start next screen
+        // add prepare a new layer as well
+        (nextScreen,Layers.add "gameStage" app.stage)
+
+      | ScreenKind.GameOver, layer -> model
+      
+      | ScreenKind.Introduction (innerModel,nextScreen), layer -> 
+        let model = ScreenIntroduction.Update innerModel nextScreen layer renderer delta
+        (model,layer)
+      
+      | ScreenKind.GameOfCogs innerModel, layer ->  
+        let model = GameOfCogs.Update innerModel layer renderer delta
+        (model,layer)
 
     ) |> ignore 
 
 // start our main loop
-let start() = 
+let init() = 
 
   // We start by loading our assets 
   let loader = PIXI.loaders.Loader()
@@ -68,6 +85,8 @@ let start() =
     ("cog",sprintf "%s/cog.png" path)
     ("great",sprintf "%s/great.png" path)
     ("target",sprintf "%s/target.png" path)
+    ("title",sprintf "%s/Title.png" path)
+    ("subtitle",sprintf "%s/subtitle.png" path)
   ] 
   |> Seq.iter( fun (name,path) -> loader.add(name,path) |> ignore  )
 
@@ -80,24 +99,16 @@ let start() =
     Assets.addTexture "target" !!res?target?texture 
     Assets.addTexture "particle" !!res?particle?texture 
     Assets.addTexture "great" !!res?great?texture 
+    Assets.addTexture "title" !!res?title?texture 
+    Assets.addTexture "subtitle" !!res?subtitle?texture 
 
     // our particle configuration file 
     Assets.addObj "rightConfig" !!res?rightConfig?data
     Assets.addObj "leftConfig" !!res?leftConfig?data
 
-    // create our screen layers 
-    Layers.add "cogs" app.stage |> ignore
-    
-    // create our layers
-    Layers.add "ui" app.stage |> ignore
-    Layers.add "targets" app.stage |> ignore
-    Layers.add "cogs" app.stage |> ignore
-    Layers.add "dock" app.stage |> ignore
-    Layers.add "emitter" app.stage |> ignore      
-    Layers.add "top" app.stage |> ignore
+    // Let's have some fun now!    
+    startGame()
 
-    startLoop()
-    // create our starting Model
   ) |> ignore
 
-start() // it all begins there
+init() // it all begins there

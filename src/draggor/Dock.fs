@@ -18,7 +18,7 @@ let prepare container stage renderer=
       list
         |> List.map( fun cog -> 
           let (x,y) = cog.Data.StartPosition 
-          (Cog.moveTo (x+margin) y >> Cog.backTo) cog
+          (Cog.moveTo (x+margin) y >> Cog.castTo) cog
         )
 
     | head :: remains -> // add next cog to the dock

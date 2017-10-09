@@ -25,6 +25,14 @@ type Msg =
 
 type Layer = PIXI.Container
 
+[<RequireQualifiedAccess>]
+type IntroductionState = 
+  | Init 
+  | Play 
+  | NextScreen 
+  | DoNothing
+
+[<RequireQualifiedAccess>]
 type CogState = 
   | Init
   | PlaceHelp
@@ -41,17 +49,19 @@ type CogModel = {
   mutable Found: int []
   mutable State: CogState
   mutable Emitters : PIXI.particles.Emitter []
+  mutable Sizes : Size []
+}
+
+type IntroductionModel = {
+  mutable State : IntroductionState
 }
 
 [<RequireQualifiedAccess>]
 type ScreenKind = 
-  | GameOfCogs
-  | GameOver
-  | Introduction
-
-type Model = {
-  Screen : ScreenKind
-}
+  | GameOfCogs of CogModel
+  | GameOver  
+  | Introduction  of IntroductionModel * ScreenKind
+  | NextScreen of ScreenKind
 
 [<RequireQualifiedAccess>]
 module Assets = 

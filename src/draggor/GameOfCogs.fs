@@ -9,6 +9,17 @@ open Fable.Core.JsInterop
 open Fable.Import.Animejs
 
 
+let getEmptyModel() = 
+  {
+    Cogs = [||] 
+    Targets = [||]
+    Score= 0
+    Goal=0
+    State=CogState.Init
+    Found=[||]
+    Emitters=[||]
+    Sizes = [||]
+  }
 
 let DisplayParticles model delta = 
   model.Emitters
@@ -33,6 +44,7 @@ let addEmitter x y config =
     None
       
 
+// displays a "great" message
 let greatAnim x y = 
 
   let container = Layers.get "top"
@@ -151,42 +163,34 @@ let handleMessage model (msg:Msg option) =
             )
             |> Seq.toArray
 
-        printfn "%i" (emitters |> Seq.length)
         model.Targets <- updatedTargets 
         model.Score <- score 
         model.Found <- found 
         model.Emitters <- emitters
-    
-          (*
-      // check if the game's finished
-      if model.Score >=  model.Goal then 
-        { model with 
-//                    State = GameOver;
-            Targets = updatedTargets 
-            Found = foundCogs
-            Score= score
-        }
-      else 
-        { model with 
-            Targets = updatedTargets 
-            Found = foundCogs
-            Score= score              
-        }
-        *)
-
-  
+      
 let Update model stage (renderer:PIXI.WebGLRenderer) delta =
 
   // update our particles
   DisplayParticles model delta
  
   match model.State with 
-    | Init ->           
-        model.Goal <- Cog.cogSizes.Length // the cogs to place correctly in order to win
-        model.State <- PlaceHelp
+    | CogState.Init ->           
 
-        ScreenKind.GameOfCogs      
-    | PlaceHelp -> 
+        // create our child layers
+        Layers.add "ui" stage |> ignore
+        Layers.add "targets" stage |> ignore
+        Layers.add "cogs" stage |> ignore
+        Layers.add "dock" stage |> ignore
+        Layers.add "emitter" stage |> ignore      
+        Layers.add "top" stage |> ignore
+    
+        let sizes = Cog.cogSizes()
+        model.Goal <- sizes.Length // the cogs to place correctly in order to win
+        model.State <- CogState.PlaceHelp
+        model.Sizes <- sizes
+
+        ScreenKind.GameOfCogs model      
+    | CogState.PlaceHelp -> 
       
       let container = Layers.get "ui"
       match container with 
@@ -215,10 +219,10 @@ let Update model stage (renderer:PIXI.WebGLRenderer) delta =
 
         | None -> failwith "ui layer not found"
 
-      model.State <- PlaceCogs
+      model.State <- CogState.PlaceCogs
 
-      ScreenKind.GameOfCogs      
-    | PlaceCogs -> 
+      ScreenKind.GameOfCogs model      
+    | CogState.PlaceCogs -> 
 
       let container = Layers.get "cogs"
       match container with 
@@ -231,7 +235,7 @@ let Update model stage (renderer:PIXI.WebGLRenderer) delta =
             // they have to fit in the given space
             let maxWidth = renderer.width * 0.8
             let targets,(totalWidth,totalHeight) 
-              = Cog.fitCogInSpace model 0 (0.,0.) (0.,0.) None [] maxWidth Cog.cogSizes
+              = Cog.fitCogInSpace model 0 (0.,0.) (0.,0.) None [] maxWidth model.Sizes
                       
             // center our cogs
             let xMargin = (renderer.width - totalWidth) * 0.5
@@ -244,11 +248,11 @@ let Update model stage (renderer:PIXI.WebGLRenderer) delta =
                |> Seq.toArray
          
           model.Targets <- targets
-          model.State <- PlaceDock
+          model.State <- CogState.PlaceDock
         | None -> failwith "unknown container cogs"
       
-      ScreenKind.GameOfCogs      
-    | PlaceDock -> // prepare our 4 base cogs
+      ScreenKind.GameOfCogs  model     
+    | CogState.PlaceDock -> // prepare our 4 base cogs
 
       let container = Layers.get "dock"
       match container with 
@@ -263,16 +267,16 @@ let Update model stage (renderer:PIXI.WebGLRenderer) delta =
                   |> attachEvent Pointerup (Cog.onDragEnd cog)
                   |> attachEvent Pointermove (Cog.onDragMove (handleMessage model) stage cog)
                   |> c.addChild
-                  |> Cog.backTo
+                  |> Cog.castTo
             )
             |> Seq.toArray
 
           model.Cogs <- cogs
-          model.State <- Play
+          model.State <- CogState.Play
         | None -> failwith "unknown container dock"
 
-      ScreenKind.GameOfCogs
-    | Play -> 
+      ScreenKind.GameOfCogs model
+    | CogState.Play -> 
 
 
       // Animations
@@ -289,6 +293,10 @@ let Update model stage (renderer:PIXI.WebGLRenderer) delta =
             target.rotation <- target.rotation + way * speed
           )              
       
-      ScreenKind.GameOfCogs
+      if model.Score >=  model.Goal then       
+        ScreenKind.NextScreen ScreenKind.GameOver
+//        ScreenKind.NextScreen ScreenKind.GameOver
+      else
+        ScreenKind.GameOfCogs model
 
-    | DoNothing -> ScreenKind.GameOfCogs
+    | CogState.DoNothing -> ScreenKind.GameOfCogs model
