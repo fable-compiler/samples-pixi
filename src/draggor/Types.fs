@@ -25,12 +25,6 @@ type Msg =
 
 type Layer = PIXI.Container
 
-[<RequireQualifiedAccess>]
-type IntroductionState = 
-  | Init 
-  | Play 
-  | NextScreen 
-  | DoNothing
 
 [<RequireQualifiedAccess>]
 type CogState = 
@@ -52,15 +46,29 @@ type CogModel = {
   mutable Sizes : Size []
 }
 
-type IntroductionModel = {
-  mutable State : IntroductionState
-}
+[<RequireQualifiedAccess>]
+module IntroductionScreen = 
+
+  type State = 
+    | Init 
+    | Play 
+    | NextScreen 
+    | DoNothing
+
+  type Msg = 
+    | OnClick
+    | Done
+
+  type Model = {
+    mutable State : State
+    mutable Msg : Msg option
+  }
 
 [<RequireQualifiedAccess>]
 type ScreenKind = 
   | GameOfCogs of CogModel
   | GameOver  
-  | Introduction  of IntroductionModel * ScreenKind
+  | Introduction  of IntroductionScreen.Model
   | NextScreen of ScreenKind
 
 [<RequireQualifiedAccess>]

@@ -9,20 +9,16 @@ open Fable.Core
 open Fable.Core.JsInterop
 open Fable.Import.Animejs
 
-let getEmptyModel() = 
+
+let getEmptyModel() : IntroductionScreen.Model= 
   {
-    State=IntroductionState.Init
+    State=Types.IntroductionScreen.Init
+    Msg=None
   }
 
 // displays a "great" message
-let titleAnim x y (container:PIXI.Container) model (renderer:PIXI.WebGLRenderer) = 
+let titleAnim handleClick x y (container:PIXI.Container)  = 
 
-  let handleClick model (renderer:PIXI.WebGLRenderer) _ =
-    renderer.plugins.interaction.on( 
-      !!string Pointerdown,
-      (fun _ -> 
-        printfn "click"
-        model.State <- IntroductionState.NextScreen) ) |> ignore
   
   let help = Assets.getTexture "title"
   let sub = Assets.getTexture "subtitle"
@@ -71,7 +67,9 @@ let titleAnim x y (container:PIXI.Container) model (renderer:PIXI.WebGLRenderer)
         o.targets <- !!subSprite.scale
         o.Item("x") <- scale
         o.Item("y") <- scale
-        o.complete <- Some (handleClick model renderer) 
+        
+        // when the second animation is complete, add our click event
+        o.complete <- Some handleClick 
       )
     
     // create our tweening timeline
@@ -84,24 +82,36 @@ let titleAnim x y (container:PIXI.Container) model (renderer:PIXI.WebGLRenderer)
     ] |> Seq.iter( fun options -> timeline.add options |> ignore ) 
 
      
-let Update model nextScreen stage (renderer:PIXI.WebGLRenderer) delta =
+     
+let Update (model:IntroductionScreen.Model) stage (renderer:PIXI.WebGLRenderer) delta =
   
+
   match model.State with 
     
-    | IntroductionState.NextScreen -> 
-      printfn "next"
-      nextScreen
+    | IntroductionScreen.NextScreen -> 
+      {model with Msg = Some IntroductionScreen.Done}
 
-    | IntroductionState.Init -> 
-      titleAnim (renderer.width * 0.5) (renderer.height * 0.5) stage model renderer
-      
-      ScreenKind.Introduction (
-          { model with State= IntroductionState.DoNothing}
-          ,nextScreen)
+    | IntroductionScreen.Init -> 
 
-    | IntroductionState.Play -> 
-      ScreenKind.Introduction (model,nextScreen)           
+      // we handle all clicks happening on screen
+      let handleClick (renderer:PIXI.WebGLRenderer) _ =
+        renderer.plugins.interaction.on( 
+          !!string Pointerdown,
+          (fun _ -> 
+            model.Msg <- Some IntroductionScreen.OnClick
+            model.State <- IntroductionScreen.State.NextScreen
+           ) ) |> ignore
     
-    | IntroductionState.DoNothing -> 
-      ScreenKind.Introduction (model,nextScreen) 
+      // start our animations
+      titleAnim (handleClick renderer) (renderer.width * 0.5) (renderer.height * 0.5) stage 
+      
+      model.State <- IntroductionScreen.Play
+      model
+
+    | IntroductionScreen.Play ->       
+      model 
+      
+    | IntroductionScreen.DoNothing -> 
+      model 
+      //ScreenKind.Introduction (model,nextScreen) 
      

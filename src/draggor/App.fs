@@ -34,12 +34,9 @@ let startGame() =
   *)
 
   let mutable model =    
-    let nextScreen = 
-      ScreenKind.NextScreen (ScreenKind.GameOfCogs (GameOfCogs.getEmptyModel())) 
-
-    ScreenKind.Introduction (ScreenIntroduction.getEmptyModel(),nextScreen)
+    ScreenKind.Introduction (ScreenIntroduction.getEmptyModel())
     ,Layers.add "gameStage" app.stage
-
+  
   // our render loop  
   app.ticker.add (fun delta -> 
 
@@ -60,9 +57,21 @@ let startGame() =
 
       | ScreenKind.GameOver, layer -> model
       
-      | ScreenKind.Introduction (innerModel,nextScreen), layer -> 
-        let model = ScreenIntroduction.Update innerModel nextScreen layer renderer delta
-        (model,layer)
+      | ScreenKind.Introduction innerModel, layer -> 
+//    let nextScreen = 
+//      ScreenKind.NextScreen (ScreenKind.GameOfCogs (GameOfCogs.getEmptyModel())) 
+        
+        let model = ScreenIntroduction.Update innerModel layer renderer delta
+        match model.Msg with 
+        | None -> 
+          ScreenKind.Introduction (model),layer
+        | Some msg ->
+          match  msg with          
+          | IntroductionScreen.Done -> 
+            ScreenKind.NextScreen (ScreenKind.GameOfCogs (GameOfCogs.getEmptyModel())),layer 
+          | _ -> 
+            ScreenKind.Introduction (model),layer
+
       
       | ScreenKind.GameOfCogs innerModel, layer ->  
         let model = GameOfCogs.Update innerModel layer renderer delta
