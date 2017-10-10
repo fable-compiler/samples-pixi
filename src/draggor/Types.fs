@@ -52,23 +52,22 @@ module IntroductionScreen =
   type State = 
     | Init 
     | Play 
-    | NextScreen 
+    | MoveToNextScreen 
+    | ByeBye
     | DoNothing
 
-  type Msg = 
-    | OnClick
-    | Done
+  type Texts = PIXI.Sprite *  PIXI.Sprite
 
   type Model = {
     mutable State : State
-    mutable Msg : Msg option
+    mutable Texts : Texts option
+    mutable Root: PIXI.Container option
   }
 
-[<RequireQualifiedAccess>]
 type ScreenKind = 
   | GameOfCogs of CogModel
   | GameOver  
-  | Introduction  of IntroductionScreen.Model
+  | Title  of IntroductionScreen.Model option
   | NextScreen of ScreenKind
 
 [<RequireQualifiedAccess>]
@@ -99,3 +98,9 @@ module Layers =
 
   let get name = 
      layers.TryFind name     
+
+  let remove name = 
+     match (layers.TryFind name) with 
+     | Some layer -> 
+      layers <- layers.Remove name
+     | None -> failwith (sprintf "unknwon layer %s" name)

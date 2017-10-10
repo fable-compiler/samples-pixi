@@ -33,49 +33,33 @@ let startGame() =
 
   *)
 
-  let mutable model =    
-    ScreenKind.Introduction (ScreenIntroduction.getEmptyModel())
-    ,Layers.add "gameStage" app.stage
+  let mutable screen = Title None
   
   // our render loop  
   app.ticker.add (fun delta -> 
 
-    model <- 
-      match model with 
-      | ScreenKind.NextScreen nextScreen, layer -> 
+    screen <- 
+      match screen with 
 
-        // do some cleanup before starting the next screen
-        layer.children
-          |> Seq.iteri( fun i child -> 
-            layer.removeChild( layer.children.[i] ) |> ignore
-          )        
-        layer.parent.removeChild layer |> ignore
+      | NextScreen nextScreen -> nextScreen
 
-        // start next screen
-        // add prepare a new layer as well
-        (nextScreen,Layers.add "gameStage" app.stage)
-
-      | ScreenKind.GameOver, layer -> model
+      | GameOver -> screen
       
-      | ScreenKind.Introduction innerModel, layer -> 
-//    let nextScreen = 
-//      ScreenKind.NextScreen (ScreenKind.GameOfCogs (GameOfCogs.getEmptyModel())) 
-        
-        let model = ScreenIntroduction.Update innerModel layer renderer delta
-        match model.Msg with 
-        | None -> 
-          ScreenKind.Introduction (model),layer
-        | Some msg ->
-          match  msg with          
-          | IntroductionScreen.Done -> 
-            ScreenKind.NextScreen (ScreenKind.GameOfCogs (GameOfCogs.getEmptyModel())),layer 
-          | _ -> 
-            ScreenKind.Introduction (model),layer
+      | Title model -> 
 
+        let model, moveToNextScreen = ScreenIntroduction.Update model app.stage !!app.renderer delta
+        if not moveToNextScreen then  
+          ScreenKind.Title (Some model)
+        else
+          // do some cleanup
+          ScreenIntroduction.Clean model
+          
+          // move to next screen
+          NextScreen (ScreenKind.GameOfCogs (GameOfCogs.getEmptyModel()))
       
-      | ScreenKind.GameOfCogs innerModel, layer ->  
-        let model = GameOfCogs.Update innerModel layer renderer delta
-        (model,layer)
+      | ScreenKind.GameOfCogs innerModel ->  
+        let model = GameOfCogs.Update innerModel app.stage !!app.renderer delta
+        model
 
     ) |> ignore 
 
