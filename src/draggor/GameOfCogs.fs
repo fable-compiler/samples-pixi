@@ -79,7 +79,6 @@ let greatAnim x y =
             o.targets <- !!sprite.scale
             o.Item("x") <- scale
             o.Item("y") <- scale
-            o.complete <- Some (fun _ -> printfn "done")
           )
         
         // create our tweening timeline

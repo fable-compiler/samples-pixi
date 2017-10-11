@@ -59,12 +59,16 @@ module IntroductionScreen =
 
   type Texts = PIXI.Sprite *  PIXI.Sprite
 
+  type CustomSprite = {
+    Angle:float
+  }
+
   type Model = {
     mutable State : State
     mutable Texts : Texts option
     Root: PIXI.Container option
     Cogs: PIXI.Container option
-    mutable CogList: PIXI.Sprite []
+    mutable CogList: ExtendedSprite<CustomSprite> []
     mutable Id: float
   }
 

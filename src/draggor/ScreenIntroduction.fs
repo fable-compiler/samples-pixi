@@ -154,11 +154,17 @@ let Update (model:IntroductionScreen.Model option) (stage:PIXI.Container) (rende
             let texture = Assets.getTexture "cog"
             if texture.IsSome && model.Cogs.IsSome then 
 
+              let castTo (sprite: PIXI.Sprite) = 
+                sprite :?> ExtendedSprite<IntroductionScreen.CustomSprite>              
+
+              let angle =  if JS.Math.random()  > 0.5 then -1. else 1.
+              let data : IntroductionScreen.CustomSprite = {Angle=angle}
               let cog = 
-                PIXI.Sprite texture.Value
+                ExtendedSprite(texture.Value,data)
                 |> model.Cogs.Value.addChild    
+                |> castTo    
               
-              cog._anchor.set 0.5
+              cog.anchor.set 0.5
 
               let scale : PIXI.Point = !!cog.scale
               let factor = JS.Math.random() * 0.8
@@ -169,7 +175,6 @@ let Update (model:IntroductionScreen.Model option) (stage:PIXI.Container) (rende
               
               // since this is JS we can inject values into the object
               // some kind of very dangerous magic
-              cog?angle <- if JS.Math.random()  > 0.5 then -1. else 1.
 
               let position : PIXI.Point = !!cog.position
               position.x <- renderer.width * JS.Math.random()
@@ -218,10 +223,7 @@ let Update (model:IntroductionScreen.Model option) (stage:PIXI.Container) (rende
             let scale : PIXI.Point = !!cog.scale            
             let speed = ( 1.25 - scale.x ) * 0.1
 
-            // this is where the overly untyped magic happens
-            // the rotation of our cog changes thanks to the
-            // angle value
-            cog.rotation <- speed * !!cog?angle + cog.rotation
+            cog.rotation <- speed * cog.Data.Angle + cog.rotation
 
           model,false 
           
