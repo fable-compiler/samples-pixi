@@ -25,14 +25,6 @@ let renderer : PIXI.WebGLRenderer = !!app.renderer
 
 let startGame() = 
 
-  // our model is just a tuple composed of a screen and a layer
-  (*
-  let mutable model =     
-    ScreenKind.GameOfCogs (GameOfCogs.getEmptyModel())
-    ,Layers.add "gameStage" app.stage
-
-  *)
-
   let mutable screen = Title None
   
   // our render loop  
@@ -52,12 +44,12 @@ let startGame() =
           ScreenKind.Title (Some model)
         else
           // do some cleanup
-          ScreenIntroduction.Clean model
-          
+          ScreenIntroduction.Clean model          
           // move to next screen
           NextScreen (ScreenKind.GameOfCogs (GameOfCogs.getEmptyModel()))
       
-      | ScreenKind.GameOfCogs innerModel ->  
+      | GameOfCogs innerModel ->  
+        
         let model = GameOfCogs.Update innerModel app.stage !!app.renderer delta
         model
 

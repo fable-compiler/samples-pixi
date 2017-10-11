@@ -2,6 +2,7 @@ module ScreenIntroduction
 
 open Types 
 open Fable.Import
+open Fable.Import.Browser
 open Fable.Import.Pixi
 open Fable.Import.Pixi.Particles
 open Fable.Pixi
@@ -9,6 +10,11 @@ open Fable.Core
 open Fable.Core.JsInterop
 open Fable.Import.Animejs
 
+[<Literal>]
+let MAX_COGS = 300
+
+[<Literal>]
+let TIMEOUT = 1000.
 
 let prepareSprites x y (container:PIXI.Container) = 
   
@@ -84,9 +90,7 @@ let titleAnim texts handleClick scaleTo  =
      
 let Clean (model:IntroductionScreen.Model) = 
 
-  if model.Root.IsSome then 
-    let layer = model.Root.Value
-    
+  let removeChildren (layer:PIXI.Container) = 
     // remove children
     layer.children
       |> Seq.iteri( fun i child -> 
@@ -94,6 +98,10 @@ let Clean (model:IntroductionScreen.Model) =
       )        
     // remove layer from parent
     layer.parent.removeChild layer |> ignore
+
+  if model.Root.IsSome then removeChildren model.Root.Value
+  if model.Cogs.IsSome then removeChildren model.Cogs.Value
+    
 
      
 let Update (model:IntroductionScreen.Model option) (stage:PIXI.Container) (renderer:PIXI.WebGLRenderer) delta =
@@ -108,7 +116,10 @@ let Update (model:IntroductionScreen.Model option) (stage:PIXI.Container) (rende
         {
           State=IntroductionScreen.Init
           Texts=None
-          Root=Some (stage.addChild (PIXI.Container()))
+          Cogs=Some (stage.addChild (PIXI.Container())) // note that the order of creation is important
+          Root=Some (stage.addChild (PIXI.Container())) // this layer will be on top
+          CogList=[||]
+          Id=0.
         }
       newModel, false
 
@@ -138,12 +149,43 @@ let Update (model:IntroductionScreen.Model option) (stage:PIXI.Container) (rende
           let scaleTo = 1.0
           titleAnim texts (handleClick renderer) scaleTo
           
+          // add a new cog every second
+          let addCog (model:IntroductionScreen.Model) _ =
+            let texture = Assets.getTexture "cog"
+            if texture.IsSome && model.Cogs.IsSome then 
+
+              let cog = 
+                PIXI.Sprite texture.Value
+                |> model.Cogs.Value.addChild    
+              
+              cog._anchor.set 0.5
+
+              let scale : PIXI.Point = !!cog.scale
+              let factor = JS.Math.random() * 0.8
+              scale.x <- factor
+              scale.y <- factor
+
+              cog.alpha <- factor
+              
+              // since this is JS we can inject values into the object
+              // some kind of very dangerous magic
+              cog?angle <- if JS.Math.random()  > 0.5 then -1. else 1.
+
+              let position : PIXI.Point = !!cog.position
+              position.x <- renderer.width * JS.Math.random()
+              position.y <- renderer.height * JS.Math.random()         
+              model.CogList <- [|model.CogList;[|cog|]|] |> Array.concat
+
+              if model.CogList.Length >= MAX_COGS then
+                window.clearInterval model.Id
+
+          model.Id <- window.setInterval( (addCog model), TIMEOUT)
+
           model.State <- IntroductionScreen.Play        
           model,false
 
         | IntroductionScreen.ByeBye ->       
 
-          // we modify the state to move to the next screen
           let onComplete _ =
             model.State <- IntroductionScreen.State.MoveToNextScreen
 
@@ -152,10 +194,35 @@ let Update (model:IntroductionScreen.Model option) (stage:PIXI.Container) (rende
           | None -> failwith ("Can't play animations on non existing texts!")
           | Some texts -> titleAnim texts onComplete scaleTo
 
-          model.State <- IntroductionScreen.Play
+          model.State <- IntroductionScreen.EndAnim
+          
+          // remove our timeout
+          window.clearTimeout model.Id
+          
           model,false 
 
-        | IntroductionScreen.Play ->       
+        | IntroductionScreen.EndAnim ->
+          
+          // fade all our cogs
+          for i in 0..(model.CogList.Length-1) do
+            let cog = model.CogList.[i]
+            cog.alpha <- cog.alpha - 0.1
+
+          model,false 
+
+        | IntroductionScreen.Play ->
+          
+          // let our cogs rotate
+          for i in 0..(model.CogList.Length-1) do
+            let cog = model.CogList.[i]
+            let scale : PIXI.Point = !!cog.scale            
+            let speed = ( 1.25 - scale.x ) * 0.1
+
+            // this is where the overly untyped magic happens
+            // the rotation of our cog changes thanks to the
+            // angle value
+            cog.rotation <- speed * !!cog?angle + cog.rotation
+
           model,false 
           
         | IntroductionScreen.DoNothing -> 

@@ -52,6 +52,7 @@ module IntroductionScreen =
   type State = 
     | Init 
     | Play 
+    | EndAnim 
     | MoveToNextScreen 
     | ByeBye
     | DoNothing
@@ -61,7 +62,10 @@ module IntroductionScreen =
   type Model = {
     mutable State : State
     mutable Texts : Texts option
-    mutable Root: PIXI.Container option
+    Root: PIXI.Container option
+    Cogs: PIXI.Container option
+    mutable CogList: PIXI.Sprite []
+    mutable Id: float
   }
 
 type ScreenKind = 
