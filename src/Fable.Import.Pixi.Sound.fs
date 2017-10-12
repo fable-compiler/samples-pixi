@@ -47,10 +47,10 @@ module PIXI =
             abstract loaded: LoadedCallback option with get, set
 
         and LoadedCallback =
-            Func<Error, Sound, IMediaInstance, unit>
+            Error -> Sound -> IMediaInstance -> unit
 
         and CompleteCallback =
-            Func<Sound, unit>
+            Sound -> unit
 
         and [<AllowNullLiteral>] [<Import("sound.Sound","PIXI")>] Sound(media: IMedia, options: Options) =
             member __.isLoaded with get(): bool = jsNative and set(v: bool): unit = jsNative
@@ -163,7 +163,7 @@ module PIXI =
             static member render(sound: Sound, ?options: RenderOptions): PIXI.BaseTexture = jsNative
             static member playOnce(url: string, ?callback: Func<Error, unit>): string = jsNative
 
-        type [<Import("sound","PIXI")>] Globals =
+        type [<Import("*","PIXI.sound")>] Globals =
             static member context with get(): IMediaContext = jsNative and set(v: IMediaContext): unit = jsNative
             static member supported with get(): bool = jsNative and set(v: bool): unit = jsNative
             static member useLegacy with get(): bool = jsNative and set(v: bool): unit = jsNative
@@ -171,7 +171,8 @@ module PIXI =
             static member speedAll with get(): float = jsNative and set(v: float): unit = jsNative
             static member filtersAll with get(): ResizeArray<Filter> = jsNative and set(v: ResizeArray<Filter>): unit = jsNative
             static member utils with get(): obj = jsNative and set(v: obj): unit = jsNative
-            static member add(alias: string, options: obj): Sound = jsNative
+//            static member add(alias: string, path: string): Sound = jsNative
+            static member add(alias: string, options: Options): Sound = jsNative
             static member add(map: SoundMap, ?globalOptions: Options): obj = jsNative
             static member remove(alias: string): obj = jsNative
             static member togglePauseAll(): bool = jsNative

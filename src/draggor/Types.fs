@@ -2,6 +2,7 @@ module Types
 
 open Fable.Import.Pixi
 open Fable.Import.Pixi.Particles
+open Fable.Import.Pixi.Sound
 open Fable.Pixi
 
 type Size = 
@@ -34,6 +35,7 @@ type CogState =
   | PlaceDock
   | Play 
   | DoNothing
+  | Win
 
 type CogModel = {
   mutable Cogs : ExtendedSprite<CogData> []
@@ -44,6 +46,7 @@ type CogModel = {
   mutable State: CogState
   mutable Emitters : PIXI.particles.Emitter []
   mutable Sizes : Size []
+  Layers: string list
 }
 
 [<RequireQualifiedAccess>]
@@ -73,15 +76,19 @@ module IntroductionScreen =
   }
 
 type ScreenKind = 
-  | GameOfCogs of CogModel
+  | GameOfCogs of CogModel option
   | GameOver  
   | Title  of IntroductionScreen.Model option
   | NextScreen of ScreenKind
 
 [<RequireQualifiedAccess>]
 module Assets = 
+  let mutable sounds = Map.empty<string,PIXI.sound.Sound> 
   let mutable textures = Map.empty<string,PIXI.Texture> 
   let mutable objFiles = Map.empty<string,obj> 
+
+  let addSound name sound = 
+    sounds <- sounds.Add(name,sound) 
 
   let addTexture name texture = 
     textures <- textures.Add(name,texture) 
@@ -91,6 +98,9 @@ module Assets =
 
   let getTexture name = 
      textures.TryFind name
+
+  let getSound name = 
+     sounds.TryFind name
 
   let getObj name = 
      objFiles.TryFind name     

@@ -64,6 +64,7 @@ let make kind =
       ExtendedSprite(texture.Value, { IsFound = false; StartPosition=(0.,0.); Target=(0.,0.); Size= kind; IsDragging = false; Interaction = None })
     // center the cog's anchor point
     cog.anchor.set(0.5)  
+
     cog
   else 
     failwith ("target is not a value")

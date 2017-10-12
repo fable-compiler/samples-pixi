@@ -9,12 +9,13 @@ open Fable.Pixi
 open Fable.Core
 open Fable.Core.JsInterop
 open Fable.Import.Animejs
+open Fable.Import.Pixi.Sound
 
 [<Literal>]
 let MAX_COGS = 300
 
 [<Literal>]
-let TIMEOUT = 1000.
+let TIMEOUT = 300.
 
 let prepareSprites x y (container:PIXI.Container) = 
   

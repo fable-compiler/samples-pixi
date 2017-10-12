@@ -5,6 +5,7 @@ open Fable.Core
 open Fable.Core.JsInterop
 open Fable.Import
 open Fable.Import.Pixi
+open Fable.Import.Pixi.Sound
 open Fable.Import.Browser
 open Fable.Import.Pixi.Particles
 open Fable.Pixi
@@ -46,12 +47,19 @@ let startGame() =
           // do some cleanup
           ScreenIntroduction.Clean model          
           // move to next screen
-          NextScreen (ScreenKind.GameOfCogs (GameOfCogs.getEmptyModel()))
+          NextScreen (ScreenKind.GameOfCogs None)
       
-      | GameOfCogs innerModel ->  
+      | GameOfCogs model ->  
         
-        let model = GameOfCogs.Update innerModel app.stage !!app.renderer delta
-        model
+        let model, moveToNextScreen = GameOfCogs.Update model app.stage !!app.renderer delta
+
+        if not moveToNextScreen then  
+          ScreenKind.GameOfCogs (Some model)
+        else
+          // do some cleanup
+          GameOfCogs.Clean model          
+          // move to next screen
+          NextScreen (ScreenKind.Title None)
 
     ) |> ignore 
 
@@ -62,8 +70,11 @@ let init() =
   let loader = PIXI.loaders.Loader()
   let path = "../img/draggor"
   [
+    // particle confi files
     ("rightConfig",sprintf "%s/right.json" path)
     ("leftConfig",sprintf "%s/left.json" path)
+
+    // pictures
     ("help1",sprintf "%s/help1.png" path)
     ("help2",sprintf "%s/help2.png" path)
     ("particle",sprintf "%s/particle.png" path)
@@ -72,6 +83,9 @@ let init() =
     ("target",sprintf "%s/target.png" path)
     ("title",sprintf "%s/Title.png" path)
     ("subtitle",sprintf "%s/subtitle.png" path)
+    
+    // sounds
+    ("goodMove",sprintf "%s/goodMove.mp3" path)
   ] 
   |> Seq.iter( fun (name,path) -> loader.add(name,path) |> ignore  )
 
@@ -90,6 +104,8 @@ let init() =
     // our particle configuration file 
     Assets.addObj "rightConfig" !!res?rightConfig?data
     Assets.addObj "leftConfig" !!res?leftConfig?data
+    
+    Assets.addSound "goodMove" !!res?goodMove?data
 
     // Let's have some fun now!    
     startGame()
@@ -97,3 +113,21 @@ let init() =
   ) |> ignore
 
 init() // it all begins there
+
+(*
+let play error (sound:PIXI.sound.Sound) ok = 
+  printfn "in"
+  sound.play() |> ignore 
+
+let path = "../img/draggor"
+let o = jsOptions<PIXI.sound.Options> (fun o ->
+  o.url <- Some (sprintf "%s/goodMove.mp3" path)
+  o.preload <- Some true
+  o.loaded <-  Some play
+)
+PIXI.sound.Sound.from !!o |> ignore
+*)
+(*
+let sound = PIXI.sound.Globals.add("goodMove",!!o)
+sound.play() |> ignore
+*)

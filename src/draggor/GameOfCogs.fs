@@ -7,19 +7,8 @@ open Fable.Pixi
 open Fable.Core
 open Fable.Core.JsInterop
 open Fable.Import.Animejs
+open Fable.Import.Pixi.Sound
 
-
-let getEmptyModel() = 
-  {
-    Cogs = [||] 
-    Targets = [||]
-    Score= 0
-    Goal=0
-    State=CogState.Init
-    Found=[||]
-    Emitters=[||]
-    Sizes = [||]
-  }
 
 let DisplayParticles model delta = 
   model.Emitters
@@ -131,6 +120,10 @@ let handleMessage model (msg:Msg option) =
                     // update score
                     score <- score + 1
 
+                    let hasSound = PIXI.sound.Globals.exists "goodMove"
+                    if hasSound then 
+                      PIXI.sound.Globals.play("goodMove") |> ignore
+
                     // add new particle system at the right place
                     // given the way our cog is turning
                     let isLeft = (i % 2 = 0)
@@ -167,135 +160,180 @@ let handleMessage model (msg:Msg option) =
         model.Found <- found 
         model.Emitters <- emitters
       
-let Update model stage (renderer:PIXI.WebGLRenderer) delta =
+let Clean (model:CogModel) = 
 
-  // update our particles
-  DisplayParticles model delta
- 
-  match model.State with 
-    | CogState.Init ->           
+  let removeChildren (layer:PIXI.Container) = 
+    // remove children
+    layer.children
+      |> Seq.iteri( fun i child -> 
+        layer.removeChild( layer.children.[i] ) |> ignore
+      )        
+    // remove layer from parent
+    layer.parent.removeChild layer |> ignore
 
-        // create our child layers
-        Layers.add "ui" stage |> ignore
-        Layers.add "targets" stage |> ignore
-        Layers.add "cogs" stage |> ignore
-        Layers.add "dock" stage |> ignore
-        Layers.add "emitter" stage |> ignore      
-        Layers.add "top" stage |> ignore
+  // remove our layers
+  model.Layers
+    |> List.iter( fun name -> 
+      let l = Layers.get name 
+      if l.IsSome then 
+        removeChildren l.Value
+    ) 
     
-        let sizes = Cog.cogSizes()
-        model.Goal <- sizes.Length // the cogs to place correctly in order to win
-        model.State <- CogState.PlaceHelp
-        model.Sizes <- sizes
 
-        ScreenKind.GameOfCogs model      
-    | CogState.PlaceHelp -> 
-      
-      let container = Layers.get "ui"
-      match container with 
-        | Some c -> 
-          let help = Assets.getTexture "help1"
-          if help.IsSome then 
-            let sprite = 
-              PIXI.Sprite help.Value
-              |> c.addChild
+           
+let Update (model:CogModel option) stage (renderer:PIXI.WebGLRenderer) delta =
 
-            sprite._anchor.set(0.5) 
-            let position : PIXI.Point = !!sprite.position
-            position.x <- renderer.width * 0.65
-            position.y <- renderer.height * 0.75
+ 
+  let model, moveToNextScreen =
+    match model with 
 
-          let help = Assets.getTexture "help2"
-          if help.IsSome then 
-            let sprite = 
-              PIXI.Sprite help.Value
-              |> c.addChild
+    // this is a brand new model
+    | None -> 
 
-            sprite._anchor.set(0.5) 
-            let position : PIXI.Point = !!sprite.position
-            position.x <- renderer.width * 0.70
-            position.y <- renderer.height * 0.3
+      let newModel : CogModel = 
+        {
+          Cogs = [||] 
+          Targets = [||]
+          Score= 0
+          Goal=0
+          State=CogState.Init
+          Found=[||]
+          Emitters=[||]
+          Sizes = [||]
+          Layers = ["ui";"targets";"cogs";"dock";"emitter";"top"]
+        }
+      newModel, false
 
-        | None -> failwith "ui layer not found"
+    // update our model
+    | Some model ->  
+      match model.State with 
+        | CogState.Win ->
+          model, true
+                     
+        | CogState.Init ->           
 
-      model.State <- CogState.PlaceCogs
+            // add our layers
+            model.Layers
+              |> List.iter( fun name -> Layers.add name stage |> ignore ) 
+        
+            let sizes = Cog.cogSizes()
+            model.Goal <- sizes.Length // the cogs to place correctly in order to win
+            model.State <- CogState.PlaceHelp
+            model.Sizes <- sizes
 
-      ScreenKind.GameOfCogs model      
-    | CogState.PlaceCogs -> 
-
-      let container = Layers.get "cogs"
-      match container with 
-        | Some c -> 
-
-          // create our cogs and center them!
-          let targets = 
-            
-            // create our cogs
-            // they have to fit in the given space
-            let maxWidth = renderer.width * 0.8
-            let targets,(totalWidth,totalHeight) 
-              = Cog.fitCogInSpace model 0 (0.,0.) (0.,0.) None [] maxWidth model.Sizes
-                      
-            // center our cogs
-            let xMargin = (renderer.width - totalWidth) * 0.5
-            let yMargin = totalHeight * 0.5
-            targets 
-              |> Seq.map ( 
-                  (Cog.placeMarker xMargin yMargin (renderer.height*0.5)) 
-                    >> c.addChild
-                  )
-               |> Seq.toArray
-         
-          model.Targets <- targets
-          model.State <- CogState.PlaceDock
-        | None -> failwith "unknown container cogs"
-      
-      ScreenKind.GameOfCogs  model     
-    | CogState.PlaceDock -> // prepare our 4 base cogs
-
-      let container = Layers.get "dock"
-      match container with 
-        | Some c -> 
-          let cogs =  
-            Dock.prepare c stage renderer 
-            |> Seq.map( fun cog -> 
-                cog.interactive <- true
-                cog.buttonMode <- true        
-                cog
-                  |> attachEvent Pointerdown (Cog.onDragStart cog)
-                  |> attachEvent Pointerup (Cog.onDragEnd cog)
-                  |> attachEvent Pointermove (Cog.onDragMove (handleMessage model) stage cog)
+            model,false      
+        | CogState.PlaceHelp -> 
+          
+          let container = Layers.get "ui"
+          match container with 
+            | Some c -> 
+              let help = Assets.getTexture "help1"
+              if help.IsSome then 
+                let sprite = 
+                  PIXI.Sprite help.Value
                   |> c.addChild
-                  |> Cog.castTo
-            )
-            |> Seq.toArray
 
-          model.Cogs <- cogs
-          model.State <- CogState.Play
-        | None -> failwith "unknown container dock"
+                sprite._anchor.set(0.5) 
+                let position : PIXI.Point = !!sprite.position
+                position.x <- renderer.width * 0.65
+                position.y <- renderer.height * 0.75
 
-      ScreenKind.GameOfCogs model
-    | CogState.Play -> 
+              let help = Assets.getTexture "help2"
+              if help.IsSome then 
+                let sprite = 
+                  PIXI.Sprite help.Value
+                  |> c.addChild
 
+                sprite._anchor.set(0.5) 
+                let position : PIXI.Point = !!sprite.position
+                position.x <- renderer.width * 0.70
+                position.y <- renderer.height * 0.3
 
-      // Animations
-      if model.Score > 0 then
-        // make our cogs turn
-        model.Found
-          |> Seq.iter( fun i ->
-            let target = model.Targets.[i] 
-            // animate all the cogs that have been found
-            // make sure the next cog will turn on the opposite direction
-            let way = if i % 2 = 0 then 1. else -1.0
-            // smaller cogs run faster
-            let speed = Cog.rotation * (1.25 - (Cog.scaleFactor target.Data.Size))
-            target.rotation <- target.rotation + way * speed
-          )              
-      
-      if model.Score >=  model.Goal then       
-        ScreenKind.NextScreen ScreenKind.GameOver
-//        ScreenKind.NextScreen ScreenKind.GameOver
-      else
-        ScreenKind.GameOfCogs model
+            | None -> failwith "ui layer not found"
 
-    | CogState.DoNothing -> ScreenKind.GameOfCogs model
+          model.State <- CogState.PlaceCogs
+
+          model,false      
+        | CogState.PlaceCogs -> 
+
+          let container = Layers.get "cogs"
+          match container with 
+            | Some c -> 
+
+              // create our cogs and center them!
+              let targets = 
+                
+                // create our cogs
+                // they have to fit in the given space
+                let maxWidth = renderer.width * 0.8
+                let targets,(totalWidth,totalHeight) 
+                  = Cog.fitCogInSpace model 0 (0.,0.) (0.,0.) None [] maxWidth model.Sizes
+                          
+                // center our cogs
+                let xMargin = (renderer.width - totalWidth) * 0.5
+                let yMargin = totalHeight * 0.5
+                targets 
+                  |> Seq.map ( 
+                      (Cog.placeMarker xMargin yMargin (renderer.height*0.5)) 
+                        >> c.addChild
+                      )
+                   |> Seq.toArray
+             
+              model.Targets <- targets
+              model.State <- CogState.PlaceDock
+            | None -> failwith "unknown container cogs"
+          
+          model,false     
+        | CogState.PlaceDock -> // prepare our 4 base cogs
+
+          let container = Layers.get "dock"
+          match container with 
+            | Some c -> 
+              let cogs =  
+                Dock.prepare c stage renderer 
+                |> Seq.map( fun cog -> 
+                    cog.interactive <- true
+                    cog.buttonMode <- true        
+                    cog
+                      |> attachEvent Pointerdown (Cog.onDragStart cog)
+                      |> attachEvent Pointerup (Cog.onDragEnd cog)
+                      |> attachEvent Pointermove (Cog.onDragMove (handleMessage model) stage cog)
+                      |> c.addChild
+                      |> Cog.castTo
+                )
+                |> Seq.toArray
+
+              model.Cogs <- cogs
+              model.State <- CogState.Play
+            | None -> failwith "unknown container dock"
+
+          model,false
+        | CogState.Play -> 
+
+          // update our particles
+          DisplayParticles model delta
+
+          // Animations
+          if model.Score > 0 then
+            // make our cogs turn
+            model.Found
+              |> Seq.iter( fun i ->
+                let target = model.Targets.[i] 
+                // animate all the cogs that have been found
+                // make sure the next cog will turn on the opposite direction
+                let way = if i % 2 = 0 then 1. else -1.0
+                // smaller cogs run faster
+                let speed = Cog.rotation * (1.25 - (Cog.scaleFactor target.Data.Size))
+                target.rotation <- target.rotation + way * speed
+              )              
+          
+          if model.Score >=  model.Goal then       
+            model.State <- CogState.Win
+            model,false
+    //        ScreenKind.NextScreen ScreenKind.GameOver
+          else
+            model,false
+
+        | CogState.DoNothing -> model,false
+
+  model, moveToNextScreen 
