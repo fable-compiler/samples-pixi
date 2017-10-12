@@ -49,7 +49,7 @@ module Dragon =
     position.y <- y
 
     dragon
-      |> attachEvent Pointertap (onTap dragon)
+      |> Fable.Pixi.Event.attach Fable.Pixi.Event.Pointertap (onTap dragon)
 
 
 (* ------------------------ GAME ---------------------*)

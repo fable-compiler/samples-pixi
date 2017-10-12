@@ -2,8 +2,6 @@ module Fable.Pixi
 
 open Fable.Core
 open Fable.Import.Pixi
-open Fable.Import.Pixi.Sound
-open Fable.Import.Animejs
 open Fable.Core.JsInterop
 
 type ExtendedSprite<'T> (texture:PIXI.Texture,data: 'T) =
@@ -112,24 +110,3 @@ module SpriteUtils =
   let setAlpha a (sprite:PIXI.Sprite) = 
     sprite.alpha <- a 
     sprite
-
-[<RequireQualifiedAccess>]
-module AnimationUtils =
-  let XY (target:'t) xFactor yFactor duration elasticity =
-    jsOptions<anime.AnimeAnimParams> (fun o ->
-      o.elasticity <- !!elasticity
-      o.duration <- !!duration
-      o.targets <- !!target
-      o.Item("x") <- xFactor
-      o.Item("y") <- yFactor
-    )         
-
-
-[<RequireQualifiedAccess>]
-module SoundUtils = 
-  let play name = 
-    let hasSound = PIXI.sound.Globals.exists name
-    if hasSound then 
-      PIXI.sound.Globals.play(name) |> ignore
-    else 
-      failwith (sprintf "unknown sound %s" name)

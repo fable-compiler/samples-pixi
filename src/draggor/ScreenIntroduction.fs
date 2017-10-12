@@ -25,10 +25,10 @@ let titleAnim texts handleClick scaleTo  =
     let elasticity = 300.
 
     let prepareTitleAnimation scale= 
-      AnimationUtils.XY s1.scale scale scale duration elasticity
+      Fable.AnimeUtils.XY s1.scale scale scale duration elasticity
 
     let prepareSubTitleAnimation scale= 
-      let options = AnimationUtils.XY s2.scale scale scale duration elasticity
+      let options = Fable.AnimeUtils.XY s2.scale scale scale duration elasticity
       options.complete <- Some handleClick 
       options
 
@@ -114,8 +114,7 @@ let Update (model:IntroductionScreen.Model option) (stage:PIXI.Container) (rende
           titleAnim texts (handleClick renderer) scaleTo
           
           // play a sound
-          SoundUtils.play "gong"
-
+          Fable.SoundUtils.play "gong"
           
           // add a new cog every second
           let addCog (model:IntroductionScreen.Model) _ =

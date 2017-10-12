@@ -1,12 +1,12 @@
 module GameOfCogs
-open Types 
+
 open Fable.Import
 open Fable.Import.Pixi
 open Fable.Import.Pixi.Particles
 open Fable.Pixi
-open Fable.Core
 open Fable.Core.JsInterop
 open Fable.Import.Animejs
+open Types 
 
 
 let DisplayParticles (model:GameScreen.CogModel) delta = 
@@ -114,7 +114,7 @@ let handleMessage (model:GameScreen.CogModel) (msg:GameScreen.Cog.Msg option) =
                     score <- score + 1
 
                     // sound feedback 
-                    SoundUtils.play "goodMove"
+                    Fable.SoundUtils.play "goodMove"
 
                     // add new particle system at the right place
                     // given the way our cog is turning
@@ -203,7 +203,7 @@ let Update (model:GameScreen.CogModel option) stage (renderer:PIXI.WebGLRenderer
 
         | GameScreen.CogState.Win ->
 
-          SoundUtils.play "winSound"
+          Fable.SoundUtils.play "winSound"
 
           // display a lovely win anim
           let winSprite = 
@@ -213,8 +213,8 @@ let Update (model:GameScreen.CogModel option) stage (renderer:PIXI.WebGLRenderer
             |> SpriteUtils.moveTo (renderer.width * 0.5) (renderer.height * 0.5)
             |> SpriteUtils.setAnchor 0.5 0.5            
 
-          let inAnim = AnimationUtils.XY winSprite.scale 1.0 1.0 300. 1200.
-          let outAnim = AnimationUtils.XY winSprite.scale 0. 0. 300. 0.
+          let inAnim = Fable.AnimeUtils.XY winSprite.scale 1.0 1.0 300. 1200.
+          let outAnim = Fable.AnimeUtils.XY winSprite.scale 0. 0. 300. 0.
           outAnim.delay <- !!2000. // wait 2 seconds 
 
           // create our tweening timeline
@@ -302,7 +302,7 @@ let Update (model:GameScreen.CogModel option) stage (renderer:PIXI.WebGLRenderer
                       |> Fable.Pixi.Event.attach Fable.Pixi.Event.Pointerdown (
                         fun iev ->
                           // sound feedback 
-                          SoundUtils.play "startDrag"                         
+                          Fable.SoundUtils.play "startDrag"                         
                           Cog.onDragStart cog iev)
 
                       |> Fable.Pixi.Event.attach Fable.Pixi.Event.Pointerup (Cog.onDragEnd cog)

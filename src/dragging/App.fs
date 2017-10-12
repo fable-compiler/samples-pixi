@@ -58,10 +58,10 @@ module Dragon =
     // attach our custom events to enable dragging
     dragon
       // When attaching an anonymous lambda we capture the instance
-      |> attachEvent Pointerdown (onDragStart dragon)
+      |> Fable.Pixi.Event.attach Fable.Pixi.Event.Pointerdown (onDragStart dragon)
       // When attaching a module function we can use currrying
-      |> attachEvent Pointerup (onDragEnd dragon)
-      |> attachEvent Pointermove (onDragMove dragon)
+      |> Fable.Pixi.Event.attach Fable.Pixi.Event.Pointerup (onDragEnd dragon)
+      |> Fable.Pixi.Event.attach Fable.Pixi.Event.Pointermove (onDragMove dragon)
 
 
 (* ------------------------ GAME ---------------------*)

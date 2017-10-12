@@ -1,16 +1,9 @@
 module App
 
-open System
-open Fable.Core
 open Fable.Core.JsInterop
 open Fable.Import
 open Fable.Import.Pixi
-open Fable.Import.Pixi.Sound
-open Fable.Import.Browser
-open Fable.Import.Pixi.Particles
 open Fable.Pixi
-open Elmish
-open Hink
 open Types
 
 // our view
