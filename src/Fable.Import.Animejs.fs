@@ -10,7 +10,7 @@ type FunctionBasedParamter =
     Func<HTMLElement, float, float, float>
 
 and AnimeCallbackFunction =
-    Func<anime.AnimeInstance, unit>
+    anime.AnimeInstance -> unit
 
 and AnimeTarget =
     obj
