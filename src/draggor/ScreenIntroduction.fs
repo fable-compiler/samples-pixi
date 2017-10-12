@@ -17,57 +17,32 @@ let MAX_COGS = 300
 [<Literal>]
 let TIMEOUT = 300.
 
-let prepareSprites x y (container:PIXI.Container) = 
-
-  let titleSprite = 
-    SpriteUtils.fromTexture "title"
-    |> SpriteUtils.addToLayer "root"
-    |> SpriteUtils.scaleTo 0. 0.
-    |> SpriteUtils.moveTo x y
-    |> SpriteUtils.setAnchor 0.5 0.5
-
-  let subSprite = 
-    SpriteUtils.fromTexture "subtitle"
-    |> SpriteUtils.addToLayer "root"
-    |> SpriteUtils.scaleTo 0. 0.
-    |> SpriteUtils.moveTo x (y+120.) 
-    |> SpriteUtils.setAnchor 0.5 0.5
-  
-  titleSprite,subSprite
 
 let titleAnim texts handleClick scaleTo  = 
 
     let (s1:PIXI.Sprite),(s2:PIXI.Sprite) = texts
 
+    let duration = 700.
+    let elasticity = 300.
+
     let prepareTitleAnimation scale= 
-      jsOptions<anime.AnimeAnimParams> (fun o ->
-        o.elasticity <- !!300.
-        o.duration <- !!700.
-        o.targets <- !!s1.scale
-        o.Item("x") <- scale
-        o.Item("y") <- scale
-      )
+      AnimationUtils.XY s1.scale scale scale duration elasticity
 
     let prepareSubTitleAnimation scale= 
-      jsOptions<anime.AnimeAnimParams> (fun o ->
-        o.elasticity <- !!300.
-        o.duration <- !!700.
-        o.targets <- !!s2.scale
-        o.Item("x") <- scale
-        o.Item("y") <- scale
-        
-        // when the second animation is complete, add our click event
-        o.complete <- Some handleClick 
-      )
-    
+      let options = AnimationUtils.XY s2.scale scale scale duration elasticity
+      options.complete <- Some handleClick 
+      options
+
     // create our tweening timeline
     let timeline = anime.Globals.timeline()
     
-    // prepare our animations
+    // prepare our animations using a timeline
+    // each animation will play once and one after the other
     [
       prepareTitleAnimation scaleTo // simple scale in 
       prepareSubTitleAnimation scaleTo // simple scale in 
     ] |> Seq.iter( fun options -> timeline.add options |> ignore ) 
+
 
 let Update (model:IntroductionScreen.Model option) (stage:PIXI.Container) (renderer:PIXI.WebGLRenderer) delta =
   
@@ -95,6 +70,24 @@ let Update (model:IntroductionScreen.Model option) (stage:PIXI.Container) (rende
           model,true
 
         | IntroductionScreen.Init -> 
+
+          let prepareSprites x y (container:PIXI.Container) = 
+
+            let titleSprite = 
+              SpriteUtils.fromTexture "title"
+              |> SpriteUtils.addToLayer "root"
+              |> SpriteUtils.scaleTo 0. 0.
+              |> SpriteUtils.moveTo x y
+              |> SpriteUtils.setAnchor 0.5 0.5
+
+            let subSprite = 
+              SpriteUtils.fromTexture "subtitle"
+              |> SpriteUtils.addToLayer "root"
+              |> SpriteUtils.scaleTo 0. 0.
+              |> SpriteUtils.moveTo x (y+120.) 
+              |> SpriteUtils.setAnchor 0.5 0.5
+            
+            titleSprite,subSprite
 
           // add our layers
           model.Layers
@@ -149,6 +142,7 @@ let Update (model:IntroductionScreen.Model option) (stage:PIXI.Container) (rende
               if model.CogList.Length >= MAX_COGS then
                 window.clearInterval model.Id
 
+          // our spawn function
           model.Id <- window.setInterval( (addCog model), TIMEOUT)
 
           model.State <- IntroductionScreen.Play        
@@ -173,10 +167,10 @@ let Update (model:IntroductionScreen.Model option) (stage:PIXI.Container) (rende
 
         | IntroductionScreen.EndAnim ->
           
-          // fade all our cogs
+          // fade all our cogs fast
           for i in 0..(model.CogList.Length-1) do
             let cog = model.CogList.[i]
-            cog.alpha <- cog.alpha - 0.1
+            cog.alpha <- cog.alpha - 0.05
 
           model,false 
 

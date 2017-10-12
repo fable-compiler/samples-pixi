@@ -3,6 +3,7 @@ module Types
 open Fable.Import.Pixi
 open Fable.Import.Pixi.Particles
 open Fable.Import.Pixi.Sound
+open Fable.Import.Animejs
 open Fable.Pixi
 open Fable.Core.JsInterop
 
@@ -170,3 +171,14 @@ module SpriteUtils =
   let setAlpha a (sprite:PIXI.Sprite) = 
     sprite.alpha <- a 
     sprite
+
+[<RequireQualifiedAccess>]
+module AnimationUtils =
+  let XY (target:'t) xFactor yFactor duration elasticity =
+    jsOptions<anime.AnimeAnimParams> (fun o ->
+      o.elasticity <- !!elasticity
+      o.duration <- !!duration
+      o.targets <- !!target
+      o.Item("x") <- xFactor
+      o.Item("y") <- yFactor
+    )         
