@@ -163,11 +163,9 @@ let Update (model:IntroductionScreen.Model option) (stage:PIXI.Container) (rende
               scale.x <- factor
               scale.y <- factor
 
+              // alpha is relative to size
               cog.alpha <- factor
               
-              // since this is JS we can inject values into the object
-              // some kind of very dangerous magic
-
               let position : PIXI.Point = !!cog.position
               position.x <- renderer.width * JS.Math.random()
               position.y <- renderer.height * JS.Math.random()         
