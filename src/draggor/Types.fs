@@ -4,6 +4,7 @@ open Fable.Import.Pixi
 open Fable.Import.Pixi.Particles
 open Fable.Import.Pixi.Sound
 open Fable.Pixi
+open Fable.Core.JsInterop
 
 type Size = 
   | Tiny 
@@ -130,3 +131,42 @@ module Layers =
 
         layers <- layers.Remove name
      | None -> failwith (sprintf "unknwon layer %s" name)
+
+[<RequireQualifiedAccess>]
+module SpriteUtils =
+
+  let fromTexture name =      
+    let texture = Assets.getTexture name
+    match texture with
+    | Some t -> 
+      PIXI.Sprite t
+    | None ->  failwith (sprintf "unknown texture %s" name) 
+
+  let addToLayer name sprite =
+    let container = Layers.get name
+    match container with
+    | Some c -> 
+      c.addChild sprite
+    | None ->  failwith (sprintf "unknown layer %s" name) 
+
+  let scaleTo x y (sprite:PIXI.Sprite) = 
+    let scale : PIXI.Point = !!sprite.scale
+    scale.x <- x
+    scale.y <- y
+    sprite
+
+  let moveTo x y (sprite:PIXI.Sprite) = 
+    let position : PIXI.Point = !!sprite.position
+    position.x <- x
+    position.y <- y
+    sprite
+
+  let setAnchor x y (sprite:PIXI.Sprite) = 
+    let anchor : PIXI.Point = !!sprite.anchor
+    anchor.x <- x
+    anchor.y <- y
+    sprite
+
+  let setAlpha a (sprite:PIXI.Sprite) = 
+    sprite.alpha <- a 
+    sprite

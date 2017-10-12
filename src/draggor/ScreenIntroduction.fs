@@ -18,41 +18,22 @@ let MAX_COGS = 300
 let TIMEOUT = 300.
 
 let prepareSprites x y (container:PIXI.Container) = 
+
+  let titleSprite = 
+    SpriteUtils.fromTexture "title"
+    |> SpriteUtils.addToLayer "root"
+    |> SpriteUtils.scaleTo 0. 0.
+    |> SpriteUtils.moveTo x y
+    |> SpriteUtils.setAnchor 0.5 0.5
+
+  let subSprite = 
+    SpriteUtils.fromTexture "subtitle"
+    |> SpriteUtils.addToLayer "root"
+    |> SpriteUtils.scaleTo 0. 0.
+    |> SpriteUtils.moveTo x (y+120.) 
+    |> SpriteUtils.setAnchor 0.5 0.5
   
-  let help = Assets.getTexture "title"
-  let sub = Assets.getTexture "subtitle"
-  if help.IsSome && sub.IsSome then 
-
-    let titleSprite = 
-      PIXI.Sprite help.Value
-      |> container.addChild    
-    titleSprite._anchor.set 0.5
-
-    let scale : PIXI.Point = !!titleSprite.scale
-    scale.x <- 0.0
-    scale.y <- 0.0
-
-    let position : PIXI.Point = !!titleSprite.position
-    position.x <- x
-    position.y <- y
-
-    let subSprite = 
-      PIXI.Sprite sub.Value
-      |> container.addChild    
-    subSprite._anchor.set 0.5
-
-    let scale : PIXI.Point = !!subSprite.scale
-    scale.x <- 0.0
-    scale.y <- 0.0
-
-    let position : PIXI.Point = !!subSprite.position
-    position.x <- x
-    position.y <- y + 120.
-
-    titleSprite,subSprite
-  
-  else failwith("failed to create sprites, textures are not ready yet")
-
+  titleSprite,subSprite
 
 let titleAnim texts handleClick scaleTo  = 
 
@@ -132,7 +113,7 @@ let Update (model:IntroductionScreen.Model option) (stage:PIXI.Container) (rende
             let container = Layers.get "root"
             match container with
             | Some c->   
-              prepareSprites (renderer.width * 0.5) (renderer.height * 0.5) c 
+              prepareSprites (renderer.width * 0.5) (renderer.height * 0.4) c 
             | None -> failwith "unkown container root"
           
           model.Texts <- Some texts 
@@ -142,33 +123,27 @@ let Update (model:IntroductionScreen.Model option) (stage:PIXI.Container) (rende
           
           // add a new cog every second
           let addCog (model:IntroductionScreen.Model) _ =
-            let texture = Assets.getTexture "cog"
-            let container = Layers.get "cogs"
-            if texture.IsSome && container.IsSome then 
 
+            let randomScale = JS.Math.random() * 0.8
+
+            // set our custom data
+            let angle =  if JS.Math.random()  > 0.5 then -1. else 1.
+            let data : IntroductionScreen.CustomSprite = {Angle=angle}
+
+            let texture = Assets.getTexture "cog"
+            if texture.IsSome then 
               let castTo (sprite: PIXI.Sprite) = 
                 sprite :?> ExtendedSprite<IntroductionScreen.CustomSprite>              
 
-              let angle =  if JS.Math.random()  > 0.5 then -1. else 1.
-              let data : IntroductionScreen.CustomSprite = {Angle=angle}
               let cog = 
                 ExtendedSprite(texture.Value,data)
-                |> container.Value.addChild    
-                |> castTo    
-              
-              cog.anchor.set 0.5
+                |> SpriteUtils.addToLayer "cogs"
+                |> SpriteUtils.scaleTo randomScale randomScale
+                |> SpriteUtils.moveTo (renderer.width * JS.Math.random()) (renderer.height * JS.Math.random())
+                |> SpriteUtils.setAnchor 0.5 0.5          
+                |> SpriteUtils.setAlpha randomScale          
+                |> castTo
 
-              let scale : PIXI.Point = !!cog.scale
-              let factor = JS.Math.random() * 0.8
-              scale.x <- factor
-              scale.y <- factor
-
-              // alpha is relative to size
-              cog.alpha <- factor
-              
-              let position : PIXI.Point = !!cog.position
-              position.x <- renderer.width * JS.Math.random()
-              position.y <- renderer.height * JS.Math.random()         
               model.CogList <- [|model.CogList;[|cog|]|] |> Array.concat
 
               if model.CogList.Length >= MAX_COGS then
@@ -211,7 +186,7 @@ let Update (model:IntroductionScreen.Model option) (stage:PIXI.Container) (rende
           for i in 0..(model.CogList.Length-1) do
             let cog = model.CogList.[i]
             let scale : PIXI.Point = !!cog.scale            
-            let speed = ( 1.25 - scale.x ) * 0.1
+            let speed = ( 0.8 - scale.x ) * 0.1
 
             cog.rotation <- speed * cog.Data.Angle + cog.rotation
 
