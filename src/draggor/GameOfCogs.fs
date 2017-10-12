@@ -285,6 +285,7 @@ let Update (model:GameScreen.CogModel option) stage (renderer:PIXI.WebGLRenderer
          
           model.Targets <- targets
           model.State <- GameScreen.CogState.PlaceDock
+          model.Goal <- targets.Length
                     
           model,false     
                 

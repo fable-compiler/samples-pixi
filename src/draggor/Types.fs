@@ -45,7 +45,7 @@ module GameScreen =
     mutable Cogs : ExtendedSprite<Cog.CogData> []
     mutable Targets : ExtendedSprite<Cog.CogData> []
     mutable Score : int
-    Goal : int
+    mutable Goal : int
     mutable Found: int []
     mutable State: CogState
     mutable Emitters : PIXI.particles.Emitter []
