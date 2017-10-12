@@ -45,7 +45,7 @@ let startGame() =
           ScreenKind.Title (Some model)
         else
           // do some cleanup
-          ScreenIntroduction.Clean model          
+          model.Layers |> List.iter Layers.remove 
           // move to next screen
           NextScreen (ScreenKind.GameOfCogs None)
       
@@ -57,7 +57,7 @@ let startGame() =
           ScreenKind.GameOfCogs (Some model)
         else
           // do some cleanup
-          GameOfCogs.Clean model          
+          model.Layers |> List.iter Layers.remove 
           // move to next screen
           NextScreen (ScreenKind.Title None)
 

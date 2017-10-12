@@ -159,31 +159,9 @@ let handleMessage model (msg:Msg option) =
         model.Score <- score 
         model.Found <- found 
         model.Emitters <- emitters
-      
-let Clean (model:CogModel) = 
-
-  let removeChildren (layer:PIXI.Container) = 
-    // remove children
-    layer.children
-      |> Seq.iteri( fun i child -> 
-        layer.removeChild( layer.children.[i] ) |> ignore
-      )        
-    // remove layer from parent
-    layer.parent.removeChild layer |> ignore
-
-  // remove our layers
-  model.Layers
-    |> List.iter( fun name -> 
-      let l = Layers.get name 
-      if l.IsSome then 
-        removeChildren l.Value
-    ) 
-    
-
-           
+                 
 let Update (model:CogModel option) stage (renderer:PIXI.WebGLRenderer) delta =
 
- 
   let model, moveToNextScreen =
     match model with 
 
@@ -209,7 +187,7 @@ let Update (model:CogModel option) stage (renderer:PIXI.WebGLRenderer) delta =
       match model.State with 
         | CogState.Win ->
           model, true
-                     
+
         | CogState.Init ->           
 
             // add our layers

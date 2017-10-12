@@ -69,8 +69,7 @@ module IntroductionScreen =
   type Model = {
     mutable State : State
     mutable Texts : Texts option
-    Root: PIXI.Container option
-    Cogs: PIXI.Container option
+    Layers: string list
     mutable CogList: ExtendedSprite<CustomSprite> []
     mutable Id: float
   }
@@ -120,5 +119,14 @@ module Layers =
   let remove name = 
      match (layers.TryFind name) with 
      | Some layer -> 
-      layers <- layers.Remove name
+
+        // remove from pixi
+        layer.children
+          |> Seq.iteri( fun i child -> 
+            layer.removeChild( layer.children.[i] ) |> ignore
+          )        
+        // remove layer from parent
+        layer.parent.removeChild layer |> ignore
+
+        layers <- layers.Remove name
      | None -> failwith (sprintf "unknwon layer %s" name)

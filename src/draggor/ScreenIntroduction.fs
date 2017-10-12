@@ -88,23 +88,6 @@ let titleAnim texts handleClick scaleTo  =
       prepareSubTitleAnimation scaleTo // simple scale in 
     ] |> Seq.iter( fun options -> timeline.add options |> ignore ) 
 
-     
-let Clean (model:IntroductionScreen.Model) = 
-
-  let removeChildren (layer:PIXI.Container) = 
-    // remove children
-    layer.children
-      |> Seq.iteri( fun i child -> 
-        layer.removeChild( layer.children.[i] ) |> ignore
-      )        
-    // remove layer from parent
-    layer.parent.removeChild layer |> ignore
-
-  if model.Root.IsSome then removeChildren model.Root.Value
-  if model.Cogs.IsSome then removeChildren model.Cogs.Value
-    
-
-     
 let Update (model:IntroductionScreen.Model option) (stage:PIXI.Container) (renderer:PIXI.WebGLRenderer) delta =
   
   let model, moveToNextScreen =
@@ -117,8 +100,7 @@ let Update (model:IntroductionScreen.Model option) (stage:PIXI.Container) (rende
         {
           State=IntroductionScreen.Init
           Texts=None
-          Cogs=Some (stage.addChild (PIXI.Container())) // note that the order of creation is important
-          Root=Some (stage.addChild (PIXI.Container())) // this layer will be on top
+          Layers = ["cogs";"root";]
           CogList=[||]
           Id=0.
         }
@@ -133,6 +115,10 @@ let Update (model:IntroductionScreen.Model option) (stage:PIXI.Container) (rende
 
         | IntroductionScreen.Init -> 
 
+          // add our layers
+          model.Layers
+            |> List.iter( fun name -> Layers.add name stage |> ignore ) 
+
           // we handle all clicks happening on screen
           let handleClick (renderer:PIXI.WebGLRenderer) _ =
             renderer.plugins.interaction.on( 
@@ -142,8 +128,12 @@ let Update (model:IntroductionScreen.Model option) (stage:PIXI.Container) (rende
                ) ) |> ignore
         
           // start our animations
-          let texts = 
-            prepareSprites (renderer.width * 0.5) (renderer.height * 0.5) model.Root.Value 
+          let texts =
+            let container = Layers.get "root"
+            match container with
+            | Some c->   
+              prepareSprites (renderer.width * 0.5) (renderer.height * 0.5) c 
+            | None -> failwith "unkown container root"
           
           model.Texts <- Some texts 
           
@@ -153,7 +143,8 @@ let Update (model:IntroductionScreen.Model option) (stage:PIXI.Container) (rende
           // add a new cog every second
           let addCog (model:IntroductionScreen.Model) _ =
             let texture = Assets.getTexture "cog"
-            if texture.IsSome && model.Cogs.IsSome then 
+            let container = Layers.get "cogs"
+            if texture.IsSome && container.IsSome then 
 
               let castTo (sprite: PIXI.Sprite) = 
                 sprite :?> ExtendedSprite<IntroductionScreen.CustomSprite>              
@@ -162,7 +153,7 @@ let Update (model:IntroductionScreen.Model option) (stage:PIXI.Container) (rende
               let data : IntroductionScreen.CustomSprite = {Angle=angle}
               let cog = 
                 ExtendedSprite(texture.Value,data)
-                |> model.Cogs.Value.addChild    
+                |> container.Value.addChild    
                 |> castTo    
               
               cog.anchor.set 0.5
