@@ -107,8 +107,6 @@ let init() =
     Assets.addObj "rightConfig" !!res?rightConfig?data
     Assets.addObj "leftConfig" !!res?leftConfig?data
     
-    Assets.addSound "goodMove" !!res?goodMove?data
-
     // Let's have some fun now!    
     startGame()
 

@@ -126,9 +126,8 @@ let handleMessage (model:GameScreen.CogModel) (msg:GameScreen.Cog.Msg option) =
                     // update score
                     score <- score + 1
 
-                    let hasSound = PIXI.sound.Globals.exists "goodMove"
-                    if hasSound then 
-                      PIXI.sound.Globals.play("goodMove") |> ignore
+                    // sound feedback 
+                    SoundUtils.play "goodMove"
 
                     // add new particle system at the right place
                     // given the way our cog is turning

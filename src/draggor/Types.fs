@@ -84,13 +84,9 @@ type ScreenKind =
 
 [<RequireQualifiedAccess>]
 module Assets = 
-  let mutable sounds = Map.empty<string,PIXI.sound.Sound> 
   let mutable textures = Map.empty<string,PIXI.Texture> 
   let mutable objFiles = Map.empty<string,obj> 
-
-  let addSound name sound = 
-    sounds <- sounds.Add(name,sound) 
-
+ 
   let addTexture name texture = 
     textures <- textures.Add(name,texture) 
 
@@ -99,9 +95,6 @@ module Assets =
 
   let getTexture name = 
      textures.TryFind name
-
-  let getSound name = 
-     sounds.TryFind name
 
   let getObj name = 
      objFiles.TryFind name     
@@ -185,3 +178,13 @@ module AnimationUtils =
       o.Item("x") <- xFactor
       o.Item("y") <- yFactor
     )         
+
+
+[<RequireQualifiedAccess>]
+module SoundUtils = 
+  let play name = 
+    let hasSound = PIXI.sound.Globals.exists name
+    if hasSound then 
+      PIXI.sound.Globals.play(name) |> ignore
+    else 
+      failwith (sprintf "unknown sound %s" name)
