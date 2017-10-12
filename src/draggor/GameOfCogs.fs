@@ -164,6 +164,26 @@ let handleMessage (model:GameScreen.CogModel) (msg:GameScreen.Cog.Msg option) =
         model.Score <- score 
         model.Found <- found 
         model.Emitters <- emitters
+
+let playAnimations model delta = 
+  // update our particles
+  DisplayParticles model delta
+
+  // Animations
+  if model.Score > 0 then
+
+    // make our cogs turn
+    for i in 0..(model.Found.Length-1) do
+      let index = model.Found.[i]
+      let target = model.Targets.[index] 
+
+      // animate all the cogs that have been found
+      // make sure the next cog will turn on the opposite direction
+      let way = if i % 2 = 0 then 1. else -1.0
+
+      // smaller cogs run faster
+      let speed = Cog.rotation * (1.25 - (Cog.scaleFactor target.Data.Size))
+      target.rotation <- target.rotation + way * speed
                  
 let Update (model:GameScreen.CogModel option) stage (renderer:PIXI.WebGLRenderer) delta =
 
@@ -191,8 +211,41 @@ let Update (model:GameScreen.CogModel option) stage (renderer:PIXI.WebGLRenderer
     // update our model
     | Some model ->  
       match model.State with 
-        | GameScreen.CogState.Win ->
+        | GameScreen.CogState.MoveToNextScreen ->
           model, true
+
+        | GameScreen.CogState.Win ->
+
+          // display a lovely win anim
+          let winSprite = 
+            SpriteUtils.fromTexture "win"
+            |> SpriteUtils.addToLayer "top"
+            |> SpriteUtils.scaleTo 0. 0.
+            |> SpriteUtils.moveTo (renderer.width * 0.5) (renderer.height * 0.5)
+            |> SpriteUtils.setAnchor 0.5 0.5            
+
+          let inAnim = AnimationUtils.XY winSprite.scale 1.0 1.0 300. 1200.
+          let outAnim = AnimationUtils.XY winSprite.scale 0. 0. 300. 0.
+          outAnim.delay <- !!2000. // wait 2 seconds 
+
+          // create our tweening timeline
+          let timelineOptions = 
+            jsOptions<anime.AnimeTimelineInstance>( fun o -> 
+              o.complete <- 
+                fun _ -> model.State <- GameScreen.CogState.MoveToNextScreen
+            )
+          
+          let timeline = anime.Globals.timeline(!!timelineOptions)
+          
+          // prepare our animations using a timeline
+          // each animation will play once and one after the other
+          [
+            inAnim // simple scale in 
+            outAnim // simple scale in 
+          ] |> Seq.iter( fun options -> timeline.add options |> ignore ) 
+      
+          model.State <- GameScreen.CogState.DoNothing
+          model, false
 
         | GameScreen.CogState.Init ->           
 
@@ -271,32 +324,18 @@ let Update (model:GameScreen.CogModel option) stage (renderer:PIXI.WebGLRenderer
 
           model,false
         | GameScreen.CogState.Play -> 
-
-          // update our particles
-          DisplayParticles model delta
-
-          // Animations
-          if model.Score > 0 then
-
-            // make our cogs turn
-            for i in 0..(model.Found.Length-1) do
-              let index = model.Found.[i]
-              let target = model.Targets.[index] 
-
-              // animate all the cogs that have been found
-              // make sure the next cog will turn on the opposite direction
-              let way = if i % 2 = 0 then 1. else -1.0
-
-              // smaller cogs run faster
-              let speed = Cog.rotation * (1.25 - (Cog.scaleFactor target.Data.Size))
-              target.rotation <- target.rotation + way * speed
           
+          playAnimations model delta
+
           if model.Score >=  model.Goal then       
             model.State <- GameScreen.CogState.Win
             model,false
           else
             model,false
 
-        | GameScreen.CogState.DoNothing -> model,false
+        | GameScreen.CogState.DoNothing -> 
+          
+          playAnimations model delta
+          model,false
 
   model, moveToNextScreen 

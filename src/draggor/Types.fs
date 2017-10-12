@@ -38,6 +38,7 @@ module GameScreen =
     | Play 
     | DoNothing
     | Win
+    | MoveToNextScreen 
 
   type CogModel = {
     mutable Cogs : ExtendedSprite<Cog.CogData> []

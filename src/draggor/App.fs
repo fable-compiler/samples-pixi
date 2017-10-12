@@ -83,6 +83,7 @@ let init() =
     ("target",sprintf "%s/target.png" path)
     ("title",sprintf "%s/Title.png" path)
     ("subtitle",sprintf "%s/subtitle.png" path)
+    ("win",sprintf "%s/win.png" path)
     
     // sounds
     ("goodMove",sprintf "%s/goodMove.mp3" path)
@@ -94,6 +95,7 @@ let init() =
     printfn ""
     
     // fill our Asset store 
+    Assets.addTexture "win" !!res?win?texture 
     Assets.addTexture "help1" !!res?help1?texture 
     Assets.addTexture "help2" !!res?help2?texture 
     Assets.addTexture "cog" !!res?cog?texture 
