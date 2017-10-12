@@ -9,7 +9,6 @@ open Fable.Pixi
 open Fable.Core
 open Fable.Core.JsInterop
 open Fable.Import.Animejs
-open Fable.Import.Pixi.Sound
 
 [<Literal>]
 let MAX_COGS = 300
@@ -96,7 +95,7 @@ let Update (model:IntroductionScreen.Model option) (stage:PIXI.Container) (rende
           // we handle all clicks happening on screen
           let handleClick (renderer:PIXI.WebGLRenderer) _ =
             renderer.plugins.interaction.on( 
-              !!string Pointerdown,
+              !!string Fable.Pixi.Event.Pointerdown,
               (fun _ -> 
                 model.State <- IntroductionScreen.State.ByeBye
                ) ) |> ignore
@@ -113,6 +112,10 @@ let Update (model:IntroductionScreen.Model option) (stage:PIXI.Container) (rende
           
           let scaleTo = 1.0
           titleAnim texts (handleClick renderer) scaleTo
+          
+          // play a sound
+          SoundUtils.play "gong"
+
           
           // add a new cog every second
           let addCog (model:IntroductionScreen.Model) _ =

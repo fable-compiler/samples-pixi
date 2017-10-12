@@ -14,7 +14,7 @@ let cogWidth = 100.
 let rotation = 0.1
 
 [<Literal>]
-let cogsCount = 5
+let cogsCount = 15
 
 // create a balanced list of cogs sizes
 let cogSizes() = 

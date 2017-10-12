@@ -87,6 +87,9 @@ let init() =
     
     // sounds
     ("goodMove",sprintf "%s/goodMove.mp3" path)
+    ("startDrag",sprintf "%s/startDrag.ogg" path)
+    ("winSound",sprintf "%s/win.ogg" path)
+    ("gong",sprintf "%s/gong.ogg" path)
   ] 
   |> Seq.iter( fun (name,path) -> loader.add(name,path) |> ignore  )
 

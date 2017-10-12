@@ -7,7 +7,6 @@ open Fable.Pixi
 open Fable.Core
 open Fable.Core.JsInterop
 open Fable.Import.Animejs
-open Fable.Import.Pixi.Sound
 
 
 let DisplayParticles (model:GameScreen.CogModel) delta = 
@@ -54,18 +53,6 @@ let greatAnim x y =
         let position : PIXI.Point = !!sprite.position
         position.x <- x
         position.y <- y
-
-                
-        (* cleanup is done elsewhere
-        let timelineOptions = 
-          jsOptions<anime.AnimeTimelineInstance>( fun o -> 
-            o.complete <- 
-              fun _ -> 
-                try
-                  sprite.parent.removeChild(sprite) |> ignore
-                with e -> printfn "sprite already deleted"
-          )
-        *)
 
         let prepareAnimation scale= 
           jsOptions<anime.AnimeAnimParams> (fun o ->
@@ -216,6 +203,8 @@ let Update (model:GameScreen.CogModel option) stage (renderer:PIXI.WebGLRenderer
 
         | GameScreen.CogState.Win ->
 
+          SoundUtils.play "winSound"
+
           // display a lovely win anim
           let winSprite = 
             SpriteUtils.fromTexture "win"
@@ -310,9 +299,14 @@ let Update (model:GameScreen.CogModel option) stage (renderer:PIXI.WebGLRenderer
                     cog.interactive <- true
                     cog.buttonMode <- true        
                     cog
-                      |> attachEvent Pointerdown (Cog.onDragStart cog)
-                      |> attachEvent Pointerup (Cog.onDragEnd cog)
-                      |> attachEvent Pointermove (Cog.onDragMove (handleMessage model) stage cog)
+                      |> Fable.Pixi.Event.attach Fable.Pixi.Event.Pointerdown (
+                        fun iev ->
+                          // sound feedback 
+                          SoundUtils.play "startDrag"                         
+                          Cog.onDragStart cog iev)
+
+                      |> Fable.Pixi.Event.attach Fable.Pixi.Event.Pointerup (Cog.onDragEnd cog)
+                      |> Fable.Pixi.Event.attach Fable.Pixi.Event.Pointermove (Cog.onDragMove (handleMessage model) stage cog)
                       |> c.addChild
                       |> Cog.castTo
                 )
