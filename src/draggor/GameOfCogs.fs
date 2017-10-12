@@ -10,7 +10,7 @@ open Fable.Import.Animejs
 open Fable.Import.Pixi.Sound
 
 
-let DisplayParticles model delta = 
+let DisplayParticles (model:GameScreen.CogModel) delta = 
   model.Emitters
     |> Seq.iter( fun emitter -> emitter.update (delta * 0.01) )
   
@@ -56,10 +56,16 @@ let greatAnim x y =
         position.y <- y
 
                 
+        (* cleanup is done elsewhere
         let timelineOptions = 
           jsOptions<anime.AnimeTimelineInstance>( fun o -> 
-            o.complete <- fun _ -> sprite.parent.removeChild(sprite) |> ignore
+            o.complete <- 
+              fun _ -> 
+                try
+                  sprite.parent.removeChild(sprite) |> ignore
+                with e -> printfn "sprite already deleted"
           )
+        *)
 
         let prepareAnimation scale= 
           jsOptions<anime.AnimeAnimParams> (fun o ->
@@ -71,7 +77,7 @@ let greatAnim x y =
           )
         
         // create our tweening timeline
-        let timeline = anime.Globals.timeline(!!timelineOptions)
+        let timeline = anime.Globals.timeline()
         
         // prepare our animations
         [
@@ -82,11 +88,11 @@ let greatAnim x y =
     | None -> failwith "no layer top"
 
       
-let handleMessage model (msg:Msg option) = 
+let handleMessage (model:GameScreen.CogModel) (msg:GameScreen.Cog.Msg option) = 
 
     if msg.IsSome then 
       match msg.Value with 
-      | OnMove (cog,pointerId) -> 
+      | GameScreen.Cog.OnMove (cog,pointerId) -> 
         let pos : PIXI.Point = !!cog.position
         let mutable score = model.Score
         let mutable found = model.Found
@@ -160,7 +166,7 @@ let handleMessage model (msg:Msg option) =
         model.Found <- found 
         model.Emitters <- emitters
                  
-let Update (model:CogModel option) stage (renderer:PIXI.WebGLRenderer) delta =
+let Update (model:GameScreen.CogModel option) stage (renderer:PIXI.WebGLRenderer) delta =
 
   let model, moveToNextScreen =
     match model with 
@@ -168,16 +174,17 @@ let Update (model:CogModel option) stage (renderer:PIXI.WebGLRenderer) delta =
     // this is a brand new model
     | None -> 
 
-      let newModel : CogModel = 
+      let sizes = Cog.cogSizes()
+      let newModel : GameScreen.CogModel = 
         {
           Cogs = [||] 
           Targets = [||]
           Score= 0
-          Goal=0
-          State=CogState.Init
+          Goal=sizes.Length
+          State=GameScreen.CogState.Init
           Found=[||]
           Emitters=[||]
-          Sizes = [||]
+          Sizes = sizes
           Layers = ["ui";"targets";"cogs";"dock";"emitter";"top"]
         }
       newModel, false
@@ -185,84 +192,62 @@ let Update (model:CogModel option) stage (renderer:PIXI.WebGLRenderer) delta =
     // update our model
     | Some model ->  
       match model.State with 
-        | CogState.Win ->
+        | GameScreen.CogState.Win ->
           model, true
 
-        | CogState.Init ->           
+        | GameScreen.CogState.Init ->           
 
             // add our layers
             model.Layers
               |> List.iter( fun name -> Layers.add name stage |> ignore ) 
         
-            let sizes = Cog.cogSizes()
-            model.Goal <- sizes.Length // the cogs to place correctly in order to win
-            model.State <- CogState.PlaceHelp
-            model.Sizes <- sizes
-
+            model.State <- GameScreen.CogState.PlaceHelp
             model,false      
-        | CogState.PlaceHelp -> 
+
+        | GameScreen.CogState.PlaceHelp -> 
           
-          let container = Layers.get "ui"
-          match container with 
-            | Some c -> 
-              let help = Assets.getTexture "help1"
-              if help.IsSome then 
-                let sprite = 
-                  PIXI.Sprite help.Value
-                  |> c.addChild
+          SpriteUtils.fromTexture "help1"
+            |> SpriteUtils.addToLayer "ui"
+            |> SpriteUtils.moveTo (renderer.width * 0.55) (renderer.height * 0.75)
+            |> SpriteUtils.setAnchor 0.5 0.5          
+            |> ignore
 
-                sprite._anchor.set(0.5) 
-                let position : PIXI.Point = !!sprite.position
-                position.x <- renderer.width * 0.65
-                position.y <- renderer.height * 0.75
-
-              let help = Assets.getTexture "help2"
-              if help.IsSome then 
-                let sprite = 
-                  PIXI.Sprite help.Value
-                  |> c.addChild
-
-                sprite._anchor.set(0.5) 
-                let position : PIXI.Point = !!sprite.position
-                position.x <- renderer.width * 0.70
-                position.y <- renderer.height * 0.3
-
-            | None -> failwith "ui layer not found"
-
-          model.State <- CogState.PlaceCogs
-
+          SpriteUtils.fromTexture "help2"
+            |> SpriteUtils.addToLayer "ui"
+            |> SpriteUtils.moveTo (renderer.width * 0.65) (renderer.height * 0.30)
+            |> SpriteUtils.setAnchor 0.5 0.5          
+            |> ignore
+          
+          model.State <- GameScreen.CogState.PlaceCogs
           model,false      
-        | CogState.PlaceCogs -> 
 
-          let container = Layers.get "cogs"
-          match container with 
-            | Some c -> 
+        | GameScreen.CogState.PlaceCogs -> 
 
-              // create our cogs and center them!
-              let targets = 
-                
-                // create our cogs
-                // they have to fit in the given space
-                let maxWidth = renderer.width * 0.8
-                let targets,(totalWidth,totalHeight) 
-                  = Cog.fitCogInSpace model 0 (0.,0.) (0.,0.) None [] maxWidth model.Sizes
-                          
-                // center our cogs
-                let xMargin = (renderer.width - totalWidth) * 0.5
-                let yMargin = totalHeight * 0.5
-                targets 
-                  |> Seq.map ( 
-                      (Cog.placeMarker xMargin yMargin (renderer.height*0.5)) 
-                        >> c.addChild
-                      )
-                   |> Seq.toArray
-             
-              model.Targets <- targets
-              model.State <- CogState.PlaceDock
-            | None -> failwith "unknown container cogs"
-          
+          // create our cogs and center them!
+          let targets = 
+            
+            // create our cogs
+            // they have to fit in the given space
+            let maxWidth = renderer.width * 0.8
+            let targets,(totalWidth,totalHeight) 
+              = Cog.fitCogInSpace model 0 (0.,0.) (0.,0.) None [] maxWidth model.Sizes
+                      
+            // center our cogs
+            let xMargin = (renderer.width - totalWidth) * 0.5
+            let yMargin = totalHeight * 0.5
+            targets 
+              |> Seq.map ( 
+                  (Cog.placeMarker xMargin yMargin (renderer.height*0.5) "cogs") 
+                  >> Cog.castTo
+                  )
+               |> Seq.toArray
+         
+          model.Targets <- targets
+          model.State <- GameScreen.CogState.PlaceDock
+                    
           model,false     
-        | CogState.PlaceDock -> // prepare our 4 base cogs
+                
+        | GameScreen.CogState.PlaceDock -> // prepare our 4 base cogs
 
           let container = Layers.get "dock"
           match container with 
@@ -282,36 +267,37 @@ let Update (model:CogModel option) stage (renderer:PIXI.WebGLRenderer) delta =
                 |> Seq.toArray
 
               model.Cogs <- cogs
-              model.State <- CogState.Play
+              model.State <- GameScreen.CogState.Play
             | None -> failwith "unknown container dock"
 
           model,false
-        | CogState.Play -> 
+        | GameScreen.CogState.Play -> 
 
           // update our particles
           DisplayParticles model delta
 
           // Animations
           if model.Score > 0 then
+
             // make our cogs turn
-            model.Found
-              |> Seq.iter( fun i ->
-                let target = model.Targets.[i] 
-                // animate all the cogs that have been found
-                // make sure the next cog will turn on the opposite direction
-                let way = if i % 2 = 0 then 1. else -1.0
-                // smaller cogs run faster
-                let speed = Cog.rotation * (1.25 - (Cog.scaleFactor target.Data.Size))
-                target.rotation <- target.rotation + way * speed
-              )              
+            for i in 0..(model.Found.Length-1) do
+              let index = model.Found.[i]
+              let target = model.Targets.[index] 
+
+              // animate all the cogs that have been found
+              // make sure the next cog will turn on the opposite direction
+              let way = if i % 2 = 0 then 1. else -1.0
+
+              // smaller cogs run faster
+              let speed = Cog.rotation * (1.25 - (Cog.scaleFactor target.Data.Size))
+              target.rotation <- target.rotation + way * speed
           
           if model.Score >=  model.Goal then       
-            model.State <- CogState.Win
+            model.State <- GameScreen.CogState.Win
             model,false
-    //        ScreenKind.NextScreen ScreenKind.GameOver
           else
             model,false
 
-        | CogState.DoNothing -> model,false
+        | GameScreen.CogState.DoNothing -> model,false
 
   model, moveToNextScreen 

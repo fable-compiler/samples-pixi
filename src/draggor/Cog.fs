@@ -14,7 +14,7 @@ let cogWidth = 100.
 let rotation = 0.1
 
 [<Literal>]
-let cogsCount = 15
+let cogsCount = 5
 
 // create a balanced list of cogs sizes
 let cogSizes() = 
@@ -25,10 +25,10 @@ let cogSizes() =
       let rand = Math.random()
       yield
         match rand with 
-        | x when x > 0. && x < 0.3 -> Tiny
-        | x when x >= 0.3 && x < 0.7 -> Small
-        | x when x >= 0.7 && x < 0.9 -> Medium
-        | _ -> Large          
+        | x when x > 0. && x < 0.3 -> GameScreen.Cog.Tiny
+        | x when x >= 0.3 && x < 0.7 -> GameScreen.Cog.Small
+        | x when x >= 0.7 && x < 0.9 -> GameScreen.Cog.Medium
+        | _ -> GameScreen.Cog.Large          
   |]
 
   // shuffle our table
@@ -47,21 +47,30 @@ let cogSizes() =
   distribution
 
   // scale cog according to kind
-let scaleFactor size = 
+let scaleFactor (size:GameScreen.Cog.Size) = 
   match size with 
-  | Tiny -> 0.25
-  | Small -> 0.5
-  | Medium -> 0.75
-  | Large -> 1.0
+  | GameScreen.Cog.Tiny -> 0.25
+  | GameScreen.Cog.Small -> 0.5
+  | GameScreen.Cog.Medium -> 0.75
+  | GameScreen.Cog.Large -> 1.0
 
 
-let make kind =
+let make (kind:GameScreen.Cog.Size) =
 
   let texture = Assets.getTexture "cog"
   if texture.IsSome then 
+    
     // Extended Sprite from Fable.Pixi allows to add custom data inside our Sprite
+    let data : GameScreen.Cog.CogData= 
+      { IsFound = false; 
+        StartPosition=(0.,0.); 
+        Target=(0.,0.); 
+        Size= kind; 
+        IsDragging = false; 
+        Interaction = None }
+
     let cog = 
-      ExtendedSprite(texture.Value, { IsFound = false; StartPosition=(0.,0.); Target=(0.,0.); Size= kind; IsDragging = false; Interaction = None })
+      ExtendedSprite(texture.Value, data)
     // center the cog's anchor point
     cog.anchor.set(0.5)  
 
@@ -69,7 +78,7 @@ let make kind =
   else 
     failwith ("target is not a value")
 
-let moveTo x y (cog:ExtendedSprite<CogData>) = 
+let moveTo x y (cog:ExtendedSprite<GameScreen.Cog.CogData>) = 
   // place our cog on screen
   let position : PIXI.Point = !!cog.position
   position.x <- x
@@ -77,12 +86,12 @@ let moveTo x y (cog:ExtendedSprite<CogData>) =
   cog.Data.StartPosition <- (x,y)
   cog
 
-let addTarget x y (cog:ExtendedSprite<CogData>) = 
+let addTarget x y (cog:ExtendedSprite<GameScreen.Cog.CogData>) = 
   // place our cog on screen
   cog.Data.Target <- (x,y) 
   cog
   
-let scaleTo (cog:ExtendedSprite<CogData>) = 
+let scaleTo (cog:ExtendedSprite<GameScreen.Cog.CogData>) = 
   let scaleFactor = scaleFactor cog.Data.Size
   let scale : PIXI.Point = !!cog.scale
   scale.x <- scaleFactor
@@ -91,9 +100,9 @@ let scaleTo (cog:ExtendedSprite<CogData>) =
 
 // cast back to ExtendedSprite since attachEvent returns a Sprite
 let castTo (sprite: PIXI.Sprite) = 
-  sprite :?> ExtendedSprite<CogData>
+  sprite :?> ExtendedSprite<GameScreen.Cog.CogData>
   
-let onDragEnd (cog:ExtendedSprite<CogData>) _= 
+let onDragEnd (cog:ExtendedSprite<GameScreen.Cog.CogData>) _= 
   cog.alpha <- 1.
   cog.Data.Interaction <- None
   cog.Data.IsDragging <- false
@@ -102,13 +111,13 @@ let onDragEnd (cog:ExtendedSprite<CogData>) _=
   position.x <- startX
   position.y <- startY
 
-let onDragStart (cog: ExtendedSprite<CogData>) (ev:PIXI.interaction.InteractionEvent) = 
+let onDragStart (cog: ExtendedSprite<GameScreen.Cog.CogData>) (ev:PIXI.interaction.InteractionEvent) = 
   cog.alpha <- 0.5
   cog.Data.Interaction <- Some ev.data
   cog.Data.IsDragging <- true
   
     
-let onDragMove (cbk:Msg option->unit) stage (cog: ExtendedSprite<CogData>) (ev:PIXI.interaction.InteractionEvent) =
+let onDragMove (cbk:GameScreen.Cog.Msg option->unit) stage (cog: ExtendedSprite<GameScreen.Cog.CogData>) (ev:PIXI.interaction.InteractionEvent) =
   if cog.Data.IsDragging then 
     if cog.Data.Interaction.IsSome then 
       let interaction = cog.Data.Interaction.Value
@@ -116,11 +125,11 @@ let onDragMove (cbk:Msg option->unit) stage (cog: ExtendedSprite<CogData>) (ev:P
       let position : PIXI.Point = !!cog.position      
       position.x <- localPosition.x
       position.y <- localPosition.y
-      cbk( Some(OnMove(cog,ev.data.pointerID) ))
+      cbk( Some(GameScreen.Cog.OnMove(cog,ev.data.pointerID) ))
            
 
 // when cog is found change texture and toggle flag
-let show (cog: ExtendedSprite<CogData>) =
+let show (cog: ExtendedSprite<GameScreen.Cog.CogData>) =
   let texture = Assets.getTexture "cog"
   if texture.IsSome then 
     cog.texture <- texture.Value 
@@ -130,24 +139,23 @@ let show (cog: ExtendedSprite<CogData>) =
     cog
 
 // place our markers 
-let placeMarker xMargin yMargin startY (cog:ExtendedSprite<CogData>) = 
+let placeMarker xMargin yMargin startY layerName (cog:ExtendedSprite<GameScreen.Cog.CogData>) = 
   let (x,y) = cog.Data.Target
   let texture = Assets.getTexture "target"
   if texture.IsSome then 
     cog.texture <- texture.Value
-    // center the cog"s anchor point
-    cog.anchor.set(0.5)  
-    let position : PIXI.Point = !!cog.position
-    position.x <- x + xMargin // center our cogs on x axis
-    position.y <- startY + y - yMargin // center our cogs on y axis
+    cog 
+      |> SpriteUtils.addToLayer layerName
+      |> SpriteUtils.moveTo (x + xMargin) (startY + y - yMargin)
+      |> SpriteUtils.setAnchor 0.5 0.5   
+      |> ignore       
   cog
-
 
 // simply add our cogs
 // There's really nothing complicated here
 // Each cog is placed according to the previous one
 // hence the recursion 
-let rec fitCogInSpace model index (totalWidth,totalHeight) first previous cogs maxWidth (sizes:Size [])= 
+let rec fitCogInSpace (model:GameScreen.CogModel) index (totalWidth,totalHeight) first previous cogs maxWidth (sizes:GameScreen.Cog.Size [])= 
   
   match index with
   | idx when idx < model.Goal -> // check whether we can add one more cogs
@@ -155,7 +163,7 @@ let rec fitCogInSpace model index (totalWidth,totalHeight) first previous cogs m
       let kind = sizes.[index]
       let currentCog = make kind
       match previous with 
-      | Some (previousCog:ExtendedSprite<CogData>) ->
+      | Some (previousCog:ExtendedSprite<GameScreen.Cog.CogData>) ->
         
         // we want to move our new cog just next to the previous
         let (firstX,firstY) = first

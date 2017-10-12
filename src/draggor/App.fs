@@ -90,6 +90,8 @@ let init() =
   |> Seq.iter( fun (name,path) -> loader.add(name,path) |> ignore  )
 
   loader.load( fun (loader:PIXI.loaders.Loader) (res:PIXI.loaders.Resource) ->
+
+    printfn ""
     
     // fill our Asset store 
     Assets.addTexture "help1" !!res?help1?texture 
@@ -113,21 +115,3 @@ let init() =
   ) |> ignore
 
 init() // it all begins there
-
-(*
-let play error (sound:PIXI.sound.Sound) ok = 
-  printfn "in"
-  sound.play() |> ignore 
-
-let path = "../img/draggor"
-let o = jsOptions<PIXI.sound.Options> (fun o ->
-  o.url <- Some (sprintf "%s/goodMove.mp3" path)
-  o.preload <- Some true
-  o.loaded <-  Some play
-)
-PIXI.sound.Sound.from !!o |> ignore
-*)
-(*
-let sound = PIXI.sound.Globals.add("goodMove",!!o)
-sound.play() |> ignore
-*)

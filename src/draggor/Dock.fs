@@ -10,7 +10,7 @@ open Types
 let prepare container stage renderer= 
   
   // create our cogs for our dock 
-  let rec makeCogs cogs totalWidth (list:ExtendedSprite<CogData> list)  (container:PIXI.Container) (renderer: PIXI.WebGLRenderer )= 
+  let rec makeCogs cogs totalWidth (list:ExtendedSprite<GameScreen.Cog.CogData> list)  (container:PIXI.Container) (renderer: PIXI.WebGLRenderer )= 
     let dockY = renderer.height * 0.9
     match cogs with
     | [] -> // center our cogs on screen
@@ -33,4 +33,9 @@ let prepare container stage renderer=
       makeCogs remains (totalWidth+width) (list @ [cog]) container renderer    
   
   makeCogs 
-    [Tiny;Small;Medium;Large] 0. [] container renderer
+    [
+      GameScreen.Cog.Tiny
+      GameScreen.Cog.Small
+      GameScreen.Cog.Medium
+      GameScreen.Cog.Large
+    ] 0. [] container renderer

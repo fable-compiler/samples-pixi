@@ -7,49 +7,49 @@ open Fable.Import.Animejs
 open Fable.Pixi
 open Fable.Core.JsInterop
 
-type Size = 
-  | Tiny 
-  | Small
-  | Medium 
-  | Large
 
-type CogData = {
-  Size: Size
-  mutable Target: float*float
-  mutable StartPosition: float*float
-  mutable IsDragging: bool
-  mutable Interaction : PIXI.interaction.InteractionData option    
-  mutable IsFound: bool
-}
+module GameScreen = 
 
-type PointerId = int
-type Msg =
-  | OnMove of ExtendedSprite<CogData> * PointerId
+  module Cog =
+    type Size = 
+      | Tiny 
+      | Small
+      | Medium 
+      | Large
 
-type Layer = PIXI.Container
+    type CogData = {
+      Size: Size
+      mutable Target: float*float
+      mutable StartPosition: float*float
+      mutable IsDragging: bool
+      mutable Interaction : PIXI.interaction.InteractionData option    
+      mutable IsFound: bool
+    }
 
+    type PointerId = int
+    type Msg =
+      | OnMove of ExtendedSprite<CogData> * PointerId
 
-[<RequireQualifiedAccess>]
-type CogState = 
-  | Init
-  | PlaceHelp
-  | PlaceCogs
-  | PlaceDock
-  | Play 
-  | DoNothing
-  | Win
+  type CogState = 
+    | Init
+    | PlaceHelp
+    | PlaceCogs
+    | PlaceDock
+    | Play 
+    | DoNothing
+    | Win
 
-type CogModel = {
-  mutable Cogs : ExtendedSprite<CogData> []
-  mutable Targets : ExtendedSprite<CogData> []
-  mutable Score : int
-  mutable Goal : int
-  mutable Found: int []
-  mutable State: CogState
-  mutable Emitters : PIXI.particles.Emitter []
-  mutable Sizes : Size []
-  Layers: string list
-}
+  type CogModel = {
+    mutable Cogs : ExtendedSprite<Cog.CogData> []
+    mutable Targets : ExtendedSprite<Cog.CogData> []
+    mutable Score : int
+    Goal : int
+    mutable Found: int []
+    mutable State: CogState
+    mutable Emitters : PIXI.particles.Emitter []
+    Sizes : Cog.Size []
+    Layers: string list
+  }
 
 [<RequireQualifiedAccess>]
 module IntroductionScreen = 
@@ -77,7 +77,7 @@ module IntroductionScreen =
   }
 
 type ScreenKind = 
-  | GameOfCogs of CogModel option
+  | GameOfCogs of GameScreen.CogModel option
   | GameOver  
   | Title  of IntroductionScreen.Model option
   | NextScreen of ScreenKind
@@ -122,11 +122,14 @@ module Layers =
      match (layers.TryFind name) with 
      | Some layer -> 
 
-        // remove from pixi
-        layer.children
-          |> Seq.iteri( fun i child -> 
-            layer.removeChild( layer.children.[i] ) |> ignore
-          )        
+        // remove children if found any
+        try 
+          layer.children
+            |> Seq.iteri( fun i child -> 
+              layer.removeChild( layer.children.[i] ) |> ignore
+            ) 
+         with e -> printfn "No children where found in layer %s" name        
+
         // remove layer from parent
         layer.parent.removeChild layer |> ignore
 
