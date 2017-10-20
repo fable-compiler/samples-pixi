@@ -10,7 +10,7 @@ Bindings & samples for Pixi.js related libraries including:
 
 ![Pixi-Particles](public/img/dragon.gif)
 
-[Pixi-particles](https://github.com/pixijs/pixi-particles)'s really easy to use and there's a great [online editor](https://github.com/pixijs/pixi-particles) to configure your particle effects easily
+[Pixi-particles](https://github.com/pixijs/pixi-particles)'s really easy to use and there's a great [online editor](https://pixijs.github.io/pixi-particles-editor/) to configure your particle effects easily
 
 >Go to the `src/particles` folder to have a go. And make changes to the json located under `public/img/emitter.json` to see what you can do with particles.
 
@@ -37,7 +37,7 @@ We support [Animejs](http://animejs.com/) for all your tweenings!
 - Restore NuGet dependencies: `dotnet restore`
 - **Move to src folder**: `cd src`
 - Start Fable and Webpack dev server: `dotnet fable yarn-start`
-- In your browser, open `localhost:8080/[EXAMPLE]` (e.g. `http://localhost:8080/ozmo`)
+- In your browser, open `localhost:8080/[EXAMPLE]` (e.g. `http://localhost:8080/basic`)
 
 Any modification you do to the F# code will be reflected in the web page after saving.
 If you want to write JS files to disk instead of using the development server,
