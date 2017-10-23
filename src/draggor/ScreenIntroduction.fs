@@ -9,6 +9,7 @@ open Fable.Pixi
 open Fable.Core
 open Fable.Core.JsInterop
 open Fable.Import.Animejs
+open Fable.AnimeUtils
 
 [<Literal>]
 let MAX_COGS = 300
@@ -29,11 +30,11 @@ let titleAnim texts handleClick scaleTo  =
 
     let prepareSubTitleAnimation scale= 
       let options = Fable.AnimeUtils.XY s2.scale scale scale duration elasticity
-      options.complete <- Some handleClick 
+      options.complete <- handleClick 
       options
 
     // create our tweening timeline
-    let timeline = anime.Globals.timeline()
+    let timeline = GetTimeline None
     
     // prepare our animations using a timeline
     // each animation will play once and one after the other

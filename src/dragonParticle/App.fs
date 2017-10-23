@@ -9,6 +9,7 @@ open Fable.Import.Pixi.Particles
 open Fable.Import.Animejs
 open Fable.Import.Browser
 open Fable.Import.JS
+open Fable.AnimeUtils
 
 [<Literal>]
 let duration = 4000.
@@ -48,6 +49,7 @@ let onLoaded (loader:PIXI.loaders.Loader) (res:PIXI.loaders.Resource) =
     dragon.anchor.set 0.5 |> ignore
     dragon.position?x <- x - 30.
     dragon.position?y <- y - 10.
+    dragon.alpha <- 0.3
     app.stage.addChild dragon |> ignore
 
     // display a beautiful text
@@ -69,23 +71,25 @@ let onLoaded (loader:PIXI.loaders.Loader) (res:PIXI.loaders.Resource) =
 
     // Make the timeline loop until the end of the woooooooorld!
     let timelineOptions = 
-      jsOptions<anime.AnimeTimelineInstance>( fun o -> 
+      jsOptions<AnimInput>( fun o -> 
         o.loop <- !!true        
       )
     
     // create our tweening timeline
-    let timeline = anime.Globals.timeline(!!timelineOptions)
+    let timeline = GetTimeline (Some timelineOptions)
+    //printfn ""
 
     // get the path values from the div in index.html
-    let path = anime.Globals.path(!!"#motionPath path")
-    
+    let path = GetPath "#motionPath path"
+    let x = path "x"
+
     let options = 
-      jsOptions<anime.AnimeAnimParams> (fun o ->
+      jsOptions<AnimInput> (fun o ->
           o.easing <- !!easing
           o.duration <- !!duration
           o.targets <- !!emitter.ownerPos
-          o.Item("x") <- !!path("x")
-          o.Item("y") <- !!path("y")
+          o.Item("x") <- !!path "x"
+          o.Item("y") <- !!path "y"
         )
 
     // prepare our animation

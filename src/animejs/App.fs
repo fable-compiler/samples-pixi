@@ -9,6 +9,7 @@ open Fable.Import.Pixi.Particles
 open Fable.Import.Animejs
 open Fable.Import.Browser
 open Fable.Import.JS
+open Fable.AnimeUtils
 
 [<Literal>]
 let duration = 1000.
@@ -49,12 +50,12 @@ let onLoaded (loader:PIXI.loaders.Loader) (res:PIXI.loaders.Resource) =
 
     // Make the timeline loop until the end of the woooooooorld!
     let timelineOptions = 
-      jsOptions<anime.AnimeTimelineInstance>( fun o -> 
+      jsOptions<AnimInput>( fun o -> 
         o.loop <- !!true
       )
 
     let prepareAnimation (prop:string) (value:'t) = 
-      jsOptions<anime.AnimeAnimParams> (fun o ->
+      jsOptions<AnimInput> (fun o ->
         o.easing <- !!easing
         o.duration <- !!duration
         o.targets <- !!emitter.ownerPos
@@ -62,7 +63,7 @@ let onLoaded (loader:PIXI.loaders.Loader) (res:PIXI.loaders.Resource) =
       )
     
     // create our tweening timeline
-    let timeline = anime.Globals.timeline(!!timelineOptions)
+    let timeline = GetTimeline (Some timelineOptions)
     
     // prepare our animations
     [
