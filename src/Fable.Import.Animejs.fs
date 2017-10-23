@@ -17,7 +17,7 @@ and [<AllowNullLiteral>] AnimeStatic =
     [<Emit("$0($1...)")>] abstract Invoke: ?``params``: AnimInput -> AnimInstance
     abstract remove: targets: target -> unit
     abstract getValue: targets: target * propName: string -> U2<string, float>
-    abstract path: path: obj * ?percent: float -> Func<string, FunctionBasedValues>
+    abstract path: path: U4<string, HTMLElement, SVGElement, obj> * ?percent: float-> Func<string, FunctionBasedValues>
     abstract setDashoffset: el: SVGPathElement -> float
     abstract bezier: x1: float * x2: float * y1: float * y2: float -> Func<obj, float>
     abstract timeline: ?``params``: AnimInput -> TimelineInstance
