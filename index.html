@@ -1,0 +1,341 @@
+<!doctype html>
+<html>
+
+<head>
+  <title>Fable Browser Samples</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Josefin+Sans:400,300,600,700|Roboto+Mono">
+  <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" type="text/css" href="/css/bulma.custom.css">
+  <link rel="shortcut icon" href="/img/shared/fable.ico" />
+  <script src="https://cdn.polyfill.io/v2/polyfill.js?features=default,fetch"></script>
+</head>
+
+<body>
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <div class="navbar-item title is-4">Fable</div>
+      <div class="navbar-burger" data-target="navMenu"><span></span><span></span><span></span></div>
+    </div>
+    <div id="navMenu" class=" navbar-menu">
+      <div class="navbar-start"><a class=" navbar-item" href="/">Home</a><a class=" navbar-item" href="/repl">REPL</a><a class=" navbar-item" href="/docs">Docs</a>
+        <a
+          class=" navbar-item is-active" href="/samples-browser">Samples</a><a class=" navbar-item" href="/fableconf">FableConf</a></div>
+      <div class="navbar-end">
+        <div class="navbar-item">
+          <div class="field is-grouped">
+            <p class="control"><a class="button twitter" href="https://twitter.com/FableCompiler"><span class="icon"><i class="fa fa-twitter"></i></span><span>Share the love!</span></a></p>
+            <p
+              class="control"><a class="button github" href="https://gitter.im/fable-compiler/Fable"><span class="icon"><i class="fa fa-comments"></i></span><span>Chat</span></a></p>
+              <p
+                class="control"><a class="button github" href="https://github.com/fable-compiler/Fable"><span class="icon"><i class="fa fa-github"></i></span><span>Contribute</span></a></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+  <div style="overflow:hidden;">
+    <section class="hero fable-header">
+      <div class="hero-body">
+        <div class="container">
+          <div class="columns is-vcentered">
+            <div class="column"><img class="fable-logo" src="/img/shared/fable_logo.png" /></div>
+            <div class="column has-text-right">
+              <h1 class="title is-1">Pixi Samples</h1>
+              <h1 class="subtitle is-4">Explore Fable and Pixi through fun samples!</h1>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <div class="columns">
+      <div class="column"></div>
+      <div class="column is-two-thirds">
+        <div class="fable-samples">
+          <ul>
+            <div class="card">
+              <div class="card-content">
+                <article class="media">
+                  <figure class="media-left">
+                    <figure class="image is-128x128"><a href="pixi"><img src="img/pixijs.png"/></a></figure>
+                  </figure>
+                  <div class="media-content">
+                    <h1 class="title is-4"><a href="basic">Basic</a></h1>
+                  </div>
+                </article>
+              </div>
+
+              <div class="card">
+                <div class="card-content">
+                  <article class="media">
+                    <figure class="media-left">
+                      <figure class="image is-128x128"><a href="container"><img src="img/pixijs.png"/></a></figure>
+                    </figure>
+                    <div class="media-content">
+                      <h1 class="title is-4"><a href="container">Container</a></h1>
+                    </div>
+                  </article>
+                </div>              
+              </div>
+
+              <div class="card">
+                <div class="card-content">
+                  <article class="media">
+                    <figure class="media-left">
+                      <figure class="image is-128x128"><a href="containerPivot"><img src="img/pixijs.png"/></a></figure>
+                    </figure>
+                    <div class="media-content">
+                      <h1 class="title is-4"><a href="containerPivot">Container Pivot</a></h1>
+                    </div>
+                  </article>
+                </div>              
+              </div>
+              
+              <div class="card">
+                <div class="card-content">
+                  <article class="media">
+                    <figure class="media-left">
+                      <figure class="image is-128x128"><a href="ssa"><img src="img/pixijs.png"/></a></figure>
+                    </figure>
+                    <div class="media-content">
+                      <h1 class="title is-4"><a href="ssa">Sprite Sheet Animation</a></h1>
+                    </div>
+                  </article>
+                </div>              
+              </div>                       
+
+              <div class="card">
+                <div class="card-content">
+                  <article class="media">
+                    <figure class="media-left">
+                      <figure class="image is-128x128"><a href="click"><img src="img/pixijs.png"/></a></figure>
+                    </figure>
+                    <div class="media-content">
+                      <h1 class="title is-4"><a href="click">Click</a></h1>
+                    </div>
+                  </article>
+                </div>              
+              </div>               
+
+              <div class="card">
+                <div class="card-content">
+                  <article class="media">
+                    <figure class="media-left">
+                      <figure class="image is-128x128"><a href="tilingSprite"><img src="img/pixijs.png"/></a></figure>
+                    </figure>
+                    <div class="media-content">
+                      <h1 class="title is-4"><a href="tilingSprite">Tiling Sprite</a></h1>
+                    </div>
+                  </article>
+                </div>              
+              </div>   
+
+              <div class="card">
+                <div class="card-content">
+                  <article class="media">
+                    <figure class="media-left">
+                      <figure class="image is-128x128"><a href="text"><img src="img/pixijs.png"/></a></figure>
+                    </figure>
+                    <div class="media-content">
+                      <h1 class="title is-4"><a href="text">Text</a></h1>
+                    </div>
+                  </article>
+                </div>              
+              </div>     
+              
+              <div class="card">
+                <div class="card-content">
+                  <article class="media">
+                    <figure class="media-left">
+                      <figure class="image is-128x128"><a href="graphics"><img src="img/pixijs.png"/></a></figure>
+                    </figure>
+                    <div class="media-content">
+                      <h1 class="title is-4"><a href="graphics">Graphics</a></h1>
+                    </div>
+                  </article>
+                </div>              
+              </div>   
+              
+              <div class="card">
+                <div class="card-content">
+                  <article class="media">
+                    <figure class="media-left">
+                      <figure class="image is-128x128"><a href="video"><img src="img/pixijs.png"/></a></figure>
+                    </figure>
+                    <div class="media-content">
+                      <h1 class="title is-4"><a href="video">Video</a></h1>
+                    </div>
+                  </article>
+                </div>              
+              </div>                  
+
+              <div class="card">
+                <div class="card-content">
+                  <article class="media">
+                    <figure class="media-left">
+                      <figure class="image is-128x128"><a href="renderTexture"><img src="img/pixijs.png"/></a></figure>
+                    </figure>
+                    <div class="media-content">
+                      <h1 class="title is-4"><a href="renderTexture">Render Texture</a></h1>
+                    </div>
+                  </article>
+                </div>              
+              </div> 
+              
+              <div class="card">
+                <div class="card-content">
+                  <article class="media">
+                    <figure class="media-left">
+                      <figure class="image is-128x128"><a href="texturedMesh"><img src="img/pixijs.png"/></a></figure>
+                    </figure>
+                    <div class="media-content">
+                      <h1 class="title is-4"><a href="texturedMesh">Textured Mesh</a></h1>
+                    </div>
+                  </article>
+                </div>              
+              </div>     
+              
+
+              <div class="card">
+                <div class="card-content">
+                  <article class="media">
+                    <figure class="media-left">
+                      <figure class="image is-128x128"><a href="customFilters"><img src="img/pixijs.png"/></a></figure>
+                    </figure>
+                    <div class="media-content">
+                      <h1 class="title is-4"><a href="customFilters">Custom Filters</a></h1>
+                    </div>
+                  </article>
+                </div>              
+              </div>   
+              
+              <div class="card">
+                <div class="card-content">
+                  <article class="media">
+                    <figure class="media-left">
+                      <figure class="image is-128x128"><a href="dragging"><img src="img/pixijs.png"/></a></figure>
+                    </figure>
+                    <div class="media-content">
+                      <h1 class="title is-4"><a href="dragging">Dragging</a></h1>
+                    </div>
+                  </article>
+                </div>              
+              </div>                     
+              
+              <div class="card">
+                <div class="card-content">
+                  <article class="media">
+                    <figure class="media-left">
+                      <figure class="image is-128x128"><a href="particles"><img src="img/pixijs.png"/></a></figure>
+                    </figure>
+                    <div class="media-content">
+                      <h1 class="title is-4"><a href="particles">Pixi-Particles</a></h1>
+                    </div>
+                  </article>
+                </div>              
+              </div>    
+                   
+              <div class="card">
+                  <div class="card-content">
+                    <article class="media">
+                      <figure class="media-left">
+                        <figure class="image is-128x128"><a href="animejs"><img src="img/pixijs.png"/></a></figure>
+                      </figure>
+                      <div class="media-content">
+                        <h1 class="title is-4"><a href="animejs">tweening using animejs lib</a></h1>
+                      </div>
+                    </article>
+                  </div>              
+                </div>   
+                
+                <div class="card">
+                  <div class="card-content">
+                    <article class="media">
+                      <figure class="media-left">
+                        <figure class="image is-128x128"><a href="sound"><img src="img/pixijs.png"/></a></figure>
+                      </figure>
+                      <div class="media-content">
+                        <h1 class="title is-4"><a href="sound">Sound using pixi-sound</a></h1>
+                      </div>
+                    </article>
+                  </div>              
+                </div>   
+                
+                <div class="card">
+                  <div class="card-content">
+                    <article class="media">
+                      <figure class="media-left">
+                        <figure class="image is-128x128"><a href="dragonParticle"><img src="img/pixijs.png"/></a></figure>
+                      </figure>
+                      <div class="media-content">
+                        <h1 class="title is-4"><a href="dragonParticle">Nifty particles around a dragon</a></h1>
+                      </div>
+                    </article>
+                  </div>              
+                </div>      
+                
+                <div class="card">
+                  <div class="card-content">
+                    <article class="media">
+                      <figure class="media-left">
+                        <figure class="image is-128x128"><a href="textureSwap"><img src="img/pixijs.png"/></a></figure>
+                      </figure>
+                      <div class="media-content">
+                        <h1 class="title is-4"><a href="textureSwap">Texture Swap</a></h1>
+                      </div>
+                    </article>
+                  </div>              
+                </div>        
+                
+                <div class="card">
+                  <div class="card-content">
+                    <article class="media">
+                      <figure class="media-left">
+                        <figure class="image is-128x128"><a href="tinting"><img src="img/pixijs.png"/></a></figure>
+                      </figure>
+                      <div class="media-content">
+                        <h1 class="title is-4"><a href="tinting">Tinting</a></h1>
+                      </div>
+                    </article>
+                  </div>              
+                </div>         
+                
+                <div class="card">
+                  <div class="card-content">
+                    <article class="media">
+                      <figure class="media-left">
+                        <figure class="image is-128x128"><a href="draggor"><img src="img/pixijs.png"/></a></figure>
+                      </figure>
+                      <div class="media-content">
+                        <h1 class="title is-4"><a href="draggor">Game of Cogs</a></h1>
+                      </div>
+                    </article>
+                  </div>              
+                </div>                       
+          </ul>
+          </ul>
+        </div>
+      </div>
+      <div class="column"></div>
+    </div>
+  </div>
+  <script>
+    // Activate navbar burget button
+    document.addEventListener('DOMContentLoaded', function () {
+      var $navbarBurgers = Array.prototype.slice.call(document.querySelectorAll('.navbar-burger'), 0);
+      if ($navbarBurgers.length > 0) {
+        $navbarBurgers.forEach(function ($el) {
+          $el.addEventListener('click', function () {
+            var target = $el.dataset.target;
+            var $target = document.getElementById(target);
+            $el.classList.toggle('is-active');
+            $target.classList.toggle('is-active');
+          });
+        });
+      }
+    });
+  </script>
+</body>
+
+</html>
