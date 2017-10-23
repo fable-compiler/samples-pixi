@@ -1,5 +1,8 @@
 namespace Fable.Import.Animejs
 
+(*
+  bindings based on typescript definitions located here: https://github.com/kohashi/types-npm-animejs/blob/master/index.d.ts
+*)
 open System
 open System.Text.RegularExpressions
 open Fable.Core
@@ -17,7 +20,7 @@ and [<AllowNullLiteral>] AnimeStatic =
     [<Emit("$0($1...)")>] abstract Invoke: ?``params``: AnimInput -> AnimInstance
     abstract remove: targets: target -> unit
     abstract getValue: targets: target * propName: string -> U2<string, float>
-    abstract path: path: U4<string, HTMLElement, SVGElement, obj> * ?percent: float-> Func<string, FunctionBasedValues>
+    abstract path: path: obj * ?percent: float-> (string -> FunctionBasedValues)
     abstract setDashoffset: el: SVGPathElement -> float
     abstract bezier: x1: float * x2: float * y1: float * y2: float -> Func<obj, float>
     abstract timeline: ?``params``: AnimInput -> TimelineInstance
@@ -54,7 +57,7 @@ and propertyValue =
     U2<float, string>
 
 and FunctionBasedValues =
-    Func<Element, float, float, propertyValue>
+    Element -> float -> float -> propertyValue
 
 and FromToValues =
     U2<propertyValue, FunctionBasedValues> * U2<propertyValue, FunctionBasedValues>

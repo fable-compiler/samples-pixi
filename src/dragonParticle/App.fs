@@ -49,6 +49,7 @@ let onLoaded (loader:PIXI.loaders.Loader) (res:PIXI.loaders.Resource) =
     dragon.anchor.set 0.5 |> ignore
     dragon.position?x <- x - 30.
     dragon.position?y <- y - 10.
+    dragon.alpha <- 0.3
     app.stage.addChild dragon |> ignore
 
     // display a beautiful text
@@ -79,16 +80,16 @@ let onLoaded (loader:PIXI.loaders.Loader) (res:PIXI.loaders.Resource) =
     //printfn ""
 
     // get the path values from the div in index.html
-    let path = GetPath !!"#motionPath path"
-    let x = path.Invoke("x")
+    let path = GetPath "#motionPath path"
+    let x = path "x"
 
     let options = 
       jsOptions<AnimInput> (fun o ->
           o.easing <- !!easing
           o.duration <- !!duration
           o.targets <- !!emitter.ownerPos
-//          o.translateX <- Some (!!System.Func<_,_,_,_> fun x.Invoke("x"))
-//          o.translateY <- Some (path.Invoke("y"))
+          o.Item("x") <- !!path "x"
+          o.Item("y") <- !!path "y"
         )
 
     // prepare our animation
