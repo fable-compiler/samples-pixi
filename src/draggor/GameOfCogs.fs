@@ -6,6 +6,7 @@ open Fable.Import.Pixi.Particles
 open Fable.Pixi
 open Fable.Core.JsInterop
 open Fable.Import.Animejs
+open Fable.AnimeUtils
 open Types 
 
 
@@ -55,7 +56,7 @@ let greatAnim x y =
         position.y <- y
 
         let prepareAnimation scale= 
-          jsOptions<anime.AnimeAnimParams> (fun o ->
+          jsOptions<AnimInput> (fun o ->
             o.elasticity <- !!100.
             o.duration <- !!500.
             o.targets <- !!sprite.scale
@@ -64,7 +65,7 @@ let greatAnim x y =
           )
         
         // create our tweening timeline
-        let timeline = anime.Globals.timeline()
+        let timeline = GetTimeline None
         
         // prepare our animations
         [
@@ -219,12 +220,12 @@ let Update (model:GameScreen.CogModel option) stage (renderer:PIXI.WebGLRenderer
 
           // create our tweening timeline
           let timelineOptions = 
-            jsOptions<anime.AnimeTimelineInstance>( fun o -> 
+            jsOptions<AnimInput>( fun o -> 
               o.complete <- 
                 fun _ -> model.State <- GameScreen.CogState.MoveToNextScreen
             )
           
-          let timeline = anime.Globals.timeline(!!timelineOptions)
+          let timeline = GetTimeline (Some timelineOptions)
           
           // prepare our animations using a timeline
           // each animation will play once and one after the other

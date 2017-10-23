@@ -7,9 +7,9 @@
     <Compile Include="../Fable.Import.Pixi.Sound.fs" />
     <Compile Include="../Fable.Import.Pixi.Particles.fs" />
     <Compile Include="../Fable.Import.Animejs.fs" />
-    <Compile Include="../Fable.AnimeUtils.fs" />
     <Compile Include="../Fable.SoundUtils.fs" />
     <Compile Include="../Fable.Pixi.fs" />
+    <Compile Include="../Fable.AnimeUtils.fs" />
     <Compile Include="Types.fs" />
     <Compile Include="ScreenIntroduction.fs" />
     <Compile Include="Cog.fs" />

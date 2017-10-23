@@ -20,7 +20,7 @@ and [<AllowNullLiteral>] AnimeStatic =
     abstract path: path: obj * ?percent: float -> Func<string, FunctionBasedValues>
     abstract setDashoffset: el: SVGPathElement -> float
     abstract bezier: x1: float * x2: float * y1: float * y2: float -> Func<obj, float>
-    abstract timeline: ?``params``: AnimationParameters -> TimelineInstance
+    abstract timeline: ?``params``: AnimInput -> TimelineInstance
     abstract random: min: float * max: float -> float
 
 and [<AllowNullLiteral>] AnimInput =
@@ -28,6 +28,7 @@ and [<AllowNullLiteral>] AnimInput =
     inherit AnimatableProperties
     inherit PropertyParameters
     inherit AnimationParameters
+    inherit animationCallbacks
 
 and [<AllowNullLiteral>] Targets =
     abstract targets: target option with get, set
@@ -117,6 +118,7 @@ and [<AllowNullLiteral>] animationCallbacks =
     abstract run: animCallback with get, set
 
 and [<AllowNullLiteral>] TimelineInstance =
+    inherit animationCallbacks
     inherit AnimInstance
     abstract add: ``params``: AnimInput -> obj
 

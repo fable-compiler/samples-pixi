@@ -50,7 +50,7 @@ let onLoaded (loader:PIXI.loaders.Loader) (res:PIXI.loaders.Resource) =
 
     // Make the timeline loop until the end of the woooooooorld!
     let timelineOptions = 
-      jsOptions<AnimationParameters>( fun o -> 
+      jsOptions<AnimInput>( fun o -> 
         o.loop <- !!true
       )
 
@@ -63,7 +63,7 @@ let onLoaded (loader:PIXI.loaders.Loader) (res:PIXI.loaders.Resource) =
       )
     
     // create our tweening timeline
-    let timeline = GetTimeline timelineOptions
+    let timeline = GetTimeline (Some timelineOptions)
     
     // prepare our animations
     [
