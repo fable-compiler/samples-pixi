@@ -26,3 +26,6 @@ let GetInstance (options:AnimInput) =
   let instance = Globals.anime
   instance.Invoke options
 
+let GetTimeline (options:AnimationParameters) =
+  let instance = Globals.anime
+  instance.timeline options

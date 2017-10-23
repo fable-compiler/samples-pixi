@@ -6,6 +6,7 @@
     <Compile Include="..\Fable.Import.Pixi.fs" />
     <Compile Include="..\Fable.Import.Pixi.Particles.fs" />
     <Compile Include="..\Fable.Import.Animejs.fs" />
+    <Compile Include="..\Fable.AnimeUtils.fs" />
     <Compile Include="App.fs" />
   </ItemGroup>
   <Import Project="..\..\.paket\Paket.Restore.targets" />
