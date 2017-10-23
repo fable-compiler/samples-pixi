@@ -96,7 +96,7 @@ module Util =
 let root = __SOURCE_DIRECTORY__
 
 let gitOwner = "fable-compiler"
-let gitProject = "samples-browser"
+let gitProject = "samples-pixi"
 
 let dotnetcliVersion = "2.0.0"
 let mutable dotnetExePath = environVarOrDefault "DOTNET" "dotnet"
@@ -162,7 +162,7 @@ Target "PublishNoRestore" publish
 ==> "InstallDotNetSdk"
 ==> "Restore"
 ==> "Build"
-==> "Publish"
+==>"Publish"
 
 "BuildNoRestore"
 ==> "PublishNoRestore"
