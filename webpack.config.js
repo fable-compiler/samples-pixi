@@ -10,14 +10,17 @@ function resolve(filePath) {
 
 function getSamples() {
   var samples =  {};
-  var categories = json5.parse(fs.readFileSync(resolve("public/samples.json5")));
-  for (var key in categories) {
-    for (var key2 in categories[key]) {
-      samples[key2] = path.join(__dirname, "src", key2, categories[key][key2].entry)
-    }
+  var samplesInfo = json5.parse(fs.readFileSync(resolve("public/samples.json5")));
+  for (var currentInfo in samplesInfo) {
+    const currentSample = samplesInfo[currentInfo];
+    const projectFile = path.join(__dirname, "src", currentInfo, currentSample.entry);
+    const dependencies = currentSample.dependencies;
+    samples[currentInfo] = dependencies.concat(projectFile);
   }
   return samples;
 }
+
+console.log(getSamples());
 
 var babelOptions = fableUtils.resolveBabelOptions({
   presets: [["es2015", { "modules": false }]],
