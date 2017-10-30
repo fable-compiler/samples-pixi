@@ -21,11 +21,11 @@ let SingleParameter (target:'t) parameterName paramaterFactor duration elasticit
   )
 
 let GetPath (elementId:string) =
-  let instance = Globals.anime
+  let instance = anime
   instance.path !!elementId
 
-let GetInstance (options:AnimInput option) =
-  let instance = Globals.anime
+let GetInstance (options: AnimInput option) =
+  let instance = anime
   match options with 
   | Some o -> 
     instance.Invoke o
@@ -33,8 +33,8 @@ let GetInstance (options:AnimInput option) =
    None -> 
     instance.Invoke()
 
-let GetTimeline (options:AnimInput option) =
-  let instance = Globals.anime
+let GetTimeline (options: AnimInput option) =
+  let instance = anime
   match options with 
   | Some o -> 
     instance.timeline o

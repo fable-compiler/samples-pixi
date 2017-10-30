@@ -35,7 +35,7 @@ var isProduction = process.argv.indexOf("-p") >= 0;
 console.log("Bundling for " + (isProduction ? "production" : "development") + "...");
 
 module.exports = {
-  devtool: "source-map",
+  // devtool: "source-map",
   entry: getSamples(),
   output: {
     filename: "[name]/bundle.js",
@@ -47,6 +47,9 @@ module.exports = {
       "node_modules", resolve("node_modules")
     ]
   },
+  node: {
+    fs: 'empty'
+  },
   externals: {
     "PIXI": "PIXI",
     "PIXI.extras": "PIXI.extras",
@@ -56,8 +59,7 @@ module.exports = {
     "PIXI.interaction": "PIXI.interaction",
     "PIXI.mesh": "PIXI.mesh",
     "PIXI.particles":"PIXI.particles",
-    "PIXI.sound":"PIXI.sound",
-    "anime":"anime"
+    "PIXI.sound":"PIXI.sound"
   },
   devServer: {
     contentBase: resolve('public'),
