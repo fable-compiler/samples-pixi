@@ -20,17 +20,22 @@ function getSamples() {
   return samples;
 }
 
-console.log(getSamples());
-
 var babelOptions = fableUtils.resolveBabelOptions({
-  presets: [["es2015", { "modules": false }]]
+  "presets": [
+    ["env", {
+      "targets": {
+        "browsers": ["last 2 versions", "safari >= 7"]
+      },
+      "modules": false
+    }]
+  ]
 });
 
 var isProduction = process.argv.indexOf("-p") >= 0;
 console.log("Bundling for " + (isProduction ? "production" : "development") + "...");
 
 module.exports = {
-  // devtool: "source-map",
+  devtool: isProduction ? undefined : "source-map",
   entry: getSamples(),
   output: {
     filename: "[name]/bundle.js",
@@ -47,14 +52,14 @@ module.exports = {
   },
   externals: {
     "PIXI": "PIXI",
-    "PIXI/extras": "PIXI/extras",
-    "PIXI/loaders": "PIXI/loaders",
-    "PIXI/settings": "PIXI/settings",
-    "PIXI/filters": "PIXI/filters",
-    "PIXI/interaction": "PIXI/interaction",
-    "PIXI/mesh": "PIXI/mesh",
-    "PIXI/particles": "PIXI/particles",
-    "PIXI/sound": "PIXI/sound"
+    "PIXI.extras": "PIXI.extras",
+    "PIXI.loaders": "PIXI.loaders",
+    "PIXI.settings": "PIXI.settings",
+    "PIXI.filters": "PIXI.filters",
+    "PIXI.interaction": "PIXI.interaction",
+    "PIXI.mesh": "PIXI.mesh",
+    "PIXI.particles": "PIXI.particles",
+    "PIXI.sound": "PIXI.sound"
   },
   devServer: {
     contentBase: resolve('public'),

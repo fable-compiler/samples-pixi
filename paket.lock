@@ -7,9 +7,8 @@ NUGET
       Fable.Core (>= 1.2.4) - restriction: >= netcoreapp2.0
       FSharp.Core (>= 4.2.3) - restriction: >= netcoreapp2.0
       Microsoft.NETCore.App (>= 2.0) - restriction: >= netcoreapp2.0
-    Dotnet.ProjInfo (0.7.4) - restriction: >= netcoreapp2.0
-      FSharp.Core (>= 4.1.17) - restriction: && (< net45) (>= netstandard1.6)
-      NETStandard.Library (>= 1.6.1) - restriction: && (< net45) (>= netstandard1.6)
+    Dotnet.ProjInfo (0.9) - restriction: >= netcoreapp2.0
+      FSharp.Core (>= 4.2.3) - restriction: && (< net45) (>= netstandard2.0)
     Fable.Compiler (1.2.4) - restriction: >= netcoreapp2.0
       Fable.Core (>= 1.2.4) - restriction: >= netstandard1.6
       FSharp.Compiler.Service (>= 14.0.2) - restriction: >= netstandard1.6
@@ -32,18 +31,18 @@ NUGET
       Fable.Core (>= 1.1.15) - restriction: >= netstandard1.6
       FSharp.Core (>= 4.2.3) - restriction: >= netstandard1.6
       NETStandard.Library (>= 1.6.1) - restriction: >= netstandard1.6
-    Fable.Import.Pixi (0.1)
+    Fable.Import.Pixi (0.1.1)
       Fable.Core (>= 1.1.15) - restriction: >= netstandard1.6
       Fable.Import.Browser (>= 0.1) - restriction: >= netstandard1.6
       FSharp.Core (>= 4.2.3) - restriction: >= netstandard1.6
-    Fable.Import.Pixi.Particles (0.1)
+    Fable.Import.Pixi.Particles (0.1.1)
       Fable.Core (>= 1.1.15) - restriction: >= netstandard1.6
-      Fable.Import.Pixi (>= 0.1) - restriction: >= netstandard1.6
+      Fable.Import.Pixi (>= 0.1.1) - restriction: >= netstandard1.6
       FSharp.Core (>= 4.2.3) - restriction: >= netstandard1.6
-    Fable.Import.Pixi.Sound (0.1)
+    Fable.Import.Pixi.Sound (0.1.1)
       Fable.Core (>= 1.1.15) - restriction: >= netstandard1.6
       Fable.Import.Browser (>= 0.1) - restriction: >= netstandard1.6
-      Fable.Import.Pixi (>= 0.1) - restriction: >= netstandard1.6
+      Fable.Import.Pixi (>= 0.1.1) - restriction: >= netstandard1.6
       FSharp.Core (>= 4.2.3) - restriction: >= netstandard1.6
     FSharp.Compiler.Service (16.0.2) - restriction: >= netcoreapp2.0
       FSharp.Core (>= 4.1.18) - restriction: && (< net45) (>= netstandard1.6)
