@@ -1,124 +1,192 @@
 {
-  "pixi": {
-    "basic": {
-      "entry": "PixiBasic.fsproj",
-      "title": "Pixi sample",
-      "desc": "Simple renderization with [PixiJS](http://www.pixijs.com/), a fast and flexible library to render 2D WebGL content.",
-      "img": "pixi.jpeg"
-    },
-    "container": {
-      "entry": "PixiContainer.fsproj",
-      "title": "Pixi sample",
-      "desc": "Simple renderization with [PixiJS](http://www.pixijs.com/), a fast and flexible library to render 2D WebGL content.",
-      "img": "pixi.jpeg"
-    },
-    "containerPivot": {
-      "entry": "PixiContainerPivot.fsproj",
-      "title": "Pixi sample",
-      "desc": "Simple renderization with [PixiJS](http://www.pixijs.com/), a fast and flexible library to render 2D WebGL content.",
-      "img": "pixi.jpeg"
-    },  
-    "click": {
-      "entry": "PixiClick.fsproj",
-      "title": "Pixi sample",
-      "desc": "Simple renderization with [PixiJS](http://www.pixijs.com/), a fast and flexible library to render 2D WebGL content.",
-      "img": "pixi.jpeg"
-    },  
-    "ssa": {
-      "entry": "PixiSSA.fsproj",
-      "title": "Pixi sample",
-      "desc": "Simple renderization with [PixiJS](http://www.pixijs.com/), a fast and flexible library to render 2D WebGL content.",
-      "img": "pixi.jpeg"
-    },    
-    "tilingSprite": {
-      "entry": "PixiTilingSprite.fsproj",
-      "title": "Pixi sample",
-      "desc": "Simple renderization with [PixiJS](http://www.pixijs.com/), a fast and flexible library to render 2D WebGL content.",
-      "img": "pixi.jpeg"
-    },  
-    "text": {
-      "entry": "PixiText.fsproj",
-      "title": "Pixi sample",
-      "desc": "Simple renderization with [PixiJS](http://www.pixijs.com/), a fast and flexible library to render 2D WebGL content.",
-      "img": "pixi.jpeg"
-    },  
-    "graphics": {
-      "entry": "PixiGraphics.fsproj",
-      "title": "Pixi sample",
-      "desc": "Simple renderization with [PixiJS](http://www.pixijs.com/), a fast and flexible library to render 2D WebGL content.",
-      "img": "pixi.jpeg"
-    },     
-    "video": {
-      "entry": "PixiVideo.fsproj",
-      "title": "Pixi sample",
-      "desc": "Simple renderization with [PixiJS](http://www.pixijs.com/), a fast and flexible library to render 2D WebGL content.",
-      "img": "pixi.jpeg"
-    },  
-    "renderTexture": {
-      "entry": "PixiRT.fsproj",
-      "title": "Pixi sample",
-      "desc": "Simple renderization with [PixiJS](http://www.pixijs.com/), a fast and flexible library to render 2D WebGL content.",
-      "img": "pixi.jpeg"
-    },        
-    "texturedMesh": {
-      "entry": "PixiTM.fsproj",
-      "title": "Pixi sample",
-      "desc": "Simple renderization with [PixiJS](http://www.pixijs.com/), a fast and flexible library to render 2D WebGL content.",
-      "img": "pixi.jpeg"
-    },   
-    "customFilters": {
-      "entry": "PixiCF.fsproj",
-      "title": "Pixi sample",
-      "desc": "Simple renderization with [PixiJS](http://www.pixijs.com/), a fast and flexible library to render 2D WebGL content.",
-      "img": "pixi.jpeg"
-    },   
-    "dragging": {
-      "entry": "PixiDragging.fsproj",
-      "title": "Pixi sample",
-      "desc": "Simple renderization with [PixiJS](http://www.pixijs.com/), a fast and flexible library to render 2D WebGL content.",
-      "img": "pixi.jpeg"
-    },  
-    "particles": {
-      "entry": "PixiParticles.fsproj",
-      "title": "Pixi sample",
-      "desc": "Simple renderization with [PixiJS](http://www.pixijs.com/), a fast and flexible library to render 2D WebGL content.",
-      "img": "pixi.jpeg"
-    },  
-    "animejs": {
-      "entry": "PixiAnimejs.fsproj",
-      "title": "Pixi sample",
-      "desc": "Simple renderization with [PixiJS](http://www.pixijs.com/), a fast and flexible library to render 2D WebGL content.",
-      "img": "pixi.jpeg"
-    },      
-    "sound": {
-      "entry": "PixiSound.fsproj",
-      "title": "Pixi sample",
-      "desc": "Simple renderization with [PixiJS](http://www.pixijs.com/), a fast and flexible library to render 2D WebGL content.",
-      "img": "pixi.jpeg"
-    },   
-    "dragonParticle": {
-      "entry": "PixiDragonParticle.fsproj",
-      "title": "Pixi sample",
-      "desc": "Simple renderization with [PixiJS](http://www.pixijs.com/), a fast and flexible library to render 2D WebGL content.",
-      "img": "pixi.jpeg"
-    },  
-    "textureSwap": {
-      "entry": "PixiTextureSwap.fsproj",
-      "title": "Pixi sample",
-      "desc": "Simple renderization with [PixiJS](http://www.pixijs.com/), a fast and flexible library to render 2D WebGL content.",
-      "img": "pixi.jpeg"
-    },        
-    "tinting": {
-      "entry": "PixiTinting.fsproj",
-      "title": "Pixi sample",
-      "desc": "Simple renderization with [PixiJS](http://www.pixijs.com/), a fast and flexible library to render 2D WebGL content.",
-      "img": "pixi.jpeg"
-    },  
-    "draggor": {
-      "entry": "PixiDraggor.fsproj",
-      "title": "Pixi sample",
-      "desc": "Simple renderization with [PixiJS](http://www.pixijs.com/), a fast and flexible library to render 2D WebGL content.",
-      "img": "pixi.jpeg"
-    },                                                            
+  "basic": {
+    "entry": "PixiBasic.fsproj",
+    "dependencies": [
+      "pixi.js"
+    ],
+    "title": "Pixi sample",
+    "desc": "Simple renderization with [PixiJS](http://www.pixijs.com/), a fast and flexible library to render 2D WebGL content.",
+    "img": "pixi.jpeg"
   },
+  "container": {
+    "entry": "PixiContainer.fsproj",
+    "dependencies": [
+      "pixi.js"
+    ],
+    "title": "Pixi sample",
+    "desc": "Simple renderization with [PixiJS](http://www.pixijs.com/), a fast and flexible library to render 2D WebGL content.",
+    "img": "pixi.jpeg"
+  },
+  "containerPivot": {
+    "entry": "PixiContainerPivot.fsproj",
+    "dependencies": [
+      "pixi.js"
+    ],
+    "title": "Pixi sample",
+    "desc": "Simple renderization with [PixiJS](http://www.pixijs.com/), a fast and flexible library to render 2D WebGL content.",
+    "img": "pixi.jpeg"
+  },
+  "click": {
+    "entry": "PixiClick.fsproj",
+    "dependencies": [
+      "pixi.js"
+    ],
+    "title": "Pixi sample",
+    "desc": "Simple renderization with [PixiJS](http://www.pixijs.com/), a fast and flexible library to render 2D WebGL content.",
+    "img": "pixi.jpeg"
+  },
+  "ssa": {
+    "entry": "PixiSSA.fsproj",
+    "dependencies": [
+      "pixi.js"
+    ],
+    "title": "Pixi sample",
+    "desc": "Simple renderization with [PixiJS](http://www.pixijs.com/), a fast and flexible library to render 2D WebGL content.",
+    "img": "pixi.jpeg"
+  },
+  "tilingSprite": {
+    "entry": "PixiTilingSprite.fsproj",
+    "dependencies": [
+      "pixi.js"
+    ],
+    "title": "Pixi sample",
+    "desc": "Simple renderization with [PixiJS](http://www.pixijs.com/), a fast and flexible library to render 2D WebGL content.",
+    "img": "pixi.jpeg"
+  },
+  "text": {
+    "entry": "PixiText.fsproj",
+    "dependencies": [
+      "pixi.js"
+    ],
+    "title": "Pixi sample",
+    "desc": "Simple renderization with [PixiJS](http://www.pixijs.com/), a fast and flexible library to render 2D WebGL content.",
+    "img": "pixi.jpeg"
+  },
+  "graphics": {
+    "entry": "PixiGraphics.fsproj",
+    "dependencies": [
+      "pixi.js"
+    ],
+    "title": "Pixi sample",
+    "desc": "Simple renderization with [PixiJS](http://www.pixijs.com/), a fast and flexible library to render 2D WebGL content.",
+    "img": "pixi.jpeg"
+  },
+  "video": {
+    "entry": "PixiVideo.fsproj",
+    "dependencies": [
+      "pixi.js"
+    ],
+    "title": "Pixi sample",
+    "desc": "Simple renderization with [PixiJS](http://www.pixijs.com/), a fast and flexible library to render 2D WebGL content.",
+    "img": "pixi.jpeg"
+  },
+  "renderTexture": {
+    "entry": "PixiRT.fsproj",
+    "dependencies": [
+      "pixi.js"
+    ],
+    "title": "Pixi sample",
+    "desc": "Simple renderization with [PixiJS](http://www.pixijs.com/), a fast and flexible library to render 2D WebGL content.",
+    "img": "pixi.jpeg"
+  },
+  "texturedMesh": {
+    "entry": "PixiTM.fsproj",
+    "dependencies": [
+      "pixi.js"
+    ],
+    "title": "Pixi sample",
+    "desc": "Simple renderization with [PixiJS](http://www.pixijs.com/), a fast and flexible library to render 2D WebGL content.",
+    "img": "pixi.jpeg"
+  },
+  "customFilters": {
+    "entry": "PixiCF.fsproj",
+    "dependencies": [
+      "pixi.js"
+    ],
+    "title": "Pixi sample",
+    "desc": "Simple renderization with [PixiJS](http://www.pixijs.com/), a fast and flexible library to render 2D WebGL content.",
+    "img": "pixi.jpeg"
+  },
+  "dragging": {
+    "entry": "PixiDragging.fsproj",
+    "dependencies": [
+      "pixi.js"
+    ],    
+    "title": "Pixi sample",
+    "desc": "Simple renderization with [PixiJS](http://www.pixijs.com/), a fast and flexible library to render 2D WebGL content.",
+    "img": "pixi.jpeg"
+  },
+  "particles": {
+    "entry": "PixiParticles.fsproj",
+    "dependencies": [
+      "pixi.js",
+      "pixi-particles"
+    ],
+    "title": "Pixi sample",
+    "desc": "Simple renderization with [PixiJS](http://www.pixijs.com/), a fast and flexible library to render 2D WebGL content.",
+    "img": "pixi.jpeg"
+  },
+  "animejs": {
+    "entry": "PixiAnimejs.fsproj",
+    "dependencies": [
+      "pixi.js",
+      "pixi-particles",
+      "animejs"
+    ],
+    "title": "Pixi sample",
+    "desc": "Simple renderization with [PixiJS](http://www.pixijs.com/), a fast and flexible library to render 2D WebGL content.",
+    "img": "pixi.jpeg"
+  }
+  ,
+  "sound": {
+    "entry": "PixiSound.fsproj",
+    "dependencies": [
+      "pixi.js",
+      "pixi-sound"
+    ],
+    "title": "Pixi sample",
+    "desc": "Simple renderization with [PixiJS](http://www.pixijs.com/), a fast and flexible library to render 2D WebGL content.",
+    "img": "pixi.jpeg"
+  },
+  "dragonParticle": {
+    "entry": "PixiDragonParticle.fsproj",
+    "dependencies": [
+      "pixi.js",
+      "pixi-particles",
+      "animejs"
+    ],
+    "title": "Pixi sample",
+    "desc": "Simple renderization with [PixiJS](http://www.pixijs.com/), a fast and flexible library to render 2D WebGL content.",
+    "img": "pixi.jpeg"
+  },
+  "textureSwap": {
+    "entry": "PixiTextureSwap.fsproj",
+    "dependencies": [
+      "pixi.js"
+    ],
+    "title": "Pixi sample",
+    "desc": "Simple renderization with [PixiJS](http://www.pixijs.com/), a fast and flexible library to render 2D WebGL content.",
+    "img": "pixi.jpeg"
+  },
+  "tinting": {
+    "entry": "PixiTinting.fsproj",
+    "dependencies": [
+      "pixi.js"
+    ],
+    "title": "Pixi sample",
+    "desc": "Simple renderization with [PixiJS](http://www.pixijs.com/), a fast and flexible library to render 2D WebGL content.",
+    "img": "pixi.jpeg"
+  },
+  "draggor": {
+    "entry": "PixiDraggor.fsproj",
+    "dependencies": [
+      "pixi.js",
+      "pixi-particles",
+      "pixi-sound",
+      "animejs"
+    ],
+    "title": "Pixi sample",
+    "desc": "Simple renderization with [PixiJS](http://www.pixijs.com/), a fast and flexible library to render 2D WebGL content.",
+    "img": "pixi.jpeg"
+  }
 }

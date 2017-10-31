@@ -9,30 +9,33 @@ function resolve(filePath) {
 }
 
 function getSamples() {
-  var samples =  {};
-  var categories = json5.parse(fs.readFileSync(resolve("public/samples.json5")));
-  for (var key in categories) {
-    for (var key2 in categories[key]) {
-      samples[key2] = path.join(__dirname, "src", key2, categories[key][key2].entry)
-    }
+  var samples = {};
+  var samplesInfo = json5.parse(fs.readFileSync(resolve("public/samples.json5")));
+  for (var currentInfo in samplesInfo) {
+    const currentSample = samplesInfo[currentInfo];
+    const projectFile = path.join(__dirname, "src", currentInfo, currentSample.entry);
+    // We include core-js first as it's a polyfill used to support older browsers
+    samples[currentInfo] = ["core-js"].concat(currentSample.dependencies, projectFile);
   }
   return samples;
 }
 
 var babelOptions = fableUtils.resolveBabelOptions({
-  presets: [["es2015", { "modules": false }]],
-  plugins: [["transform-runtime", {
-    helpers: true,
-    polyfill: false,
-    regenerator: false
-  }]]
+  "presets": [
+    ["env", {
+      "targets": {
+        "browsers": ["last 2 versions", "safari >= 7"]
+      },
+      "modules": false
+    }]
+  ]
 });
 
 var isProduction = process.argv.indexOf("-p") >= 0;
 console.log("Bundling for " + (isProduction ? "production" : "development") + "...");
 
 module.exports = {
-  devtool: "source-map",
+  devtool: isProduction ? undefined : "source-map",
   entry: getSamples(),
   output: {
     filename: "[name]/bundle.js",
@@ -44,6 +47,9 @@ module.exports = {
       "node_modules", resolve("node_modules")
     ]
   },
+  node: {
+    fs: 'empty'
+  },
   externals: {
     "PIXI": "PIXI",
     "PIXI.extras": "PIXI.extras",
@@ -52,9 +58,8 @@ module.exports = {
     "PIXI.filters": "PIXI.filters",
     "PIXI.interaction": "PIXI.interaction",
     "PIXI.mesh": "PIXI.mesh",
-    "PIXI.particles":"PIXI.particles",
-    "PIXI.sound":"PIXI.sound",
-    "anime":"anime"
+    "PIXI.particles": "PIXI.particles",
+    "PIXI.sound": "PIXI.sound"
   },
   devServer: {
     contentBase: resolve('public'),

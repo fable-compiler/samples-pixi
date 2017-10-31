@@ -1,6 +1,6 @@
 module ScreenIntroduction
 
-open Types 
+open Types
 open Fable.Import
 open Fable.Import.Browser
 open Fable.Import.Pixi
@@ -15,44 +15,44 @@ open Fable.AnimeUtils
 let MAX_COGS = 300
 
 [<Literal>]
-let TIMEOUT = 300.
+let TIMEOUT = 300
 
 
-let titleAnim texts handleClick scaleTo  = 
+let titleAnim texts handleClick scaleTo  =
 
     let (s1:PIXI.Sprite),(s2:PIXI.Sprite) = texts
 
     let duration = 700.
     let elasticity = 300.
 
-    let prepareTitleAnimation scale= 
+    let prepareTitleAnimation scale=
       Fable.AnimeUtils.XY s1.scale scale scale duration elasticity
 
-    let prepareSubTitleAnimation scale= 
+    let prepareSubTitleAnimation scale=
       let options = Fable.AnimeUtils.XY s2.scale scale scale duration elasticity
-      options.complete <- handleClick 
+      options.complete <- handleClick
       options
 
     // create our tweening timeline
     let timeline = GetTimeline None
-    
+
     // prepare our animations using a timeline
     // each animation will play once and one after the other
     [
-      prepareTitleAnimation scaleTo // simple scale in 
-      prepareSubTitleAnimation scaleTo // simple scale in 
-    ] |> Seq.iter( fun options -> timeline.add options |> ignore ) 
+      prepareTitleAnimation scaleTo // simple scale in
+      prepareSubTitleAnimation scaleTo // simple scale in
+    ] |> Seq.iter( fun options -> timeline.add options |> ignore )
 
 
 let Update (model:IntroductionScreen.Model option) (stage:PIXI.Container) (renderer:PIXI.WebGLRenderer) delta =
-  
+
   let model, moveToNextScreen =
-    match model with 
+    match model with
 
     // this is a brand new model
-    | None -> 
+    | None ->
 
-      let newModel : IntroductionScreen.Model = 
+      let newModel : IntroductionScreen.Model =
         {
           State=IntroductionScreen.Init
           Texts=None
@@ -63,60 +63,60 @@ let Update (model:IntroductionScreen.Model option) (stage:PIXI.Container) (rende
       newModel, false
 
     // update our model
-    | Some model -> 
-      match model.State with 
-        
-        | IntroductionScreen.MoveToNextScreen -> 
+    | Some model ->
+      match model.State with
+
+        | IntroductionScreen.MoveToNextScreen ->
           model,true
 
-        | IntroductionScreen.Init -> 
+        | IntroductionScreen.Init ->
 
-          let prepareSprites x y (container:PIXI.Container) = 
+          let prepareSprites x y (container:PIXI.Container) =
 
-            let titleSprite = 
+            let titleSprite =
               SpriteUtils.fromTexture "title"
               |> SpriteUtils.addToLayer "root"
               |> SpriteUtils.scaleTo 0. 0.
               |> SpriteUtils.moveTo x y
               |> SpriteUtils.setAnchor 0.5 0.5
 
-            let subSprite = 
+            let subSprite =
               SpriteUtils.fromTexture "subtitle"
               |> SpriteUtils.addToLayer "root"
               |> SpriteUtils.scaleTo 0. 0.
-              |> SpriteUtils.moveTo x (y+120.) 
+              |> SpriteUtils.moveTo x (y+120.)
               |> SpriteUtils.setAnchor 0.5 0.5
-            
+
             titleSprite,subSprite
 
           // add our layers
           model.Layers
-            |> List.iter( fun name -> Layers.add name stage |> ignore ) 
+            |> List.iter( fun name -> Layers.add name stage |> ignore )
 
           // we handle all clicks happening on screen
           let handleClick (renderer:PIXI.WebGLRenderer) _ =
-            renderer.plugins.interaction.on( 
+            renderer.plugins.interaction.on(
               !!string Fable.Pixi.Event.Pointerdown,
-              (fun _ -> 
+              (fun _ ->
                 model.State <- IntroductionScreen.State.ByeBye
                ) ) |> ignore
-        
+
           // start our animations
           let texts =
             let container = Layers.get "root"
             match container with
-            | Some c->   
-              prepareSprites (renderer.width * 0.5) (renderer.height * 0.4) c 
+            | Some c->
+              prepareSprites (renderer.width * 0.5) (renderer.height * 0.4) c
             | None -> failwith "unkown container root"
-          
-          model.Texts <- Some texts 
-          
+
+          model.Texts <- Some texts
+
           let scaleTo = 1.0
           titleAnim texts (handleClick renderer) scaleTo
-          
+
           // play a sound
           Fable.SoundUtils.play "gong"
-          
+
           // add a new cog every second
           let addCog (model:IntroductionScreen.Model) _ =
 
@@ -127,17 +127,17 @@ let Update (model:IntroductionScreen.Model option) (stage:PIXI.Container) (rende
             let data : IntroductionScreen.CustomSprite = {Angle=angle}
 
             let texture = Assets.getTexture "cog"
-            if texture.IsSome then 
-              let castTo (sprite: PIXI.Sprite) = 
-                sprite :?> ExtendedSprite<IntroductionScreen.CustomSprite>              
+            if texture.IsSome then
+              let castTo (sprite: PIXI.Sprite) =
+                sprite :?> ExtendedSprite<IntroductionScreen.CustomSprite>
 
-              let cog = 
+              let cog =
                 ExtendedSprite(texture.Value,data)
                 |> SpriteUtils.addToLayer "cogs"
                 |> SpriteUtils.scaleTo randomScale randomScale
                 |> SpriteUtils.moveTo (renderer.width * JS.Math.random()) (renderer.height * JS.Math.random())
-                |> SpriteUtils.setAnchor 0.5 0.5          
-                |> SpriteUtils.setAlpha randomScale          
+                |> SpriteUtils.setAnchor 0.5 0.5
+                |> SpriteUtils.setAlpha randomScale
                 |> castTo
 
               model.CogList <- [|model.CogList;[|cog|]|] |> Array.concat
@@ -148,48 +148,48 @@ let Update (model:IntroductionScreen.Model option) (stage:PIXI.Container) (rende
           // our spawn function
           model.Id <- window.setInterval( (addCog model), TIMEOUT)
 
-          model.State <- IntroductionScreen.Play        
+          model.State <- IntroductionScreen.Play
           model,false
 
-        | IntroductionScreen.ByeBye ->       
+        | IntroductionScreen.ByeBye ->
 
           let onComplete _ =
             model.State <- IntroductionScreen.State.MoveToNextScreen
 
           let scaleTo = 0.0
-          match model.Texts with 
+          match model.Texts with
           | None -> failwith ("Can't play animations on non existing texts!")
           | Some texts -> titleAnim texts onComplete scaleTo
 
           model.State <- IntroductionScreen.EndAnim
-          
+
           // remove our timeout
           window.clearTimeout model.Id
-          
-          model,false 
+
+          model,false
 
         | IntroductionScreen.EndAnim ->
-          
+
           // fade all our cogs fast
           for i in 0..(model.CogList.Length-1) do
             let cog = model.CogList.[i]
             cog.alpha <- cog.alpha - 0.05
 
-          model,false 
+          model,false
 
         | IntroductionScreen.Play ->
-          
+
           // let our cogs rotate
           for i in 0..(model.CogList.Length-1) do
             let cog = model.CogList.[i]
-            let scale : PIXI.Point = !!cog.scale            
+            let scale : PIXI.Point = !!cog.scale
             let speed = ( 0.8 - scale.x ) * 0.1
 
             cog.rotation <- speed * cog.Data.Angle + cog.rotation
 
-          model,false 
-          
-        | IntroductionScreen.DoNothing -> 
-          model,false 
+          model,false
 
-  model, moveToNextScreen 
+        | IntroductionScreen.DoNothing ->
+          model,false
+
+  model, moveToNextScreen

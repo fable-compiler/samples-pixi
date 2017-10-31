@@ -28,17 +28,17 @@ let onLoaded (loader:PIXI.loaders.Loader) (res:PIXI.loaders.Resource) =
     // our json
     let config : string = !!res?emitter?data
 
-    // container to hold our particles 
-    // note: you can use a ParticleContainer if you only use one texture 
+    // container to hold our particles
+    // note: you can use a ParticleContainer if you only use one texture
     // the render will be way faster!
 
     let texture = PIXI.Texture.fromImage("../img/particle.png")
     let renderer : PIXI.WebGLRenderer = !!app.renderer
 
-    let x = renderer.width * 0.5 
+    let x = renderer.width * 0.5
     let y = renderer.height * 0.5
 
-  
+
     let emitterCOntainer = PIXI.Container()
     app.stage.addChild(emitterCOntainer) |> ignore
 
@@ -53,7 +53,7 @@ let onLoaded (loader:PIXI.loaders.Loader) (res:PIXI.loaders.Resource) =
     app.stage.addChild dragon |> ignore
 
     // display a beautiful text
-    let style = jsOptions<PIXI.TextStyle>( fun o -> 
+    let style = jsOptions<PIXI.TextStyle>( fun o ->
         o.fontFamily<- !^"Josefin Sans"
         o.fontSize<- !^36.
         o.fill<- !!"#1292FF"
@@ -65,16 +65,16 @@ let onLoaded (loader:PIXI.loaders.Loader) (res:PIXI.loaders.Resource) =
 
     app.stage.addChild richText |> ignore
 
-    // create our emitter 
+    // create our emitter
     let emitter = PIXI.particles.Emitter( emitterCOntainer, !![|texture|], config )
     emitter.updateOwnerPos(x,y)
 
     // Make the timeline loop until the end of the woooooooorld!
-    let timelineOptions = 
-      jsOptions<AnimInput>( fun o -> 
-        o.loop <- !!true        
+    let timelineOptions =
+      jsOptions<AnimInput>( fun o ->
+        o.loop <- !!true
       )
-    
+
     // create our tweening timeline
     let timeline = GetTimeline (Some timelineOptions)
     //printfn ""
@@ -83,7 +83,7 @@ let onLoaded (loader:PIXI.loaders.Loader) (res:PIXI.loaders.Resource) =
     let path = GetPath "#motionPath path"
     let x = path "x"
 
-    let options = 
+    let options =
       jsOptions<AnimInput> (fun o ->
           o.easing <- !!easing
           o.duration <- !!duration
@@ -93,24 +93,24 @@ let onLoaded (loader:PIXI.loaders.Loader) (res:PIXI.loaders.Resource) =
         )
 
     // prepare our animation
-    timeline.add options |> ignore 
+    timeline.add options |> ignore
 
     // our render loop
-    let tick delta = 
+    let tick delta =
       emitter.update (delta * 0.01)
-      
+
     app.ticker.add(tick) |> ignore
-    
+
     // start emitting particles
     emitter.emit <- true
 
     // let the font load before starting the animation
     let start delta = app.start()
-    Browser.window.setTimeout( Func<_,_>start , 500. ) |> ignore
+    Browser.window.setTimeout( Func<_,_>start , 500 ) |> ignore
 
 // We start by loading the emitter json configuration File
 // to get our particle animation parameters
-// This json is built using pixi particles online editor 
+// This json is built using pixi particles online editor
 // you can find the editor here: http://pixijs.github.io/pixi-particles-editor/
 let loader = PIXI.loaders.Loader()
 loader.add("emitter", "../img/dragon.json") |> ignore
