@@ -9,13 +9,13 @@ function resolve(filePath) {
 }
 
 function getSamples() {
-  var samples =  {};
+  var samples = {};
   var samplesInfo = json5.parse(fs.readFileSync(resolve("public/samples.json5")));
   for (var currentInfo in samplesInfo) {
     const currentSample = samplesInfo[currentInfo];
     const projectFile = path.join(__dirname, "src", currentInfo, currentSample.entry);
-    const dependencies = currentSample.dependencies;
-    samples[currentInfo] = dependencies.concat(projectFile);
+    // We include core-js first as it's a polyfill used to support older browsers
+    samples[currentInfo] = ["core-js"].concat(currentSample.dependencies, projectFile);
   }
   return samples;
 }
@@ -23,12 +23,7 @@ function getSamples() {
 console.log(getSamples());
 
 var babelOptions = fableUtils.resolveBabelOptions({
-  presets: [["es2015", { "modules": false }]],
-  plugins: [["transform-runtime", {
-    helpers: true,
-    polyfill: false,
-    regenerator: false
-  }]]
+  presets: [["es2015", { "modules": false }]]
 });
 
 var isProduction = process.argv.indexOf("-p") >= 0;
@@ -52,14 +47,14 @@ module.exports = {
   },
   externals: {
     "PIXI": "PIXI",
-    "PIXI.extras": "PIXI.extras",
-    "PIXI.loaders": "PIXI.loaders",
-    "PIXI.settings": "PIXI.settings",
-    "PIXI.filters": "PIXI.filters",
-    "PIXI.interaction": "PIXI.interaction",
-    "PIXI.mesh": "PIXI.mesh",
-    "PIXI.particles":"PIXI.particles",
-    "PIXI.sound":"PIXI.sound"
+    "PIXI/extras": "PIXI/extras",
+    "PIXI/loaders": "PIXI/loaders",
+    "PIXI/settings": "PIXI/settings",
+    "PIXI/filters": "PIXI/filters",
+    "PIXI/interaction": "PIXI/interaction",
+    "PIXI/mesh": "PIXI/mesh",
+    "PIXI/particles": "PIXI/particles",
+    "PIXI/sound": "PIXI/sound"
   },
   devServer: {
     contentBase: resolve('public'),

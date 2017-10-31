@@ -1,3 +1,6 @@
 Fable.Core
 Fable.Import.Browser
-Hink
+Fable.Import.Pixi
+Fable.Import.Pixi.Sound
+Fable.Import.Pixi.Particles
+Fable.Import.Animejs
