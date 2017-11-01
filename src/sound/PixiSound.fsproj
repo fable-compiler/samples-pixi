@@ -3,8 +3,6 @@
     <TargetFramework>netstandard1.6</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="..\Fable.Import.Pixi.fs" />
-    <Compile Include="..\Fable.Import.Pixi.Sound.fs" />
     <Compile Include="App.fs" />
   </ItemGroup>
   <Import Project="..\..\.paket\Paket.Restore.targets" />
