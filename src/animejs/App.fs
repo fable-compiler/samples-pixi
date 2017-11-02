@@ -1,6 +1,5 @@
 module Pixi
 
-open System
 open Fable.Core
 open Fable.Core.JsInterop
 open Fable.Import
@@ -8,7 +7,6 @@ open Fable.Import.Pixi
 open Fable.Import.Pixi.Particles
 open Fable.Import.Animejs
 open Fable.Import.Browser
-open Fable.Import.JS
 open Fable.AnimeUtils
 
 [<Literal>]
@@ -24,9 +22,9 @@ let options = createEmpty<PIXI.ApplicationOptions>
 options.backgroundColor <- Some 0x000000
 
 let app = PIXI.Application(800., 600., options)
-Browser.document.body.appendChild(app.view) |> ignore
+document.body.appendChild(app.view) |> ignore
 
-let onLoaded (loader:PIXI.loaders.Loader) (res:PIXI.loaders.Resource) =
+let onLoaded _ (res:PIXI.loaders.Resource) =
 
     // our json
     let config : string = !!res?emitter?data
