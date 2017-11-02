@@ -68,11 +68,10 @@ let startAnim (sprite:PIXI.Sprite) _ =
   scaleOut sprite.scale 2000. 2.|> ignore
 
 
-let getCircleData width (renderer:PIXI.WebGLRenderer) = 
+let getCircleData (renderer:PIXI.WebGLRenderer) = 
   let x = renderer.width * 0.5
   let y = renderer.height * 0.5
-  let radius = width * 2.
-  x,y,radius
+  x,y
 
 let prepareCanvas radius = 
   let canvas : HTMLCanvasElement = !!document.getElementById("canvas-layout")
@@ -99,7 +98,8 @@ let start() =
   pixiCanvas.appendChild(app.view) |> ignore
 
   // let's wait a little bit so we get this very big canvas texture added to our sprite
-  let (x,y,radius) = getCircleData width !!app.renderer
+  let radius = width * 2.
+  let (x,y) = (getCircleData !!app.renderer)
   let sprite = prepareSprite (prepareCanvas radius) (x,y,radius) app.stage
   window.setTimeout( (startAnim sprite), 1500) |> ignore
 
