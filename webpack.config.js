@@ -14,8 +14,8 @@ function getSamples() {
   for (var currentInfo in samplesInfo) {
     const currentSample = samplesInfo[currentInfo];
     
-    // We force fsproj file for each entry to App.fsproj 
-    currentSample.entry = "App.fsproj";
+    // We force fsproj file for each entry to be folderName.fsproj 
+    currentSample.entry = currentInfo + ".fsproj";
     const projectFile = path.join(__dirname, "src", currentInfo, currentSample.entry);
     // We include core-js first as it's a polyfill used to support older browsers
     samples[currentInfo] = ["core-js"].concat(currentSample.dependencies, projectFile);
