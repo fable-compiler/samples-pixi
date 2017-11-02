@@ -52,19 +52,6 @@ let onLoaded (loader:PIXI.loaders.Loader) (res:PIXI.loaders.Resource) =
     dragon.alpha <- 0.3
     app.stage.addChild dragon |> ignore
 
-    // display a beautiful text
-    let style = jsOptions<PIXI.TextStyle>( fun o ->
-        o.fontFamily<- !^"Josefin Sans"
-        o.fontSize<- !^36.
-        o.fill<- !!"#1292FF"
-    )
-    let richText = PIXI.Text("Fable",style)
-    richText.x <- x
-    richText.y <- y + 120.
-    richText.anchor.set 0.5 |> ignore
-
-    app.stage.addChild richText |> ignore
-
     // create our emitter
     let emitter = PIXI.particles.Emitter( emitterCOntainer, !![|texture|], config )
     emitter.updateOwnerPos(x,y)
@@ -77,11 +64,9 @@ let onLoaded (loader:PIXI.loaders.Loader) (res:PIXI.loaders.Resource) =
 
     // create our tweening timeline
     let timeline = GetTimeline (Some timelineOptions)
-    //printfn ""
 
     // get the path values from the div in index.html
-    let path = GetPath "#motionPath path"
-    let x = path "x"
+    let path = anime.path "#motionPath path"
 
     let options =
       jsOptions<AnimInput> (fun o ->
@@ -104,9 +89,7 @@ let onLoaded (loader:PIXI.loaders.Loader) (res:PIXI.loaders.Resource) =
     // start emitting particles
     emitter.emit <- true
 
-    // let the font load before starting the animation
-    let start delta = app.start()
-    Browser.window.setTimeout( Func<_,_>start , 500 ) |> ignore
+    app.start()
 
 // We start by loading the emitter json configuration File
 // to get our particle animation parameters

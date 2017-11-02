@@ -289,3 +289,5 @@ __pycache__/
 *.xsd.cs
 
 \.babelrc
+
+public/test \.json5

@@ -20,23 +20,16 @@ let SingleParameter (target:'t) parameterName paramaterFactor duration elasticit
     o.Item(parameterName) <- paramaterFactor
   )
 
-let GetPath (elementId:string) =
-  let instance = anime
-  instance.path !!elementId
-
-let GetInstance (options: AnimInput option) =
-  let instance = anime
+let GetInstance (options:AnimInput option) =
   match options with 
-  | Some o -> 
-    instance.Invoke o
-  |
-   None -> 
-    instance.Invoke()
-
-let GetTimeline (options: AnimInput option) =
-  let instance = anime
-  match options with 
-  | Some o -> 
-    instance.timeline o
+  | Some options -> 
+    anime.Invoke options
   | None -> 
-    instance.timeline()
+    anime.Invoke()
+
+let GetTimeline (options:AnimInput option) =
+  match options with 
+  | Some options -> 
+    anime.timeline options
+  | None -> 
+    anime.timeline()
