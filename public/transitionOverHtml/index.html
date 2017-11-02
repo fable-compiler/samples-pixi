@@ -1,0 +1,65 @@
+<!doctype html>
+<html>
+<head>
+  <meta http-equiv='Content-Type' content='text/html; charset=utf-8'>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" type="text/css" href="../css/bulma.custom.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">  
+  <title>Fable · Pixi · Canvas · Animejs</title>
+  <style>
+    canvas {
+      position:absolute;
+      top:0;
+      left:0;
+    }
+    .hero {
+      background-color: #FFFFFF;
+    }
+    #title {
+      color: black;
+    }
+    #content {
+      visibility:hidden;
+    }
+    #loader {
+      position:absolute;
+      top:0;
+      left:0;
+      background-color:black;
+      width: 100%
+    }
+  </style>
+</head>
+<body>
+  
+  <!-- our pixi layer -->
+  <div id="pixi-layout"></div>
+  
+    <!-- Hero content: will be in the middle, hidden at start-->
+  <section class="hero is-fullheight" id="content">      
+    <div class="hero-body">
+      <div class="container has-text-centered">
+        <h1 class="title is-4" id="title">
+          OMG!! What's happening?
+        </h1>
+      </div>
+    </div>  
+  </section>
+
+    <!-- Hero content: simple loading icon-->
+    <section class="hero is-fullheight" id="loader">      
+    <div class="hero-body">
+      <div class="container has-text-centered">
+        <span class="icon is-large">
+          <i class="fa fa-refresh fa-spin"></i>
+        </span>
+      </div>
+    </div>  
+  </section>
+
+  <!-- our canvas layer to prepare our texture-->
+  <canvas id="canvas-layout"></canvas>
+  
+  <script src="bundle.js"></script>
+</body>
+</html>
