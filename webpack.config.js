@@ -13,6 +13,9 @@ function getSamples() {
   var samplesInfo = json5.parse(fs.readFileSync(resolve("public/samples.json5")));
   for (var currentInfo in samplesInfo) {
     const currentSample = samplesInfo[currentInfo];
+    
+    // We force fsproj file for each entry to App.fsproj 
+    currentSample.entry = "App.fsproj";
     const projectFile = path.join(__dirname, "src", currentInfo, currentSample.entry);
     // We include core-js first as it's a polyfill used to support older browsers
     samples[currentInfo] = ["core-js"].concat(currentSample.dependencies, projectFile);

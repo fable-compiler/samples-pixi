@@ -1,6 +1,5 @@
 {
   "basic": {
-    "entry": "PixiBasic.fsproj",
     "dependencies": [
       "pixi.js"
     ],
@@ -9,7 +8,6 @@
     "img": "pixi.jpeg"
   },
   "container": {
-    "entry": "PixiContainer.fsproj",
     "dependencies": [
       "pixi.js"
     ],
@@ -18,7 +16,6 @@
     "img": "pixi.jpeg"
   },
   "containerPivot": {
-    "entry": "PixiContainerPivot.fsproj",
     "dependencies": [
       "pixi.js"
     ],
@@ -27,7 +24,6 @@
     "img": "pixi.jpeg"
   },
   "click": {
-    "entry": "PixiClick.fsproj",
     "dependencies": [
       "pixi.js"
     ],
@@ -36,7 +32,6 @@
     "img": "pixi.jpeg"
   },
   "ssa": {
-    "entry": "PixiSSA.fsproj",
     "dependencies": [
       "pixi.js"
     ],
@@ -45,7 +40,6 @@
     "img": "pixi.jpeg"
   },
   "tilingSprite": {
-    "entry": "PixiTilingSprite.fsproj",
     "dependencies": [
       "pixi.js"
     ],
@@ -54,7 +48,6 @@
     "img": "pixi.jpeg"
   },
   "text": {
-    "entry": "PixiText.fsproj",
     "dependencies": [
       "pixi.js"
     ],
@@ -63,7 +56,6 @@
     "img": "pixi.jpeg"
   },
   "graphics": {
-    "entry": "PixiGraphics.fsproj",
     "dependencies": [
       "pixi.js"
     ],
@@ -72,7 +64,6 @@
     "img": "pixi.jpeg"
   },
   "video": {
-    "entry": "PixiVideo.fsproj",
     "dependencies": [
       "pixi.js"
     ],
@@ -81,7 +72,6 @@
     "img": "pixi.jpeg"
   },
   "renderTexture": {
-    "entry": "PixiRT.fsproj",
     "dependencies": [
       "pixi.js"
     ],
@@ -90,7 +80,6 @@
     "img": "pixi.jpeg"
   },
   "texturedMesh": {
-    "entry": "PixiTM.fsproj",
     "dependencies": [
       "pixi.js"
     ],
@@ -99,7 +88,6 @@
     "img": "pixi.jpeg"
   },
   "customFilters": {
-    "entry": "PixiCF.fsproj",
     "dependencies": [
       "pixi.js"
     ],
@@ -108,7 +96,6 @@
     "img": "pixi.jpeg"
   },
   "dragging": {
-    "entry": "PixiDragging.fsproj",
     "dependencies": [
       "pixi.js"
     ],    
@@ -117,7 +104,6 @@
     "img": "pixi.jpeg"
   },
   "particles": {
-    "entry": "PixiParticles.fsproj",
     "dependencies": [
       "pixi.js",
       "pixi-particles"
@@ -127,7 +113,6 @@
     "img": "pixi.jpeg"
   },
   "animejs": {
-    "entry": "PixiAnimejs.fsproj",
     "dependencies": [
       "pixi.js",
       "pixi-particles",
@@ -139,7 +124,6 @@
   }
   ,
   "sound": {
-    "entry": "PixiSound.fsproj",
     "dependencies": [
       "pixi.js",
       "pixi-sound"
@@ -149,7 +133,6 @@
     "img": "pixi.jpeg"
   },
   "dragonParticle": {
-    "entry": "PixiDragonParticle.fsproj",
     "dependencies": [
       "pixi.js",
       "pixi-particles",
@@ -160,7 +143,6 @@
     "img": "pixi.jpeg"
   },
   "textureSwap": {
-    "entry": "PixiTextureSwap.fsproj",
     "dependencies": [
       "pixi.js"
     ],
@@ -169,7 +151,6 @@
     "img": "pixi.jpeg"
   },
   "tinting": {
-    "entry": "PixiTinting.fsproj",
     "dependencies": [
       "pixi.js"
     ],
@@ -178,7 +159,6 @@
     "img": "pixi.jpeg"
   },
   "draggor": {
-    "entry": "PixiDraggor.fsproj",
     "dependencies": [
       "pixi.js",
       "pixi-particles",
