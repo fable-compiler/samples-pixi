@@ -1,12 +1,6 @@
-# Pixi + Fable 
-Sample code demonstrates using [Pixi](http://www.pixijs.com/) v4 with Fable
+# Fun with Canvas and Pixi
+This sample code demonstrates how to use some canvas drawing as a texture for a Pixi Sprite before animating it with animeJs.
 
-Notice that because we are using a script tag on index.html for pixi.js, we need to instruct webpack to make calls to the library via the global reference. See the following part in `webpack.config.js`:
-```js
-externals: {
-  "PIXI": "PIXI"
-}
-``` 
 ## Build and running the app
 
 1. Install npm dependencies: `npm install`
