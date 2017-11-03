@@ -169,10 +169,9 @@ module PixiApp =
     
     Cmd.ofSub sub
     
-// start our main loop
-let init screen container (ticker:PIXI.ticker.Ticker) (rwidth,rheight)= 
+// load our assets and stat the app
+let loadAssets onLoadComplete = 
 
-  // We start by loading our assets 
   let loader = PIXI.loaders.Loader()
   let path = "../img/"
   [
@@ -185,17 +184,14 @@ let init screen container (ticker:PIXI.ticker.Ticker) (rwidth,rheight)=
     // fill our Asset store 
     Assets.addTexture "dragon" !!res?dragon?texture 
 
-    // let's start our Elmish program
-    let pixiLoop = PixiApp.renderLoop container ticker (rwidth,rheight) screen
-    ElmishApp.start screen pixiLoop 
-
-    // let's start our pixi loop
-    ticker.start()
+    // our nasty callback ;-)
+    onLoadComplete()
 
   ) |> ignore
 
 
-let start() = 
+let createApp() = 
+
   // Let's create our pixi application
   let options = jsOptions<PIXI.ApplicationOptions> (fun o ->
     o.antialias <- Some true
@@ -207,19 +203,28 @@ let start() =
   let pixiCanvas : HTMLDivElement = !!document.getElementById("pixi-layout")
   pixiCanvas.appendChild(app.view) |> ignore
 
-  let renderer : PIXI.WebGLRenderer = !!app.renderer
+  let startApp() =  
 
-  let container = PIXI.Container() 
-  app.stage.addChild container |> ignore
+    let renderer : PIXI.WebGLRenderer = !!app.renderer
 
-  // our pixi model
-  let screen = { dragons=[];state=Start; model={current=1}}
+    let container = PIXI.Container() 
+    app.stage.addChild container |> ignore
 
-  // our rendering loop mechanism
-  let ticker = app.ticker
-  ticker.stop()
+    // our pixi model
+    let screen = { dragons=[];state=Start; model={current=1}}
 
-  init screen container ticker (renderer.width,renderer.height)// it all begins there
+    let ticker = app.ticker
+    ticker.stop()
+
+    // let's start our Elmish program
+    let pixiLoop = PixiApp.renderLoop container ticker (renderer.width,renderer.height) screen
+    ElmishApp.start screen pixiLoop 
+
+    // let's start our pixi loop
+    ticker.start()
+ 
+  // load our assets and start our app
+  loadAssets startApp
 
 // let's start our proof of concept!
-start()
+createApp()
