@@ -81,7 +81,7 @@ module ElmishApp =
           ]
         ]
 
-    let instructions = 
+    let instructionsBox = 
       Box.box' [  ] [ 
         str "Click on a Dragon or the yellow button to add more dragons!"]
 
@@ -99,24 +99,15 @@ module ElmishApp =
     div [ ClassName ""][
       Navbar.navbar [ Navbar.isBlack ]
         [ 
-          Navbar.brand_div [ ]
-            [ 
-            Navbar.item_div [ ]
-              [
-                yield dragonsCounter model
-              ]            
-            ]
-          Navbar.start_div [] [
-            Navbar.item_div [ ]
-              [ yield instructions
-              ]
+          Navbar.brand_div [] [ 
+            Navbar.item_div [][ yield dragonsCounter model]
           ]
-          Navbar.end_div [ ] [ 
-            Navbar.item_div [ ]
-              [ 
-                yield addDragonButton dispatch
-              ] 
-            ] 
+          Navbar.start_div [] [
+            Navbar.item_div [] [ yield instructionsBox]
+          ]
+          Navbar.end_div [] [ 
+            Navbar.item_div [][ yield addDragonButton dispatch ] 
+          ] 
         ]
     ]
 
