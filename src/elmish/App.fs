@@ -58,14 +58,44 @@ module ElmishApp =
   let update (screen:Screen) msg (model,_)  =
     match msg with
     | AddMoreDragons  -> 
+      // add a random number of dragons
       let count = (Math.random() * randomDragonsToAdd + 1. |> int)
       let newModel = { model with current = model.current + count }
+      
       screen.model <- newModel // update reference to Elmish model in Pixi model
       screen.state <- AddDragon count // change the state of the Pixi model so that we can add more dragons
+      
       newModel, Cmd.none
 
   // Elmish view using React and Fulma
   let view (model,_) dispatch = 
+  
+    let dragonsCounter model = 
+      Level.level [ ]
+        [ 
+          Level.item [ Level.Item.hasTextCentered ] [
+            div [ ] [ 
+              Level.heading [ ] [ str "Dragons" ]
+              Level.title [ Level.customClass "counter" ] [ str (sprintf "%i" model.current) ] 
+            ] 
+          ]
+        ]
+
+    let instructions = 
+      Box.box' [  ] [ 
+        str "Click on a Dragon or the yellow button to add more dragons!"]
+
+    let addDragonButton dispatch = 
+      Button.button_a [ 
+        Button.isWarning 
+        Button.props [
+          OnClick (fun _ -> AddMoreDragons |> dispatch)
+        ]
+      ] [ 
+        str "Add more Dragons!" 
+      ] 
+
+    // our view
     div [ ClassName ""][
       Navbar.navbar [ Navbar.isBlack ]
         [ 
@@ -73,35 +103,18 @@ module ElmishApp =
             [ 
             Navbar.item_div [ ]
               [
-                Level.level [ ]
-                  [ 
-                    Level.item [ Level.Item.hasTextCentered ] [
-                      div [ ] [ 
-                        Level.heading [ ] [ str "Dragons" ]
-                        Level.title [ Level.customClass "counter" ] [ str (sprintf "%i" model.current) ] 
-                      ] 
-                    ]
-                  ]
+                yield dragonsCounter model
               ]            
             ]
           Navbar.start_div [] [
             Navbar.item_div [ ]
-              [
-                Box.box' [  ] [ 
-                  str "Click on a Dragon or the yellow button to add more dragons!"]
+              [ yield instructions
               ]
           ]
           Navbar.end_div [ ] [ 
             Navbar.item_div [ ]
               [ 
-                Button.button_a [ 
-                  Button.isWarning 
-                  Button.props [
-                    OnClick (fun _ -> AddMoreDragons |> dispatch)
-                  ]
-                ] [ 
-                  str "Add more Dragons!" 
-                ] 
+                yield addDragonButton dispatch
               ] 
             ] 
         ]
