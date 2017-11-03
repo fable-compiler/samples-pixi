@@ -22,7 +22,7 @@ importAll "../../public/sass/main.sass"
 let randomDragonsToAdd = 10.
 
 // Elmish Model
-type Model = { 
+type UIModel = { 
   current : int 
 }
 
@@ -32,7 +32,7 @@ type Dragon = {
 }
 
 // Render loop States
-type State = 
+type GameState = 
   | Start
   | AddDragon of int
   | Render
@@ -40,15 +40,15 @@ type State =
 // Pixi Model
 type Screen =  {
   mutable dragons : ExtendedSprite<Dragon> list 
-  mutable state : State 
-  mutable model: Model
+  mutable state : GameState 
+  mutable model: UIModel
 }
 
 // Elmish Message
-type Msg = 
+type UIMsg = 
   | AddMoreDragons 
 
-module ElmishApp = 
+module UI = 
 
   // Elmish init 
   let initState model _ =
@@ -58,6 +58,7 @@ module ElmishApp =
   let update (screen:Screen) msg (model,_)  =
     match msg with
     | AddMoreDragons  -> 
+
       // add a random number of dragons
       let count = (Math.random() * randomDragonsToAdd + 1. |> int)
       let newModel = { model with current = model.current + count }
@@ -71,29 +72,23 @@ module ElmishApp =
   let view (model,_) dispatch = 
   
     let dragonsCounter model = 
-      Level.level [ ]
-        [ 
-          Level.item [ Level.Item.hasTextCentered ] [
-            div [ ] [ 
-              Level.heading [ ] [ str "Dragons" ]
-              Level.title [ Level.customClass "counter" ] [ str (sprintf "%i" model.current) ] 
-            ] 
-          ]
+      Level.level [ ] [ 
+        Level.item [ Level.Item.hasTextCentered ] [
+          div [] [ 
+            Level.heading [] [ str "Dragons" ]
+            Level.title [ Level.customClass "counter" ] [ str (sprintf "%i" model.current) ] 
+          ] 
         ]
+      ]
 
     let instructionsBox = 
-      Box.box' [  ] [ 
-        str "Click on a Dragon or the yellow button to add more dragons!"]
+      Box.box' [] [ str "Click on a Dragon or the yellow button to add more dragons!"]
 
     let addDragonButton dispatch = 
       Button.button_a [ 
         Button.isWarning 
-        Button.props [
-          OnClick (fun _ -> AddMoreDragons |> dispatch)
-        ]
-      ] [ 
-        str "Add more Dragons!" 
-      ] 
+        Button.props [ OnClick (fun _ -> AddMoreDragons |> dispatch) ]
+      ] [ str "Add more Dragons!"] 
 
     // our view
     div [ ClassName ""][
@@ -117,7 +112,7 @@ module ElmishApp =
     |> Program.withReact "elmish-app" // bind our React app to this Html Div element 
     |> Program.run    
 
-module PixiApp = 
+module Game = 
 
   let addDragons root (rwidth,rheight) count dispatch = 
     [
@@ -215,7 +210,7 @@ let startGame (app:PIXI.Application) =
   app.stage.addChild root |> ignore
 
   // our pixi model
-  let screen = { dragons=[];state=Start; model={current=1}}
+  let gameModel = { dragons=[];state=Start; model={current=1}}
 
   // prepare ticker for pix render loop
   let ticker = app.ticker
@@ -223,15 +218,15 @@ let startGame (app:PIXI.Application) =
 
   // let's start our Elmish program
   let renderer : PIXI.WebGLRenderer = !!app.renderer
-  let pixiLoop = PixiApp.renderLoop root ticker (renderer.width,renderer.height) screen
-  ElmishApp.start screen pixiLoop 
+  let gameLoop = Game.renderLoop root ticker (renderer.width,renderer.height) gameModel
+  UI.start gameModel gameLoop 
 
   // let's start our pixi loop
   ticker.start()
 
 // create our pixi app
 let domElement : HTMLDivElement = !!document.getElementById("pixi-layout")
-let app = PixiApp.createApp domElement
+let app = Game.createApp domElement
 
 // load our assets and start our app
 loadAssets (fun _ -> startGame app)
