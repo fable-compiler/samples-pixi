@@ -47,63 +47,128 @@ type Screen =  {
 type Msg = 
   | AddMoreDragons 
 
-// Elmish init 
-let initState model _ =
-  model, Cmd.none
+module ElmishApp = 
 
-// Elmish update
-let update (screen:Screen) msg (model,_)  =
-  match msg with
-  | AddMoreDragons  -> 
-    let count = (Math.random() * randomDragonsToAdd + 1. |> int)
-    let newModel = { model with current = model.current + count }
-    screen.model <- newModel // update reference to Elmish model in Pixi model
-    screen.state <- AddDragon count // change the state of the Pixi model so that we can add more dragons
-    newModel, Cmd.none
+  // Elmish init 
+  let initState model _ =
+    model, Cmd.none
 
-// Elmish view
-let view (model,_) dispatch = 
-  div [ ClassName ""][
-    Navbar.navbar [ Navbar.isBlack ]
-      [ 
-        Navbar.brand_div [ ]
-          [ 
-          Navbar.item_div [ ]
-            [
-              Level.level [ ]
-                [ 
-                  Level.item [ Level.Item.hasTextCentered ] [
-                    div [ ] [ 
-                      Level.heading [ ] [ str "Dragons" ]
-                      Level.title [ Level.customClass "counter" ] [ str (sprintf "%i" model.current) ] 
-                    ] 
-                  ]
-                ]
-            ]            
-          ]
-        Navbar.start_div [] [
-          Navbar.item_div [ ]
-            [
-              Box.box' [  ] [ 
-                str "Click on a Dragon or the yellow button to add more dragons!"]
-            ]
-        ]
-        Navbar.end_div [ ] [ 
-          Navbar.item_div [ ]
+  // Elmish update
+  let update (screen:Screen) msg (model,_)  =
+    match msg with
+    | AddMoreDragons  -> 
+      let count = (Math.random() * randomDragonsToAdd + 1. |> int)
+      let newModel = { model with current = model.current + count }
+      screen.model <- newModel // update reference to Elmish model in Pixi model
+      screen.state <- AddDragon count // change the state of the Pixi model so that we can add more dragons
+      newModel, Cmd.none
+
+  // Elmish view
+  let view (model,_) dispatch = 
+    div [ ClassName ""][
+      Navbar.navbar [ Navbar.isBlack ]
+        [ 
+          Navbar.brand_div [ ]
             [ 
-              Button.button_a [ 
-                Button.isWarning 
-                Button.props [
-                  OnClick (fun _ -> AddMoreDragons |> dispatch)
-                ]
-              ] [ 
-                str "Add more Dragons!" 
+            Navbar.item_div [ ]
+              [
+                Level.level [ ]
+                  [ 
+                    Level.item [ Level.Item.hasTextCentered ] [
+                      div [ ] [ 
+                        Level.heading [ ] [ str "Dragons" ]
+                        Level.title [ Level.customClass "counter" ] [ str (sprintf "%i" model.current) ] 
+                      ] 
+                    ]
+                  ]
+              ]            
+            ]
+          Navbar.start_div [] [
+            Navbar.item_div [ ]
+              [
+                Box.box' [  ] [ 
+                  str "Click on a Dragon or the yellow button to add more dragons!"]
+              ]
+          ]
+          Navbar.end_div [ ] [ 
+            Navbar.item_div [ ]
+              [ 
+                Button.button_a [ 
+                  Button.isWarning 
+                  Button.props [
+                    OnClick (fun _ -> AddMoreDragons |> dispatch)
+                  ]
+                ] [ 
+                  str "Add more Dragons!" 
+                ] 
               ] 
             ] 
-          ] 
-      ]
-  ]
+        ]
+    ]
 
+  let start screen pixiLoop= 
+    Program.mkSimple (initState screen.model) (update screen) view
+    |> Program.withSubscription pixiLoop
+    |> Program.withReact "elmish-app"
+    |> Program.run    
+
+module PixiApp = 
+
+  // our render loop  
+  let renderLoop container (ticker:PIXI.ticker.Ticker) (rwidth,rheight) screen _ = 
+
+    let addDragons count dispatch = 
+      [
+        for i in 0..count-1 do 
+          let castTo (s:PIXI.Sprite) = s :?> ExtendedSprite<Dragon>
+          let scale = Math.random() + 0.3
+          let texture = SpriteUtils.getTexture "dragon"
+          let sprite = 
+            ExtendedSprite<Dragon>(texture,{angle=0.})
+            |> SpriteUtils.setAnchor 0.5 0.5
+            |> SpriteUtils.moveTo (rwidth * Math.random()) (rheight * Math.random()) 
+            |> SpriteUtils.scaleTo scale scale 
+            |> SpriteUtils.setAlpha scale 
+            |> SpriteUtils.makeButton
+            |> SpriteUtils.addToContainer container
+            |> castTo
+
+          sprite.on("pointerdown", fun _ -> 
+            (AddMoreDragons |> dispatch) |> ignore
+          ) |> ignore
+          
+          yield sprite
+      ]
+
+    let sub dispatch = 
+      ticker.add (fun _ -> 
+
+        screen.state <- 
+          match screen.state with 
+          | Start -> 
+            
+            AddDragon 1
+
+          | Render -> // simply rotate our dragons
+            
+            for dragon in screen.dragons do
+              dragon.Data.angle <- dragon.Data.angle + 0.05
+              let scale : PIXI.Point = !!dragon.scale
+              dragon.rotation <-  dragon.Data.angle  * (1.0 - scale.x)
+
+            Render
+
+          | AddDragon n -> // add new sprites to the rendering
+
+            let newDragons = addDragons n dispatch
+            screen.dragons <- screen.dragons @ newDragons
+
+            Render
+      
+      ) |> ignore    
+    
+    Cmd.ofSub sub
+    
 // start our main loop
 let init screen container (ticker:PIXI.ticker.Ticker) (rwidth,rheight)= 
 
@@ -111,7 +176,6 @@ let init screen container (ticker:PIXI.ticker.Ticker) (rwidth,rheight)=
   let loader = PIXI.loaders.Loader()
   let path = "../img/"
   [
-    // particle confi files
     ("dragon",sprintf "%s/fable_logo_small.png" path)
   ] 
   |> Seq.iter( fun (name,path) -> loader.add(name,path) |> ignore  )
@@ -121,58 +185,9 @@ let init screen container (ticker:PIXI.ticker.Ticker) (rwidth,rheight)=
     // fill our Asset store 
     Assets.addTexture "dragon" !!res?dragon?texture 
 
-    // our render loop  
-    let startLoop _ = 
-
-      let sub dispatch = 
-        ticker.add (fun _ -> 
-
-          screen.state <- 
-            match screen.state with 
-            | Start -> 
-              AddDragon 1
-
-            | Render -> 
-              for dragon in screen.dragons do
-                dragon.Data.angle <- dragon.Data.angle + 0.05
-                let scale : PIXI.Point = !!dragon.scale
-                dragon.rotation <-  dragon.Data.angle  * (1.0 - scale.x)
-
-              Render
-
-            | AddDragon n -> 
-
-              for i in 0..n-1 do 
-                let castTo (s:PIXI.Sprite) = s :?> ExtendedSprite<Dragon>
-                let scale = Math.random() + 0.3
-                let texture = SpriteUtils.getTexture "dragon"
-                let sprite = 
-                  ExtendedSprite<Dragon>(texture,{angle=0.})
-                  |> SpriteUtils.setAnchor 0.5 0.5
-                  |> SpriteUtils.moveTo (rwidth * Math.random()) (rheight * Math.random()) 
-                  |> SpriteUtils.scaleTo scale scale 
-                  |> SpriteUtils.setAlpha scale 
-                  |> SpriteUtils.makeButton
-                  |> SpriteUtils.addToContainer container
-                  |> castTo
-
-                sprite.on("pointerdown", fun _ -> 
-                  (AddMoreDragons |> dispatch) |> ignore
-                ) |> ignore
-
-                screen.dragons <- screen.dragons @ [sprite]
-
-              Render
-        
-        ) |> ignore    
-      
-      Cmd.ofSub sub
-
     // let's start our Elmish program
-    Program.mkSimple (initState screen.model) (update screen) view
-    |> Program.withSubscription startLoop
-    |> Program.withReact "elmish-app"
-    |> Program.run    
+    let pixiLoop = PixiApp.renderLoop container ticker (rwidth,rheight) screen
+    ElmishApp.start screen pixiLoop 
 
     // let's start our pixi loop
     ticker.start()
