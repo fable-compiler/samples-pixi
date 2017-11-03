@@ -38,7 +38,7 @@ type GameState =
   | Render
 
 // Pixi Model
-type Screen =  {
+type GameModel =  {
   mutable dragons : ExtendedSprite<Dragon> list 
   mutable state : GameState 
   mutable model: UIModel
@@ -55,7 +55,7 @@ module UI =
     model, Cmd.none
 
   // Elmish update
-  let update (screen:Screen) msg (model,_)  =
+  let update (screen:GameModel) msg (model,_)  =
     match msg with
     | AddMoreDragons  -> 
 
