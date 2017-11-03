@@ -1,8 +1,6 @@
 module Pixi
 
-open Fable.Core
 open Fable.Core.JsInterop
-open Fable.Import
 open Fable.Import.Pixi
 open Fable.Import.Browser
 open Fable.Import.JS
@@ -87,21 +85,21 @@ module UI =
     let addDragonButton dispatch = 
       Button.button_a [ 
         Button.isWarning 
-        Button.props [ OnClick (fun _ -> AddMoreDragons |> dispatch) ]
+        Button.onClick (fun _ -> AddMoreDragons |> dispatch)
       ] [ str "Add more Dragons!"] 
 
     // our view
-    div [ ClassName ""][
+    div [ ][
       Navbar.navbar [ Navbar.isBlack ]
         [ 
           Navbar.brand_div [] [ 
-            Navbar.item_div [][ yield dragonsCounter model]
+            Navbar.item_div [][ dragonsCounter model]
           ]
           Navbar.start_div [] [
-            Navbar.item_div [] [ yield instructionsBox]
+            Navbar.item_div [] [ instructionsBox]
           ]
           Navbar.end_div [] [ 
-            Navbar.item_div [][ yield addDragonButton dispatch ] 
+            Navbar.item_div [][ addDragonButton dispatch ] 
           ] 
         ]
     ]
@@ -225,7 +223,7 @@ let startGame (app:PIXI.Application) =
   ticker.start()
 
 // create our pixi app
-let domElement : HTMLDivElement = !!document.getElementById("pixi-layout")
+let domElement : HTMLDivElement = document.getElementById("pixi-layout") :?> HTMLDivElement
 let app = Game.createApp domElement
 
 // load our assets and start our app
