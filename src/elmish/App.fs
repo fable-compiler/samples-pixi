@@ -15,6 +15,7 @@ open Fulma.Layouts
 open Fable.Helpers.React
 open Fable.Helpers.React.Props
 
+// Fulma css
 importAll "../../public/sass/main.sass"
 
 [<Literal>]
@@ -114,64 +115,65 @@ module ElmishApp =
 
 module PixiApp = 
 
+  let addDragons root (rwidth,rheight) count dispatch = 
+    [
+      for i in 0..count-1 do 
+        let castTo (s:PIXI.Sprite) = s :?> ExtendedSprite<Dragon>
+        let scale = Math.random() + 0.3
+        let texture = SpriteUtils.getTexture "dragon"
+        let sprite = 
+          ExtendedSprite<Dragon>(texture,{angle=0.})
+          |> SpriteUtils.setAnchor 0.5 0.5
+          |> SpriteUtils.moveTo (rwidth * Math.random()) (rheight * Math.random()) 
+          |> SpriteUtils.scaleTo scale scale 
+          |> SpriteUtils.setAlpha scale 
+          |> SpriteUtils.makeButton
+          |> SpriteUtils.addToContainer root
+          |> castTo
+
+        sprite.on("pointerdown", fun _ -> 
+          (AddMoreDragons |> dispatch) |> ignore
+        ) |> ignore
+        
+        yield sprite
+    ]
+  
+  let updateState root (rwidth,rheight) screen dispatch = 
+
+    match screen.state with 
+    | Start -> 
+      
+      AddDragon 1
+
+    | Render -> // simply rotate our dragons
+      
+      for dragon in screen.dragons do
+        dragon.Data.angle <- dragon.Data.angle + 0.05
+        let scale : PIXI.Point = !!dragon.scale
+        dragon.rotation <-  dragon.Data.angle  * (1.0 - scale.x)
+
+      Render
+
+    | AddDragon n -> // add new sprites to the rendering
+
+      let newDragons = addDragons root (rwidth,rheight) n dispatch
+      screen.dragons <- screen.dragons @ newDragons
+
+      Render
+  
   // our render loop  
   let renderLoop root (ticker:PIXI.ticker.Ticker) (rwidth,rheight) screen _ = 
 
-    let addDragons count dispatch = 
-      [
-        for i in 0..count-1 do 
-          let castTo (s:PIXI.Sprite) = s :?> ExtendedSprite<Dragon>
-          let scale = Math.random() + 0.3
-          let texture = SpriteUtils.getTexture "dragon"
-          let sprite = 
-            ExtendedSprite<Dragon>(texture,{angle=0.})
-            |> SpriteUtils.setAnchor 0.5 0.5
-            |> SpriteUtils.moveTo (rwidth * Math.random()) (rheight * Math.random()) 
-            |> SpriteUtils.scaleTo scale scale 
-            |> SpriteUtils.setAlpha scale 
-            |> SpriteUtils.makeButton
-            |> SpriteUtils.addToContainer root
-            |> castTo
-
-          sprite.on("pointerdown", fun _ -> 
-            (AddMoreDragons |> dispatch) |> ignore
-          ) |> ignore
-          
-          yield sprite
-      ]
-
     let sub dispatch = 
       ticker.add (fun _ -> 
-
-        screen.state <- 
-          match screen.state with 
-          | Start -> 
-            
-            AddDragon 1
-
-          | Render -> // simply rotate our dragons
-            
-            for dragon in screen.dragons do
-              dragon.Data.angle <- dragon.Data.angle + 0.05
-              let scale : PIXI.Point = !!dragon.scale
-              dragon.rotation <-  dragon.Data.angle  * (1.0 - scale.x)
-
-            Render
-
-          | AddDragon n -> // add new sprites to the rendering
-
-            let newDragons = addDragons n dispatch
-            screen.dragons <- screen.dragons @ newDragons
-
-            Render
-      
+        screen.state <- updateState root (rwidth,rheight) screen dispatch      
       ) |> ignore    
     
     Cmd.ofSub sub
     
+  // Let's create our pixi application
   let createApp (domElement:HTMLElement) = 
 
-    // Let's create our pixi application
     let options = jsOptions<PIXI.ApplicationOptions> (fun o ->
       o.antialias <- Some true
       o.transparent <- Some true
