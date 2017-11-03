@@ -63,7 +63,7 @@ module ElmishApp =
       screen.state <- AddDragon count // change the state of the Pixi model so that we can add more dragons
       newModel, Cmd.none
 
-  // Elmish view
+  // Elmish view using React and Fulma
   let view (model,_) dispatch = 
     div [ ClassName ""][
       Navbar.navbar [ Navbar.isBlack ]
@@ -108,8 +108,8 @@ module ElmishApp =
 
   let start screen pixiLoop= 
     Program.mkSimple (initState screen.model) (update screen) view
-    |> Program.withSubscription pixiLoop
-    |> Program.withReact "elmish-app"
+    |> Program.withSubscription pixiLoop // we'll get our messages from the renderer using Elmish subscription system
+    |> Program.withReact "elmish-app" // bind our React app to this Html Div element 
     |> Program.run    
 
 module PixiApp = 
