@@ -16,7 +16,7 @@ open Fable.Helpers.React
 open Fable.Helpers.React.Props
 
 // Fulma css
-importAll "../../public/sass/main.sass"
+importSideEffects  "../../public/sass/main.sass"
 
 [<Literal>]
 let randomDragonsToAdd = 10.
