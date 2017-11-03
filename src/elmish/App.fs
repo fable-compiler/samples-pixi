@@ -115,7 +115,7 @@ module ElmishApp =
 module PixiApp = 
 
   // our render loop  
-  let renderLoop container (ticker:PIXI.ticker.Ticker) (rwidth,rheight) screen _ = 
+  let renderLoop root (ticker:PIXI.ticker.Ticker) (rwidth,rheight) screen _ = 
 
     let addDragons count dispatch = 
       [
@@ -130,7 +130,7 @@ module PixiApp =
             |> SpriteUtils.scaleTo scale scale 
             |> SpriteUtils.setAlpha scale 
             |> SpriteUtils.makeButton
-            |> SpriteUtils.addToContainer container
+            |> SpriteUtils.addToContainer root
             |> castTo
 
           sprite.on("pointerdown", fun _ -> 
@@ -169,6 +169,18 @@ module PixiApp =
     
     Cmd.ofSub sub
     
+  let createApp (domElement:HTMLElement) = 
+
+    // Let's create our pixi application
+    let options = jsOptions<PIXI.ApplicationOptions> (fun o ->
+      o.antialias <- Some true
+      o.transparent <- Some true
+    )
+    let app = PIXI.Application(window.innerWidth, window.innerHeight, options)
+    domElement.appendChild(app.view) |> ignore    
+
+    app
+
 // load our assets and stat the app
 let loadAssets onLoadComplete = 
 
@@ -190,41 +202,30 @@ let loadAssets onLoadComplete =
   ) |> ignore
 
 
-let createApp() = 
+let startGame (app:PIXI.Application) =  
 
-  // Let's create our pixi application
-  let options = jsOptions<PIXI.ApplicationOptions> (fun o ->
-    o.antialias <- Some true
-    o.transparent <- Some true
-  )
-  let app = PIXI.Application(window.innerWidth, window.innerHeight, options)
+  // our root container.
+  let root = PIXI.Container() 
+  app.stage.addChild root |> ignore
 
-  // add our app to our div element
-  let pixiCanvas : HTMLDivElement = !!document.getElementById("pixi-layout")
-  pixiCanvas.appendChild(app.view) |> ignore
+  // our pixi model
+  let screen = { dragons=[];state=Start; model={current=1}}
 
-  let startApp() =  
+  // prepare ticker for pix render loop
+  let ticker = app.ticker
+  ticker.stop()
 
-    let renderer : PIXI.WebGLRenderer = !!app.renderer
+  // let's start our Elmish program
+  let renderer : PIXI.WebGLRenderer = !!app.renderer
+  let pixiLoop = PixiApp.renderLoop root ticker (renderer.width,renderer.height) screen
+  ElmishApp.start screen pixiLoop 
 
-    let container = PIXI.Container() 
-    app.stage.addChild container |> ignore
+  // let's start our pixi loop
+  ticker.start()
 
-    // our pixi model
-    let screen = { dragons=[];state=Start; model={current=1}}
+// create our pixi app
+let domElement : HTMLDivElement = !!document.getElementById("pixi-layout")
+let app = PixiApp.createApp domElement
 
-    let ticker = app.ticker
-    ticker.stop()
-
-    // let's start our Elmish program
-    let pixiLoop = PixiApp.renderLoop container ticker (renderer.width,renderer.height) screen
-    ElmishApp.start screen pixiLoop 
-
-    // let's start our pixi loop
-    ticker.start()
- 
-  // load our assets and start our app
-  loadAssets startApp
-
-// let's start our proof of concept!
-createApp()
+// load our assets and start our app
+loadAssets (fun _ -> startGame app)
