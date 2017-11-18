@@ -13,8 +13,8 @@ function getSamples() {
   var samplesInfo = json5.parse(fs.readFileSync(resolve("public/samples.json5")));
   for (var currentInfo in samplesInfo) {
     const currentSample = samplesInfo[currentInfo];
-    
-    // We force fsproj file for each entry to be folderName.fsproj 
+
+    // We force fsproj file for each entry to be folderName.fsproj
     currentSample.entry = currentInfo + ".fsproj";
     const projectFile = path.join(__dirname, "src", currentInfo, currentSample.entry);
     // We include core-js first as it's a polyfill used to support older browsers
@@ -66,8 +66,14 @@ module.exports = {
   },
   devServer: {
     contentBase: resolve('public'),
-    port: 8080
+    port: 8080,
+    hot: true,
+    inline: true
   },
+  plugins : isProduction ? [] : [
+    new webpack.HotModuleReplacementPlugin(),
+    new webpack.NamedModulesPlugin()
+  ],
   module: {
     rules: [
       {
@@ -95,7 +101,7 @@ module.exports = {
           "css-loader",
           "sass-loader"
         ]
-      }      
+      }
     ]
   }
 };
