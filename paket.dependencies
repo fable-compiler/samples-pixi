@@ -3,11 +3,17 @@ storage:none
 
 clitool dotnet-fable
 nuget Fable.Core
+nuget Fable.Elmish.HMR
+nuget Fable.Elmish.React
+nuget Fable.Elmish.Debugger
 nuget Fable.Import.Browser
 nuget Fable.Import.Pixi
 nuget Fable.Import.Pixi.Sound
 nuget Fable.Import.Pixi.Particles
 nuget Fable.Import.Animejs
+nuget Fable.Elmish
+nuget Fable.React
+nuget Fulma
 
 group Build
   source https://nuget.org/api/v2

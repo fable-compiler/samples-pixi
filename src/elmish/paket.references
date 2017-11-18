@@ -2,5 +2,6 @@ Fable.Core
 Fable.Import.Browser
 Fable.Import.Pixi
 Fable.Elmish
-Fable.Elmish.Debugger
-Fable.Elmish.HMR
+Fable.React
+Fable.Elmish.React
+Fulma
