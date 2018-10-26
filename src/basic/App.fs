@@ -17,8 +17,6 @@ Browser.document.body.appendChild(app.view) |> ignore
 // create a new Sprite from an image path
 let bunny = PIXI.Sprite.fromImage("../img/fable_logo_small.png")
 
-let renderer : PIXI.WebGLRenderer = !!app.renderer
-
 // center the sprite's anchor point
 bunny.anchor.set(0.5)
 bunny.x <- app.screen.width * 0.5
